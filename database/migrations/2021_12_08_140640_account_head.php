@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UserTypes extends Migration
+class AccountHead extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,14 @@ class UserTypes extends Migration
      */
     public function up()
     {
-      Schema::create('user_types', function (Blueprint $table) {
-        $table->id();
-        $table->string('user_type');
-        $table->timestamps();
-      });
-
+        //
+        Schema::create('account_heads', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('user_id')->unsigned();;
+            $table->string('account_head_name');
+            $table->string('account_head_code');
+            $table->timestamps();
+        });
     }
 
     /**
