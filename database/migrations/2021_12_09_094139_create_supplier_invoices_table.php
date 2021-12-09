@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class SupplierInvoice extends Migration
+class CreateSupplierInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class SupplierInvoice extends Migration
      */
     public function up()
     {
-       
-        Schema::create('supplier_invoice', function (Blueprint $table) {
+        Schema::create('supplier_invoices', function (Blueprint $table) {
             $table->id(); 
             $table->bigInteger('invoice_no');
             $table->integer('supplier_id')->unsigned();
@@ -28,7 +27,7 @@ class SupplierInvoice extends Migration
  
             $table->timestamps();
     });
-}
+    }
 
     /**
      * Reverse the migrations.
@@ -37,6 +36,6 @@ class SupplierInvoice extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('supplier_invoices');
     }
 }

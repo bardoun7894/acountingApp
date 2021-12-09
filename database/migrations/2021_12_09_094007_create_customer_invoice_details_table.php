@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CustomerInvoiceDetails extends Migration
+class CreateCustomerInvoiceDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CustomerInvoiceDetails extends Migration
      */
     public function up()
     {
-       Schema::create('customer_invoice_details', function (Blueprint $table) {
+        Schema::create('customer_invoice_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_invoice_id');
             $table->unsignedBigInteger('product_id');
@@ -22,6 +22,7 @@ class CustomerInvoiceDetails extends Migration
             $table->timestamps();
             // $table->foreign('customer_invoice_id')->references('id')->on('customer_invoices')->onDelete('cascade');
             // $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+      
         });
     }
 
@@ -32,6 +33,6 @@ class CustomerInvoiceDetails extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('customer_invoice_details');
     }
 }

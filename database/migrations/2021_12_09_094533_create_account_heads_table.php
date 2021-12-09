@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AccountHead extends Migration
+class CreateAccountHeadsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class AccountHead extends Migration
      */
     public function up()
     {
-        //
         Schema::create('account_heads', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->integer('user_id')->unsigned();;
             $table->string('account_head_name');
             $table->string('account_head_code');
             $table->timestamps();
-        });
+       });
     }
 
     /**
@@ -30,6 +29,6 @@ class AccountHead extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('account_heads');
     }
 }

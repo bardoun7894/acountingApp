@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AccountControl extends Migration
+class CreateAccountSubControlsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,24 +13,19 @@ class AccountControl extends Migration
      */
     public function up()
     {
-        Schema::create('account_control', function (Blueprint $table) {
-           $table->id();
-           $table->string('account_control_name');
-           $table->integer('account_head_id');
-           $table->integer('user_id')->unsigned();;
-        }
-    );
+        Schema::create('account_sub_controls', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
     }
-      
 
     /**
      * Reverse the migrations.
      *
      * @return void
      */
-
     public function down()
     {
-        //
+        Schema::dropIfExists('account_sub_controls');
     }
 }

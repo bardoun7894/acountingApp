@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CustomerPayment extends Migration
+class CreateCustomerPaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CustomerPayment extends Migration
      */
     public function up()
     {
-     Schema::create('customer_payment', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('customer_payments', function (Blueprint $table) {
+            $table->id();
             $table->bigInteger('customer_id')->unsigned();
             $table->bigInteger('customer_invoice_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
@@ -22,6 +22,7 @@ class CustomerPayment extends Migration
             $table->float('paid_amount');
             $table->float('total_amount');
             $table->float('remaining_balance'); 
+        
             $table->timestamps();
         });
     }
@@ -33,6 +34,6 @@ class CustomerPayment extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('customer_payments');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class SupplierInvoiceDetails extends Migration
+class CreateSupplierInvoiceDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -24,7 +24,7 @@ class SupplierInvoiceDetails extends Migration
 
             // $table->foreign('supplier_invoice_id')->references('id')->on('supplier_invoices')->onDelete('cascade');
             // $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-        });
+    });
     }
 
     /**
@@ -34,6 +34,6 @@ class SupplierInvoiceDetails extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('supplier_invoice_details');
     }
 }
