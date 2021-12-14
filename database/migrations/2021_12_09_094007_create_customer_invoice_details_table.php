@@ -21,8 +21,8 @@ class CreateCustomerInvoiceDetailsTable extends Migration
             $table->integer('sale_unit_price');
             $table->timestamps();
             // $table->foreign('customer_invoice_id')->references('id')->on('customer_invoices')->onDelete('cascade');
-            // $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-      
+            // $table->foreign('product_id')->references('id')->on('stocks')->onDelete('cascade');
+
         });
     }
 

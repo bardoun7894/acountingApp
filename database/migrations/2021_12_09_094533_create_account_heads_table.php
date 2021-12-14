@@ -16,7 +16,8 @@ class CreateAccountHeadsTable extends Migration
         Schema::create('account_heads', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->unsigned();;
-            $table->string('account_head_name');
+            $table->string('account_head_name')->nullable();
+            $table->string('account_head_name_ar')->nullable();
             $table->string('account_head_code');
             $table->timestamps();
        });

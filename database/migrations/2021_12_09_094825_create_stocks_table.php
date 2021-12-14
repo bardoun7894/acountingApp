@@ -14,17 +14,20 @@ class CreateStocksTable extends Migration
     public function up()
     {
         Schema::create('stocks', function (Blueprint $table) {
-       $table->bigIncrements('product_id');; 
+        $table->bigIncrements('product_id');;
         $table->integer('category_id')->unsigned();
         $table->integer('user_id')->unsigned();
-        $table->integer('quantity'); 
-        $table->string('product_name');
-        $table->string('description');
+        $table->integer('quantity');
+        $table->string('product_name')->nullable();
+        $table->string('description')->nullable();
+        $table->string('product_name_ar')->nullable();
+        $table->string('description_ar')->nullable();
         $table->float('sale_unit_price');
         $table->float('current_purchase_unit_price');
         $table->date('expiry_date');
         $table->date('manufacture_date');
-        $table->integer('stock_trash_hold_qty');  
+        $table->integer('stock_trash_hold_qty');
+        $table->boolean('isdeleted')->default(false);
         $table->timestamps();
       });
     }

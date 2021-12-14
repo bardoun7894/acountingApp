@@ -21,6 +21,8 @@ class CreateCustomerInvoicesTable extends Migration
             $table->date('invoice_date');
             $table->string('title');
             $table->string('description');
+            $table->string('title_ar')->nullable();
+            $table->string('description_ar')->nullable();
             $table->float('total_amount');
             $table->timestamps();
        });

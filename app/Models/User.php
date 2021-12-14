@@ -18,9 +18,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'user_type_id','full_name' ,'username','email','contact_number','password'
+
     ];
 
     /**
@@ -41,4 +40,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //create relationship with user_type table
+    public function user_type()
+    {
+        return $this->belongsTo('App\Models\UserType');
+    }
+    public function stocks()
+    {
+        return $this->hasMany('App\Models\UserType');
+    }
+
+    public function supplierInvoices(){
+        return $this->hasMany(SupplierInvoice::class);
+    }
 }
