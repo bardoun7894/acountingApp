@@ -19,8 +19,8 @@ class CreateCustomerInvoicesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('invoice_number');
             $table->date('invoice_date');
-            $table->string('title');
-            $table->string('description');
+            $table->string('title_en');
+            $table->string('description_en');
             $table->string('title_ar')->nullable();
             $table->string('description_ar')->nullable();
             $table->float('total_amount');

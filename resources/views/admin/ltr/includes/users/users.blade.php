@@ -1,15 +1,18 @@
+
+<?php
+$full_name='full_name_'.\App\Models\Translation::getLang();
+?>
 @extends('admin.ltr.dashboard')
 @section('content')
-
 <div class="row" style="display: flex;justify-content: center; margin: 10px ;"  >
     <div id="recent-transactions"  >
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Recent Transactions</h4>
+                <h4 class="card-title">{{__('messages.users')}} </h4>
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
-                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('users/create')}}" target="_blank">Add User</a></li>
+                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('users/create')}}" target="_blank">{{__('messages.add_user')}}</a></li>
                     </ul>
                 </div>
             </div>
@@ -41,26 +44,23 @@
             <div class="card-content">
                 <div class="table-responsive">
                     <table id="dataex-select-initialisation" class=" table table-hover table-l mb-0">
-
                         <thead>
                         <tr>
                             <th class="border-top-0">#</th>
-                            <th class="border-top-0">role</th>
-                            <th class="border-top-0">FullName</th>
-{{--                            <th class="border-top-0">arabic FullName</th>--}}
-                            <th class="border-top-0">UserName</th>
-                            <th class="border-top-0">Email</th>
-                            <th class="border-top-0">PhoneNumber</th>
-                            <th class="border-top-0">Edit</th>
-                            <th class="border-top-0">delete</th>
+                            <th class="border-top-0">{{__('messages.role')}}</th>
+                            <th class="border-top-0">{{__('messages.fullName')}}</th>
+                            <th class="border-top-0">{{__('messages.userName')}}</th>
+                            <th class="border-top-0">{{__('messages.email')}}</th>
+                            <th class="border-top-0">{{__('messages.phoneNumber')}}</th>
+                            <th class="border-top-0">{{__('messages.edit')}}</th>
+                            <th class="border-top-0">{{__('messages.delete')}}</th>
                         </tr>
                         </thead>
                         @foreach($users as $user)
                            <tbody>
-
-                            <td class="text-truncate"> {{$user->id}}</td>
-                            <td class="text-truncate">  @if($user->user_type_id==1 ) admin @else user  @endif       </td>
-                            <td class="text-truncate"> {{$user->full_name}}</td>
+                            <td class="text-truncate"> {{$user->id }}</td>
+                            <td class="text-truncate">  @if($user->user_type_id==1 ) admin @else user  @endif  </td>
+                               <td class="text-truncate">{{$user->$full_name}}   </td>
 {{--                            <td class="text-truncate"> {{$user->full_name_ar}}</td>--}}
                             <td class="text-truncate"> {{$user->username}}</td>
                             <td class="text-truncate"> {{$user->email}}</td>

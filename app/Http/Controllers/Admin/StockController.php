@@ -18,9 +18,9 @@ class StockController extends Controller
      */
     public function index()
     {
+        $categories = Category::with(['stocks'])->get();
 
-        $stocks = Stock::all();
-        return view('admin.ltr.includes.stocks.stocks')->with(compact('stocks'));
+        return view('admin.ltr.includes.stocks.stocks')->with(compact('categories'));
 
         //
     }
@@ -46,7 +46,6 @@ class StockController extends Controller
     {
         $validated = $request->validate([
             'category_id' => 'required',
-
             'product_name'=>'required',
             'description'=>'required',
             'quantity'=>'required',
@@ -92,8 +91,11 @@ class StockController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {   $stock = Stock::find($id);
-        return view('admin.ltr.includes.stocks.update')->with(compact('Stock'));
+    {
+
+        $stock = Stock::find($id);
+        $categories =Category::all();
+        return view('admin.ltr.includes.stocks.update')->with(compact('stock','categories'));
     }
 
     /**
@@ -106,10 +108,29 @@ class StockController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'category_name' => 'required',
+            'category_id' => 'required',
+            'product_name'=>'required',
+            'description'=>'required',
+            'quantity'=>'required',
+            'sale_unit_price'=>'required',
+            'current_purchase_unit_price'=>'required',
+            'expiry_date'=>'required',
+            'manufacture_date'=>'required',
+            'stock_trash_hold_qty'=>'required',
         ]);
-        $stock=Stock::find($id);
-//        $stock->category_name = $request->input('category_name');
+       $stock = Stock::find($id);
+
+        $stock->category_id =$request->category_id;
+        $stock->product_name =$request->product_name;
+        $stock->description =$request->description;
+        $stock->quantity = $request->quantity;
+        $stock->sale_unit_price = $request->sale_unit_price;
+        $stock->current_purchase_unit_price = $request->current_purchase_unit_price;
+        $stock->expiry_date = $request->expiry_date;
+        $stock->manufacture_date = $request->manufacture_date;
+        $stock->stock_trash_hold_qty = $request->stock_trash_hold_qty;
+        $stock->user_id =Auth::user()->id;
+//      $stock->category_name = $request->input('category_name');
         $stock->update();
 
 

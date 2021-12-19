@@ -14,11 +14,11 @@ class CreateStocksTable extends Migration
     public function up()
     {
         Schema::create('stocks', function (Blueprint $table) {
-        $table->bigIncrements('product_id');;
+        $table->id();
         $table->integer('category_id')->unsigned();
         $table->integer('user_id')->unsigned();
         $table->integer('quantity');
-        $table->string('product_name')->nullable();
+        $table->string('product_name_en')->nullable();
         $table->string('description')->nullable();
         $table->string('product_name_ar')->nullable();
         $table->string('description_ar')->nullable();

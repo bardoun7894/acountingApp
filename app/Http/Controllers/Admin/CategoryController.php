@@ -47,9 +47,11 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'branch_id' => 'required',
             'category_name' => 'required',
         ]);
         $category =new Category();
+        $category->branch_id =$request->branch_id;
         $category->category_name =$request->category_name;
         $category->save();
 
@@ -95,16 +97,17 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'branch_name' => 'required',
-            'category_name' => 'required',
-        ]);
+           'branch_id' => 'required',
+           'category_name' => 'required',
+               ]);
         $category=Category::find($id);
+        $category->branch_id = $request->branch_id;
         $category->category_name = $request->input('category_name');
         $category->update();
 
         $session =Session::flash('message','Category Updated Successfully');
         return redirect('categories')->with(compact('session'));
-        //
+
     }
 
     /**
@@ -122,10 +125,4 @@ class CategoryController extends Controller
 
     }
 
-public function getSelectedBranch(Request $request){
-        if($request->ajax()){
-          $data =$request->all();
-          return json_encode($data);
-        }
-}
 }

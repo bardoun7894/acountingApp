@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Translation;
+use  \Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Illuminate\Support\Facades\Auth ;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class HomeController extends Controller
@@ -24,18 +25,13 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function redirect(){
-//        $d ="admin";
-//        $usertype=Auth::user()->user_type_id;
-//    dd($usertype);die;
-//        if($usertype==1){
-             // return view('home')->with(compact('d'));
-           return view('admin.ltr.index');
-//        }else{
-//            $d ="user";
-//            return view('home')->with(compact('d'));
-//
-//        }
+
+        $lang =Translation::getLang();
+       $local_full_name=User::getFullName($lang);
+      return view('admin.ltr.index')->with(compact(['local_full_name','lang']));
     }
+
+
 //    public function showUsers(){
 //        $users = User::all();
 //        return view('admin.ltr.includes.users')->with(compact('users'));

@@ -1,5 +1,4 @@
 @extends("admin.ltr.dashboard")
-
 @section('content')
     <div class="content-overlay"></div>
     <div class="content-wrapper">

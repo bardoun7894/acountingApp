@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class RegisterController extends Controller
 {
@@ -30,7 +31,7 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
-
+    private $full_name;
     /**
      * Create a new controller instance.
      *
@@ -38,6 +39,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
+        $this->full_name ="full_name_".LaravelLocalization::getCurrentLocale();
         $this->middleware('guest');
     }
 
@@ -49,8 +51,10 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+
+
         return Validator::make($data, [
-            'full_name' => ['required', 'string', 'max:255'],
+            $this->full_name => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255'],
             'contact_number' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -66,9 +70,11 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+//        $full_name ="full_name_".LaravelLocalization::getCurrentLocale();
+//        echo $data['full_name_en'];die;
         return User::create([
             'user_type_id' => 1,
-            'full_name' => $data['full_name'],
+            $this->full_name=>$data[$this->full_name],
             'username' => $data['username'],
             'email' => $data['email'],
             'contact_number' => $data['contact_number'],

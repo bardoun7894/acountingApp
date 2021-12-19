@@ -1,7 +1,12 @@
 @include('admin.ltr.includes.head')
-!-- BEGIN: Body-->
+<?php
 
-<body class="horizontal-layout horizontal-menu material-horizontal-layout material-layout 1-column  bg-full-screen-image blank-page" data-open="hover" data-menu="horizontal-menu" data-col="1-column">
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+$lang = LaravelLocalization::getCurrentLocale();
+  $full_name ="full_name_".$lang;
+
+?>
+<body class="horizontal-layout horizontal-menu material-horizontal-layout material-layout 1-column  bg-full-screen-image blank-page" data-open="hover" data-menu="horizontal-menu" data-col="1-column" @if($lang=='ar')style="direction: rtl" @else style="direction: ltr" @endif>
 <!-- BEGIN: Content-->
 <div class="app-content content">
     <div class="content-header row">
@@ -20,24 +25,25 @@
                                  </div>
                             <div class="card-content">
 
-                                <div class="card-body">
+                                <div class="card-body"  >
                                <form class="form-horizontal"  method="POST" action="{{ route('register') }}" novalidate>
                                   @csrf
-                                        <fieldset class="form-group position-relative has-icon-left">
+                                        <fieldset class="form-group position-relative @if($lang=='ar')has-icon-right @else has-icon-left @endif   " >
 
-                                            <input id="full_name" type="text" class="form-control @error('full_name') is-invalid @enderror" name="full_name" placeholder="Full Name" value="{{ old('full_name') }}" required autocomplete="full_name" autofocus>
+                                            <input id="{{$full_name}}"  type="text" class="form-control @error($full_name) is-invalid @enderror" name="{{$full_name}}" placeholder="{{__('messages.fullName')}}" value="{{old($full_name)}}" required autocomplete="{{$full_name}}"autofocus>
                                             <div class="form-control-position">
                                                 <i class="la la-user-circle"></i>
                                             </div>
-                                            @error('full_name')
+
+                                            @error($full_name)
                                                <span class="invalid-feedback" role="alert">
                                                <strong>{{ $message }}</strong>
                                                </span>
                                             @enderror
                                         </fieldset>
 
-                                      <fieldset class="form-group position-relative has-icon-left">
-                                                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" placeholder="UserName" value="{{ old('username') }}" required autocomplete="username" autofocus>
+                                      <fieldset class="form-group position-relative @if($lang=='ar')has-icon-right @else has-icon-left @endif">
+                                                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" placeholder="{{__('messages.userName')}}" value="{{ old('username') }}" required autocomplete="username" autofocus>
 
                                                 <div class="form-control-position">
                                                 <i class="la la-user"></i>
@@ -48,8 +54,8 @@
                                                 </span>
                                                 @enderror
                                         </fieldset>
-                                      <fieldset class="form-group position-relative has-icon-left">
-                                                <input id="contact_number" type="text" class="form-control @error('contact_number') is-invalid @enderror" placeholder="Phone Number" name="contact_number" value="{{ old('contact_number') }}" required autocomplete="ContactNumber" autofocus>
+                                      <fieldset class="form-group position-relative @if($lang=='ar')has-icon-right @else has-icon-left @endif">
+                                                <input id="contact_number" type="text" class="form-control @error('contact_number') is-invalid @enderror" placeholder="{{__('messages.phoneNumber')}}" name="contact_number" value="{{ old('contact_number') }}" required autocomplete="ContactNumber" autofocus>
                                                 <div class="form-control-position">
                                                     <i class="la la-phone"></i>
                                                 </div>
@@ -61,8 +67,8 @@
                                                 @enderror
                                         </fieldset>
 
-                                     <fieldset class="form-group position-relative has-icon-left">
-                                          <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="Email" value="{{ old('email') }}" required autocomplete="email">
+                                     <fieldset class="form-group position-relative @if($lang=='ar')has-icon-right @else has-icon-left @endif">
+                                          <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="{{__('messages.email')}}" value="{{ old('email') }}" required autocomplete="email">
                                                 <div class="form-control-position">
                                                      <i class="la la-envelope"></i>
                                                 </div>
@@ -73,8 +79,8 @@
                                                 @enderror
                                         </fieldset>
 
-                                     <fieldset class="form-group position-relative has-icon-left">
-                                         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="password" required autocomplete="new-password">
+                                     <fieldset class="form-group position-relative @if($lang=='ar')has-icon-right @else has-icon-left @endif">
+                                         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="{{__('messages.password')}}" required autocomplete="new-password">
                                                 <div class="form-control-position">
                                                     <i class="la la-key"></i>
                                                 </div>
@@ -86,8 +92,8 @@
                                         </fieldset>
 
 
-                                     <fieldset class="form-group position-relative has-icon-left">
-                                         <input id="password-confirm" type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password" required autocomplete="new-password">
+                                     <fieldset class="form-group position-relative @if($lang=='ar')has-icon-right @else has-icon-left @endif">
+                                         <input id="password-confirm" type="password" class="form-control" name="password_confirmation" placeholder="{{__('messages.confirm_password')}}" required autocomplete="new-password">
 
                                          <div class="form-control-position">
 
@@ -130,23 +136,23 @@
 
 
 <!-- BEGIN: Vendor JS-->
-<script src="../../../app-assets/vendors/js/material-vendors.min.js"></script>
+<script src="{{url('admin/app-assets/vendors/js/material-vendors.min.js')}}"></script>
 <!-- BEGIN Vendor JS-->
 
 <!-- BEGIN: Page Vendor JS-->
-<script src="../../../app-assets/vendors/js/ui/jquery.sticky.js"></script>
-<script src="../../../app-assets/vendors/js/forms/validation/jqBootstrapValidation.js"></script>
-<script src="../../../app-assets/vendors/js/forms/icheck/icheck.min.js"></script>
+<script src="{{url('admin/app-assets/vendors/js/ui/jquery.sticky.js')}}"></script>
+<script src="{{url('admin/app-assets/vendors/js/forms/validation/jqBootstrapValidation.js')}}"></script>
+<script src="{{url('admin/app-assets/vendors/js/forms/icheck/icheck.min.js')}}"></script>
 <!-- END: Page Vendor JS-->
 
 <!-- BEGIN: Theme JS-->
-<script src="../../../app-assets/js/core/app-menu.js"></script>
-<script src="../../../app-assets/js/core/app.js"></script>
+<script src="{{url('admin/app-assets/js/core/app-menu.js')}}"></script>
+<script src="{{url('admin/app-assets/js/core/app.js')}}"></script>
 <!-- END: Theme JS-->
 
 <!-- BEGIN: Page JS-->
-<script src="../../../app-assets/js/scripts/pages/material-app.js"></script>
-<script src="../../../app-assets/js/scripts/forms/form-login-register.js"></script>
+<script src="{{url('admin/app-assets/js/scripts/pages/material-app.js')}}"></script>
+<script src="{{url('admin/app-assets/js/scripts/forms/form-login-register.js')}}"></script>
 <!-- END: Page JS-->
 
 </body>

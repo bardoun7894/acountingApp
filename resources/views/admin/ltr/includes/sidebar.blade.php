@@ -20,9 +20,9 @@ $current_user =\Illuminate\Support\Facades\Auth::user();
 
            {{-- navigation items --}}
 
-            <li class=" nav-item "><a href="ecommerce-product-shop.html"><i class="la la-th-large"></i><span class="menu-title" data-i18n="Shop">Purchases</span></a>
+            <li class=" nav-item "><a href="ecommerce-product-shop.html"><i class="la la-th-large"></i><span class="menu-title" data-i18n="Shop">{{__('messages.purchases')}} </span></a>
             </li>
-            <li class=" nav-item"><a href="ecommerce-product-detail.html"><i class="la la-list"></i><span class="menu-title" data-i18n="Product Detail">sales</span></a>
+            <li class=" nav-item"><a href="ecommerce-product-detail.html"><i class="la la-list"></i><span class="menu-title" data-i18n="Product Detail">{{__('messages.sales')}}</span></a>
             </li>
             <li class=" nav-item"><a href="ecommerce-shopping-cart.html"><i class="la la-shopping-cart"></i><span class="menu-title" data-i18n="Shopping Cart">Stock</span></a>
             </li>
@@ -31,11 +31,13 @@ $current_user =\Illuminate\Support\Facades\Auth::user();
              @if($current_user->user_type_id==1)
                  <li class=" nav-item" ><a href="#"><i class="la la-clipboard" ></i><span class="menu-title" data-i18n="Settings">Settings</span></a>
                 <ul class="menu-content">
-                    <li><a   @if($current_user->user_type_id==1) class="active menu-item"  @else class="menu-item" @endif  href="users"><i></i><span data-i18n="Users">Users</span></a>
+                    <li><a   @if($current_user->user_type_id==1) class="active menu-item"  @else class="menu-item" @endif  href="{{url($lang.'/users')}}"><i></i><span data-i18n="Users">Users</span></a>
                     </li>
                     <li><a class="menu-item" href="categories"><i></i><span data-i18n="categories">Categories</span></a>
                     <li><a class="menu-item" href="branches"><i></i><span data-i18n="branches">Branches</span></a>
                     <li><a class="menu-item" href="stocks"><i></i><span data-i18n="stocks">Stocks</span></a>
+                    <li><a class="menu-item" href="accountHeads"><i></i><span data-i18n="accountHeads">AccountHeads</span></a>
+                    <li><a class="menu-item" href="accountControls"><i></i><span data-i18n="accountControls">AccountControls</span></a>
                     </li>
                     <li><a class="menu-item" href="invoice-template.html"><i></i><span data-i18n="Invoice Template">Invoice Template</span></a>
                     </li>

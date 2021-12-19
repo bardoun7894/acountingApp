@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User;
 use App\Http\Controllers\Admin;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
 //
 //Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 //    return view('home');
@@ -35,16 +35,32 @@ Auth::routes();
 //Route::get('/user', [ User\DashboardController::class, 'index'])->name('user');
 //Route::get('/admin', [ Admin\DashboardController::class, 'index'])->name('admin');
 
-Route::middleware('auth')->group(function (){
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+    ], function() {
+
+    Auth::routes();
+});
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath','auth' ]
+    ], function(){
 
     Route::get('/redirect',[HomeController::class,'redirect'])->name('redirect');
+
     Route::post('/get_selected_branch',[CategoryController::class,'getSelectedBranch'])->name('getSelectedBranch');
     Route::resources([
         'users'=>Admin\UserController::class,
         'categories'=>Admin\CategoryController::class,
         'branches'=>Admin\BranchController::class,
         'stocks'=>Admin\StockController::class,
+        'accountHeads'=>Admin\AccountHeadController::class,
+        'accountControls'=>Admin\AccountControlController::class,
     ]);
-}) ;
+
+});
 
 

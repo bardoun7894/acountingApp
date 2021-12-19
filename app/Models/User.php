@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -17,9 +18,10 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'user_type_id','full_name' ,'username','email','contact_number','password'
 
+    protected $fillable =
+        [
+        'user_type_id','full_name_en','full_name_ar','username','email','contact_number','password'
     ];
 
     /**
@@ -44,7 +46,11 @@ class User extends Authenticatable
     //create relationship with user_type table
     public function user_type()
     {
-        return $this->belongsTo('App\Models\UserType');
+        return $this->belongsTo(UserType::class);
+    }
+    public function accountHeads()
+    {
+        return $this->hasMany(AccountHead::class);
     }
     public function stocks()
     {
@@ -53,5 +59,11 @@ class User extends Authenticatable
 
     public function supplierInvoices(){
         return $this->hasMany(SupplierInvoice::class);
+    }
+
+    static public function getFullName($lang){
+        $full_name ="full_name_".$lang;
+        $fullname=Auth::user()->$full_name;
+        return $fullname;
     }
 }

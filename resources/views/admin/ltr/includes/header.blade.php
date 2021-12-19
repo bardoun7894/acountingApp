@@ -177,7 +177,7 @@
                             <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center" href="javascript:void(0)">Read all messages</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="mr-1 user-name text-bold-700">{{Auth::user()->full_name}}</span><span class="avatar avatar-online"><img src="{{ url('admin/app-assets/images/portrait/small/avatar-s-19.png')}}" alt="avatar"><i></i></span></a>
+                    <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown"><span class="mr-1 user-name text-bold-700"> {{$local_full_name}}</span><span class="avatar avatar-online"><img src="{{ url('admin/app-assets/images/portrait/small/avatar-s-19.png')}}" alt="avatar"><i></i></span></a>
                         <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#"><i class="ft-user"></i> Edit Profile</a><a class="dropdown-item" href="#"><i class="ft-clipboard"></i> Todo</a><a class="dropdown-item" href="#"><i class="ft-check-square"></i> Task</a>
              {{--           divider--}}
                             <div class="dropdown-divider"></div>
