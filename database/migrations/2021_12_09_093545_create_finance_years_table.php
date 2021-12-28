@@ -14,11 +14,13 @@ class CreateFinanceYearsTable extends Migration
     public function up()
     {
         Schema::create('finance_years', function (Blueprint $table) {
-            $table->id(); 
-            $table->date('financial_year');  
+            $table->id();
+            $table->string('financial_year');
             $table->tinyInteger('isActive')->default(1);
+            $table->date('startDate');
+            $table->date('endDate');
             $table->timestamps();
-       
+
         });
     }
 

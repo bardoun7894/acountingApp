@@ -50,15 +50,41 @@ Route::group(
     ], function(){
 
     Route::get('/redirect',[HomeController::class,'redirect'])->name('redirect');
+    Route::get('/getSupplierInvoice',[Admin\SupplierController::class,'getSupplierInvoice'])->name('getSupplierInvoice');
+    Route::get('/getCustomerInvoice',[Admin\CustomerController::class,'getCustomerInvoice'])->name('getCustomerInvoice');
 
-    Route::post('/get_selected_branch',[CategoryController::class,'getSelectedBranch'])->name('getSelectedBranch');
+####################################  Search Methodes ####################################
+    Route::post('/searchAccountSubControl',[Admin\AccountSubControlController::class,'searchAccountSubControlFunction'])->name('searchAccountSubControl');
+    Route::post('/searchAccountControl',[Admin\AccountControlController::class,'searchAccountControlFunction'])->name('searchAccountControl');
+    Route::post('/searchAccountHead',[Admin\AccountHeadController::class,'searchAccountHeadFunction'])->name('searchHeadControl');
+    Route::post('/searchFinanceYear',[Admin\FinanceYearController::class,'searchFinanceYearFunction'])->name('searchFinanceYear');
+    Route::post('/searchSupplier',[Admin\SupplierController::class,'searchSupplierFunction'])->name('searchSupplier');
+    Route::post('/searchCustomer',[Admin\CustomerController::class,'searchCustomerFunction'])->name('searchCustomer');
+    Route::post('/searchUser',[Admin\UserController::class,'searchUserFunction'])->name('searchUser');
+
+####################################  delete Methoders ####################################
+
+    Route::get('/delete-AccountSubControl/{id}',[Admin\AccountSubControlController::class,'deleteAccountSubControl'])->name('delete-AccountSubControl');
+    Route::get('/delete-AccountControl/{id}',[Admin\AccountControlController::class,'deleteAccountControl'])->name('delete-AccountControl');
+    Route::get('/delete-FinanceYear/{id}',[Admin\FinanceYearController::class,'deleteFinanceYear'])->name('delete-FinanceYear');
+    Route::get('/delete-Supplier/{id}',[Admin\SupplierController::class,'deleteSupplier'])->name('delete-Supplier');
+    Route::get('/delete-Customer/{id}',[Admin\CustomerController::class,'deleteCustomer'])->name('delete-Customer');
+####################################  select option  Methodes ####################################
+
+    Route::post('/get_selected_account_control',[Admin\AccountSubControlController::class,'getSelectedAccountControl'])->name('getSelectedAccountControl');
+####################################  resources  ####################################
+
     Route::resources([
         'users'=>Admin\UserController::class,
+        'suppliers'=>Admin\SupplierController::class,
+        'customers'=>Admin\CustomerController::class,
         'categories'=>Admin\CategoryController::class,
+        'financeYears'=>Admin\FinanceYearController::class,
         'branches'=>Admin\BranchController::class,
         'stocks'=>Admin\StockController::class,
         'accountHeads'=>Admin\AccountHeadController::class,
         'accountControls'=>Admin\AccountControlController::class,
+        'accountSubControls'=>Admin\AccountSubControlController::class,
     ]);
 
 });

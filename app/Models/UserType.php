@@ -15,5 +15,9 @@ class UserType extends Model
         return $this->hasMany('App\Models\User');
     }
 
+    static public function getUserTypeLang(){
+        return 'user_type_'.Translation::getLang();
+    }
+
 
 }

@@ -1,4 +1,4 @@
- @include('admin.ltr.includes.head')
+ @include('admin.includes.head')
 <!-- BEGIN: Body-->
 <body class="horizontal-layout horizontal-menu material-horizontal-layout material-layout 1-column  bg-full-screen-image blank-page" data-open="hover" data-menu="horizontal-menu" data-col="1-column">
     <!-- BEGIN: Content-->
@@ -76,4 +76,4 @@
 </body>
 <!-- END: Body-->
 
-@extends('admin.ltr.includes.scripts_js')
+@extends('admin.includes.scripts_js')

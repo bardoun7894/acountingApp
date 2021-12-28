@@ -1,4 +1,4 @@
-@include('admin.ltr.includes.head')
+@include('admin.includes.head')
 <?php
 
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -158,4 +158,4 @@ $lang = LaravelLocalization::getCurrentLocale();
 </body>
 <!-- END: Body-->
 
-@include('admin.ltr.includes.scripts_js')
+@include('admin.includes.scripts_js')

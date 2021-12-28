@@ -12,4 +12,13 @@ class Supplier extends Model
     public function supplierInvoices(){
         return $this->hasMany(SupplierInvoice::class);
     }
+   static public function getSupplierNameLang(){
+        return "supplier_name_".Translation::getLang();
+    }
+    static public function getdescriptionLang(){
+        return "description_".Translation::getLang();
+    }
+    static public function getaddressLang(){
+        return "address_".Translation::getLang();
+    }
 }

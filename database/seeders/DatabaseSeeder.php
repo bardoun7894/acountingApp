@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\AccountControl;
+use App\Models\AccountHead;
 use App\Models\User;
 use Illuminate\Database\Seeder;
  ;
@@ -16,7 +18,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
       // \App\Models\User::factory(10)->create();
-//    $this->call(UserTypeTableSeeder::class );
-//    $this->call(UserTableSeeder::class );
-    }
+//       $this->call(UserTypeSeeder::class );
+//       $this->call(AccountHeadSeeder::class );
+//       $this->call(AccountControlSeeder::class );
+//       $this->call(UserTableSeeder::class );
+
+     }
 }

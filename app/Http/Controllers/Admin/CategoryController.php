@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Stock;
+use App\Models\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -16,12 +17,21 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private $category_name;
+    private $lang;
+     function __construct(){
+         $this->lang=Translation::getLang();
+        $this->category_name=Category::getCategoryNameLang($this->lang);
+    }
     public function index()
     {
+        $category_name=$this->category_name;
 //        $categories =Category::all();
         $branches =Branch::with('categories')->get();
-
-        return view('admin.ltr.includes.categories.categories')->with(compact([ 'branches']));
+        $branch_name=Branch::getBranchNameLang();
+        $lang=$this->lang;
+        return view('admin.includes.categories.categories')->with(compact([ 'branches','category_name','branch_name','lang']));
 
         //
     }
@@ -33,9 +43,11 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        $lang=$this->lang;
         $branches =Branch::with('categories')->get();
-
-        return view('admin.ltr.includes.categories.create')->with(compact('branches'));
+        $category_name=$this->category_name;
+        $branch_name=Branch::getBranchNameLang();
+        return view('admin.includes.categories.create')->with(compact(['branches','category_name','lang','branch_name']));
     }
 
     /**
@@ -46,19 +58,19 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $category_name=$this->category_name;
         $validated = $request->validate([
-            'branch_id' => 'required',
-            'category_name' => 'required',
+           'branch_id' => 'required',
+            $category_name => 'required',
         ]);
         $category =new Category();
         $category->branch_id =$request->branch_id;
-        $category->category_name =$request->category_name;
+        $category->$category_name=$request->$category_name;
         $category->save();
+        $session =Session::flash('message',__('messages.category_added'));
 
-        $session =Session::flash('message','Category added Successfully');
-        return redirect('categories')->with(compact('session'));
+        return redirect('categories')->with(compact(['session']));
 
-        return redirect()->back();
     }
 
     /**
@@ -80,11 +92,15 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        $lang=$this->lang;
+        $category_name=$this->category_name;
         $category = Category::find($id);
         $branche =Branch::where('id',$category->branch_id)->first();
         $branch_list=Branch::all();
+        $branch_name=Branch::getBranchNameLang();
+
 //        return $branch;
-        return view('admin.ltr.includes.categories.update')->with(compact(['category','branche','branch_list']));
+        return view('admin.includes.categories.update')->with(compact(['category','branche','branch_list','lang','category_name','branch_name']));
     }
 
     /**
@@ -96,17 +112,19 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        $category_name=$this->category_name;
         $validated = $request->validate([
            'branch_id' => 'required',
-           'category_name' => 'required',
+            $category_name => 'required',
                ]);
         $category=Category::find($id);
         $category->branch_id = $request->branch_id;
-        $category->category_name = $request->input('category_name');
+        $category->$category_name = $request->input($category_name);
         $category->update();
 
-        $session =Session::flash('message','Category Updated Successfully');
-        return redirect('categories')->with(compact('session'));
+        $session =Session::flash('message',__('messages.category_updated'));
+        return redirect('categories')->with(compact(['session']));
 
     }
 
@@ -118,9 +136,10 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+
         $category=Category::find($id);
         $category->delete();
-        $session =Session::flash('message','Category Deleted Successfully');
+        $session =Session::flash('message',__('messages.category_deleted'));
         return redirect('categories')->with(compact('session'));
 
     }

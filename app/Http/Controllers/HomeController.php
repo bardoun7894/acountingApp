@@ -28,7 +28,7 @@ class HomeController extends Controller
 
         $lang =Translation::getLang();
        $local_full_name=User::getFullName($lang);
-      return view('admin.ltr.index')->with(compact(['local_full_name','lang']));
+      return view('admin.index')->with(compact(['local_full_name','lang']));
     }
 
 

@@ -20,13 +20,9 @@ class CreateCustomersTable extends Migration
             $table->string('contact_number');
             $table->string('area');
             $table->string('address_en');
-            $table->string('description_en')->nullable();
             $table->string('address_ar')->nullable();
+            $table->string('description_en')->nullable();
             $table->string('description_ar')->nullable();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
             $table->timestamps();
       });
     }

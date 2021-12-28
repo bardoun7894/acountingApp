@@ -584,10 +584,21 @@
     $this.siblings(".selected").removeClass("selected")
     $this.addClass("selected");
     var selectedLang = $this.text()
+      //get the language path
+      var urlPath = window.location.href; // raw javascript
+      const lang = urlPath.split("/")[3];
+      //get tableName
+      const tableName = urlPath.split("/")[4];
+
     var selectedFlag = $this.find(".flag-icon").attr("class");
-    $("#dropdown-flag .selected-language").text(selectedLang);
+
     $("#dropdown-flag .flag-icon").removeClass().addClass(selectedFlag);
     var currentLanguage = $this.data("language");
+      if(currentLanguage==="en"){
+          window.location.href="/en"+"/"+tableName
+      }else{
+          window.location.href="/ar"+"/"+tableName
+      }
     i18next.changeLanguage(currentLanguage, function (err, t) {
       $(".main-menu , .navbar-horizontal").localize();
     });

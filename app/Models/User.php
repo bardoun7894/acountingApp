@@ -22,7 +22,7 @@ class User extends Authenticatable
     protected $fillable =
         [
         'user_type_id','full_name_en','full_name_ar','username','email','contact_number','password'
-    ];
+        ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,21 +46,28 @@ class User extends Authenticatable
     //create relationship with user_type table
     public function user_type()
     {
-        return $this->belongsTo(UserType::class);
+      return $this->belongsTo(UserType::class);
     }
     public function accountHeads()
     {
         return $this->hasMany(AccountHead::class);
     }
+    public function accountSubControls()
+    {
+        return $this->hasMany(AccountSubControl::class);
+    }
     public function stocks()
     {
-        return $this->hasMany('App\Models\UserType');
+      return $this->hasMany(Stock::class);
     }
 
     public function supplierInvoices(){
         return $this->hasMany(SupplierInvoice::class);
     }
-
+static public function getFullnameLang(){
+    $full_name ="full_name_".Translation::getLang();
+    return $full_name;
+}
     static public function getFullName($lang){
         $full_name ="full_name_".$lang;
         $fullname=Auth::user()->$full_name;

@@ -14,5 +14,11 @@ class AccountHead extends Model
     public function accountControls(){
         return $this->hasMany(AccountControl::class);
     }
+    public function accountSubControls(){
+        return $this->hasMany(AccountSubControl::class);
+    }
+   static public function getAccounHeadNameLang(){
+        return 'account_head_name_'.Translation::getLang();
+}
 
 }

@@ -15,7 +15,7 @@ class CreateBranchesTable extends Migration
     {
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
-            $table->string('branch_name')->nullable();
+            $table->string('branch_name_en')->nullable();
             $table->string('branch_name_ar')->nullable();
             $table->timestamps();
         });

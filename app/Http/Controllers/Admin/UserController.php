@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Translation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -14,10 +15,16 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private $full_name ;
+    function __construct()
+    {
+        $this->full_name=User::getFullnameLang();
+    }
+
     public function index()
     {
         $users = User::all();
-        return view('admin.ltr.includes.users.users')->with(compact('users'));
+        return view('admin.includes.users.users')->with(compact('users'));
 
         //
     }
@@ -29,7 +36,7 @@ class UserController extends Controller
      */
     public function create()
     {
-         return view('admin.ltr.includes.users.create');
+         return view('admin.includes.users.create');
     }
 
     /**
@@ -40,9 +47,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $full_name =$this->full_name;
         $validated = $request->validate([
             'user_type_id' => 'required',
-            'full_name' => 'required',
+            $full_name => 'required',
             'username' => 'required|unique',
             'contact_number' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -50,7 +58,7 @@ class UserController extends Controller
         ]);
           $user =new User();
           $user->user_type_id =(int)$request->user_type_id;
-          $user->full_name = $request->full_name;
+          $user->$full_name = $request->$full_name;
           $user->username = $request->username;
           $user->contact_number = $request->contact_number;
           $user->email = $request->email;
@@ -81,8 +89,11 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {   $user = User::find($id);
-        return view('admin.ltr.includes.users.update')->with(compact('user'));
+    {
+
+        $full_name=$this->full_name;
+        $user = User::find($id);
+        return view('admin.includes.users.update')->with(compact(['user','full_name']));
           }
 
     /**
@@ -94,9 +105,10 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $full_name=$this->full_name;
         $validated = $request->validate([
             'user_type_id' => 'required',
-            'full_name' => 'required',
+            $full_name => 'required',
             'username' => 'required',
             'contact_number' => 'required',
             'email' => 'required|email|',
@@ -104,7 +116,7 @@ class UserController extends Controller
         ]);
         $user=User::find($id);
         $user->user_type_id =(int) $request->input('user_type_id');
-        $user->full_name = $request->input('full_name');
+        $user->$full_name = $request->input($full_name);
         $user->username = $request->input('username');
         $user->contact_number = $request->input('contact_number');
         $user->email = $request->input('email');
@@ -113,23 +125,22 @@ class UserController extends Controller
         $user->update();
 
       $session =Session::flash('message','User Updated Successfully');
-        return redirect('users')->with(compact('session'));
+        return redirect('users')->with(compact(['session','full_name']));
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function deleteSupplier($id)
     {
-       $user=User::find($id);
-       $user->delete();
-       $session =Session::flash('message','User Deleted Successfully');
-         return redirect('users')->with(compact('session'));
+        $user=User::find($id);
+        $user->delete();
+        $session =Session::flash('message','User Deleted Successfully');
+        return redirect('users')->with(compact('session'));
 
-
+    }
+    public function searchUserFunction(Request $request){
+        $full_name=$this->full_name;
+        $search_text =$request->get('searchQuery');
+        $users= User::where($full_name,'like','%'.$search_text.'%')->get();
+        return  $users;
     }
 }

@@ -4,12 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
+use App\Models\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class BranchController extends Controller
 {
-
+    private $branch_name;
+    private $lang;
+    function __construct(){
+        $this->lang=Translation::getLang();
+        $this->branch_name=Branch::getBranchNameLang();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +23,9 @@ class BranchController extends Controller
      */
     public function index()
     {
+        $branch_name=$this->branch_name;
         $branches= Branch::all();
-        return view('admin.ltr.includes.branches.branches')->with(compact('branches'));
+        return view('admin.includes.branches.branches')->with(compact(['branches','branch_name']));
 
         //
     }
@@ -30,7 +37,9 @@ class BranchController extends Controller
      */
     public function create()
     {
-        return view('admin.ltr.includes.branches.create');
+        $branch_name=$this->branch_name;
+        $lang=$this->lang;
+        return view('admin.includes.branches.create')->with(compact(['branch_name','lang']));
     }
 
     /**
@@ -41,15 +50,16 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
+        $branch_name=$this->branch_name;
+
         $validated = $request->validate([
-            'branch_name' => 'required',
+            $branch_name => 'required',
         ]);
         $branch =new Branch();
-        $branch->branch_name =$request->branch_name;
+        $branch->$branch_name=$request->$branch_name;
         $branch->save();
-
         $session =Session::flash('message','Branch added Successfully');
-        return redirect('branches')->with(compact('session'));
+        return redirect('branches')->with(compact(['session','branch_name']));
 
         return redirect()->back();
     }
@@ -72,8 +82,11 @@ class BranchController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {   $branch = Branch::find($id);
-        return view('admin.ltr.includes.branches.update')->with(compact('branch'));
+    {
+        $branch_name=$this->branch_name;
+        $lang=$this->lang;
+        $branch = Branch::find($id);
+        return view('admin.includes.branches.update')->with(compact(['branch','branch_name','lang']));
     }
 
     /**
@@ -85,13 +98,13 @@ class BranchController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $branch_name=$this->branch_name;
         $validated = $request->validate([
-            'branch_name' => 'required',
+            $branch_name => 'required',
         ]);
         $branch=Branch::find($id);
-        $branch->branch_name = $request->input('branch_name');
+        $branch->$branch_name = $request->input($branch_name);
         $branch->update();
-
         $session =Session::flash('message','Branch Updated Successfully');
         return redirect('branches')->with(compact('session'));
         //
