@@ -52,11 +52,11 @@
                            <tbody>
                 @foreach($branch->categories as $category)
                             <td class="text-truncate"> {{$category->id}}</td>
-{{--                            <td class="text-truncate">  @if($category->user_type_id==1 ) admin @else Category  @endif       </td>--}}
+{{--                     <td class="text-truncate">  @if($category->user_type_id==1 ) admin @else Category  @endif       </td>--}}
                             <td class="text-truncate"> {{$category->$category_name}}</td>
 
                             <td class="text-truncate"> {{$branch->$branch_name}}</td>
-{{--                            <td class="text-truncate"> {{$category->full_name_ar}}</td>--}}
+{{--                    <td class="text-truncate"> {{$category->full_name_ar}}</td>--}}
 
 
                             <td class="text-truncate">   <a href="{{url('categories/'.$category->id.'/edit')}}"><i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>

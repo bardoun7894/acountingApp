@@ -143,4 +143,11 @@ class UserController extends Controller
         $users= User::where($full_name,'like','%'.$search_text.'%')->get();
         return  $users;
     }
+
+    public function getUserInvoice(){
+        $full_name=$this->full_name;
+        $users = User::all();
+        return view('admin.includes.users.user_invoice')->with(compact(['users','full_name']));
+
+    }
 }

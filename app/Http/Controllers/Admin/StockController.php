@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Stock;
 use App\Models\Translation;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -19,12 +20,14 @@ class StockController extends Controller
      */
 
     private $product_name;
+    private $unit_name;
     private $description;
     private $category_name;
 
     function __construct()
     {
         $this->product_name=Stock::getProductNameLang();
+        $this->unit_name=Unit::getUnitNameLang();
         $this->description=Stock::getDescriptionLang();
         $this->category_name=Category::getCategoryNameLang(Translation::getLang());
 
@@ -32,7 +35,6 @@ class StockController extends Controller
     public function index()
     {
         $product_name=$this->product_name;
-
         $description=$this->description;
         $stocks = Stock::with(['category','user'])->get();
 //        $stocks = Category::with(['stock','users'])->get();
@@ -50,9 +52,11 @@ class StockController extends Controller
     public function create()
     {   $category_name=$this->category_name;
         $product_name=$this->product_name;
+        $unit_name=$this->unit_name;
         $description=$this->description;
         $categories =Category::all();
-        return view('admin.includes.stocks.create')->with(compact(['categories','product_name','category_name','description']));
+        $units=Unit::where('status',1)->get();
+        return view('admin.includes.stocks.create')->with(compact(['categories','units','product_name','unit_name','category_name','description']));
     }
 
     /**
@@ -67,6 +71,7 @@ class StockController extends Controller
         $description=$this->description;
         $validated = $request->validate([
             'category_id' => 'required',
+            'unit_id' => 'required',
             $product_name=>'required',
             $description=>'required',
             'quantity'=>'required',
@@ -78,6 +83,7 @@ class StockController extends Controller
         ]);
         $stock =new Stock();
         $stock->category_id =$request->category_id;
+        $stock->unit_id =$request->unit_id;
         $stock->$product_name =$request->$product_name;
         $stock->$description =$request->$description;
         $stock->quantity = $request->quantity;

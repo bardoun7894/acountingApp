@@ -65,6 +65,19 @@
                                </select>
                             </div>
                         </div>
+                        <div class="row justify-content-md-center form-group">
+                            <div class="col-md-6">
+                                <label for="eventRegInput2">{{__("messages.unit_name")}}</label>
+
+                                <select name="unit_id" class="select2 form-control"  >
+                                    <optgroup label="Unit name">
+                                        @foreach($units as $unit)
+                                        <option   value="{{$unit->id}} " > {{$unit->$unit_name}} </option>
+                                        @endforeach
+                                    </optgroup>
+                               </select>
+                            </div>
+                        </div>
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
                                     <div class="row">

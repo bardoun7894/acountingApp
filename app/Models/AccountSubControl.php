@@ -19,8 +19,17 @@ class AccountSubControl extends Model
  public function accountControl(){
       return $this->belongsTo(AccountControl::class);
   }
+
   static public function getAccountSubControlNameLang(){
       return 'account_sub_control_name_'.Translation::getLang();
+  }
+
+  public function customers(){
+      $this->hasMany(Customer::class);
+  }
+
+  public function suppliers(){
+      $this->hasMany(Supplier::class);
   }
 
 }

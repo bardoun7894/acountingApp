@@ -60,7 +60,12 @@
                         <div class="alert alert-success">
                             {{ session()->get('message') }}
                         </div>
-                            @break
+                     @break
+                        @case('add customer account to Account Sub Control')
+                        <div class="alert alert-danger">
+                            {{ session()->get('message') }}
+                        </div>
+                        @break
                     @default
 
                 @endswitch

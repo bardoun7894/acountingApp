@@ -13,16 +13,17 @@ class CreateAccountHeadsTable extends Migration
      */
     public function up()
     {
-        Schema::create('account_heads', function (Blueprint $table) {
-            $table->id();
-            $table->string("index");
-            $table->integer('user_id')->unsigned();
-            $table->string('account_head_name_en')->nullable();
-            $table->string('account_head_name_ar')->nullable();
-            $table->string('account_head_code')->nullable();
-            $table->timestamps();
-       });
-    }
+       Schema::create('account_heads', function (Blueprint $table) {
+
+           $table->id();
+           $table->string('account_head_code')->nullable();
+           $table->integer('user_id')->unsigned();
+           $table->string('account_head_name_en')->nullable();
+           $table->string('account_head_name_ar')->nullable();
+           $table->timestamps();
+
+           });
+        }
 
     /**
      * Reverse the migrations.

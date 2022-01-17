@@ -38,11 +38,7 @@
             @endswitch
 
             @endif
-            <div class="input-group d-inline-flex p-4" >
-                <input type="search" id="search-finance-year" class="form-control rounded" placeholder="Search" aria-label="Search" name="search_text"
-                       aria-describedby="search-addon" />
-                <button type="submit" class="btn btn-outline-primary">{{__('messages.search')}}</button>
-            </div>
+
             <div class="card-content">
                 <div class="table-responsive">
                     <table id="dataex-select-initialisation" class=" table table-hover table-l mb-0">

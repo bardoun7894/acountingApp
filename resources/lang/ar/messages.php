@@ -36,9 +36,12 @@ return [
     'accountHeads'=> 'رأس الحساب',
     'accountControls'=> 'التحكم الحساب',
     'accountSubControls'=> 'التحكم الفرعي الحساب',
-
     'account_head_name'=>'اسم رأس الحساب',
     'account_control_name'=>'اسم التحكم بالحساب',
+
+    'account_control_number'=>'رقم التحكم بالحساب',
+    'account_sub_control_number'=>'رقم الحساب الفرعي',
+
     'account_sub_control_name'=>'اسم التحكم الفرعي بالحساب',
 
     'update_account_head'=>'تعديل رأس الحساب',
@@ -48,6 +51,11 @@ return [
     'add_account_control'=>'اضافة التحكم الحساب جديد',
     'add_account_sub_control'=>'اضافة التحكم الفرعي الحساب جديد',
 
+
+    'unit'=>'الوحدة',
+    'unit_name'=>'اسم الوحدة',
+    'units'=>'وحدات',
+    'add_unit'=>'اضف وحدة',
 
     ####################### Session messages ################################
     ############## added messages #########  ###
@@ -100,6 +108,11 @@ return [
     'customerName' => 'اسم الزبون',
     'customers' => 'الزبائن',
     'customers_report' => 'تقرير الزبائن',
+    ####################### products ################################
+
+    'product_name'=>'اسم المنتج',
+
+    'quantity'=>'الكمية',
 
     ####################### options ################################
 

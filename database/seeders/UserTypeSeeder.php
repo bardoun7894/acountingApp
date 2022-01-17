@@ -16,7 +16,7 @@ class UserTypeSeeder extends Seeder
     public function run()
     {
     $data=[
-        ['user_type_en'=>"admin",'user_type_ar'=>"أدمن"]
+        [ 'user_type_en'=>"admin",'user_type_ar'=>"أدمن"]
     ];
 
     UserType::insert($data);

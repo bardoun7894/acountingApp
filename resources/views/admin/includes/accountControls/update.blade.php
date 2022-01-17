@@ -19,12 +19,12 @@
                         @csrf
                         @method('PUT')
                         <div class="form-actions top clearfix">
-                             Update AccountControl
+                            {{__("messages.update_account_control")}}
                         </div>
 
                         <div class="row justify-content-md-center form-group">
                             <div class="col-md-6">
-                                <label for="eventRegInput2">Account Head Name</label>
+                                <label for="eventRegInput2">{{__("messages.account_head_name")}}</label>
 
                                 <select name="account_head_id" class="select2 form-control"  >
                                     <optgroup label="AccountControl name">
@@ -42,8 +42,8 @@
 
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
-                                            <label for="eventRegInput2">AccountControl Name</label>
-                                            <input type="text"   class="form-control" placeholder="AccountControl name" name="{{$account_control_name}}" value="{{$accountControl->$account_control_name}}">
+                                            <label for="eventRegInput2">{{__("messages.account_control_name")}}</label>
+                                            <input type="text"   class="form-control" placeholder="{{__("messages.account_control_name")}}" name="{{$account_control_name}}" value="{{$accountControl->$account_control_name}}">
                                         </div>
                                     </div>
 
@@ -51,6 +51,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-actions clearfix">
                             <div class="buttons-group float-right mb-1">
                                 <button type="submit"  class="btn btn-primary mr-1">

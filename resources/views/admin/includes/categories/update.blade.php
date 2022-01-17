@@ -15,7 +15,7 @@
             @endif
             <div class="card-content collpase show">
                 <div class="card-body">
-                    <form class="form" method="POST" action="{{url('/'.$lang.'/categories/'.$category->id)}}">
+                    <form class="form" method="POST" action="{{url('/'.$lang.'/categories/'.$categoryData->id)}}">
                         @csrf
                         @method('PUT')
                         <div class="form-actions top clearfix">
@@ -26,15 +26,18 @@
                         <div class="row justify-content-md-center form-group">
                             <div class="col-md-6">
                                 <label for="eventRegInput2">{{__('messages.branch_name')}}</label>
-
-                                <select name="branch_id" class="select2 form-control"  >
+                                <select id="branchId"  name="branch_id" class="select2 form-control"  >
                                     <optgroup label="{{__('messages.branch_name')}}">
                                         @foreach($branch_list as $branch)
-                                            <option    @if($branch->$branch_name==$branche->$branch_name) value="{{$branche->id}}"  selected @else value="{{$branch->id}}" @endif> {{$branch->$branch_name}} </option>
+                                            <option    @if($branch->id==$categoryData->branch_id) value="{{$categoryData->branch_id}}"  selected @else value="{{$branch->id}}" @endif> {{$branch->$branch_name}} </option>
                                         @endforeach
                                     </optgroup>
                                 </select>
                             </div>
+                        </div>
+
+                        <div id="appendCategoryLevel">
+                            @include("admin.includes.categories.append_parent_level")
                         </div>
 
                         <div class="row justify-content-md-center">
@@ -44,7 +47,7 @@
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
                                             <label for="eventRegInput2">{{__('messages.category_name')}}</label>
-                                            <input type="text"   class="form-control" placeholder="{{__('messages.category_name')}}" name="{{$category_name}}" value="{{$category->$category_name}}">
+                                            <input type="text"   class="form-control" placeholder="{{__('messages.category_name')}}" name="{{$category_name}}" value="{{$categoryData->$category_name}}">
                                         </div>
                                     </div>
 

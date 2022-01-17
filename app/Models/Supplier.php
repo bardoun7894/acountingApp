@@ -9,6 +9,10 @@ class Supplier extends Model
 {
     use HasFactory;
 
+
+    protected $fillable=[
+        'account_code'
+    ];
     public function supplierInvoices(){
         return $this->hasMany(SupplierInvoice::class);
     }
@@ -20,5 +24,8 @@ class Supplier extends Model
     }
     static public function getaddressLang(){
         return "address_".Translation::getLang();
+    }
+    public function AccountSubControl(){
+        return $this->belongsTo(AccountSubControl::class);
     }
 }

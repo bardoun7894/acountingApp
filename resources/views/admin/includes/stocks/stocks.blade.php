@@ -30,7 +30,7 @@
         </div>
         <div class="content-body">
 
-<div class="row"    >
+    <div class="row"    >
     <div id="recent-transactions"  >
         <div class="card">
             <div class="card-header">
@@ -71,22 +71,22 @@
                 <div class="card-content" >
                     <div class="table-responsive-sm"  >
                         <table  class="table table-hover table-xs mb-0">
+             {{--                                     style="  display: block;   width:80%;  overflow: scroll;  "  --}}
 
                             <thead>
                             <tr>
-                                <th class="border-top-0"><p>product</p>name</th>
+                                <th class="border-top-0">product</th>
 {{--                                <th class="border-top-0">Stock Name</th>--}}
-{{--                                <th class="border-top-0">User Name</th>--}}
+                                <th class="border-top-0">Category</th>
+                                <th class="border-top-0"><p>created by</p></th>
                                 <th class="border-top-0"><p>Qty</p></th>
                                 <th class="border-top-0"><p>Sale</p><p>Unit</p>Price</th>
 {{--                                <th class="border-top-0">Purchase Unit Price</th>--}}
                                 <th class="border-top-0"><p>Expire</p> Date</th>
-                                <th class="border-top-0"><p>manufacture</p> Date</th>
+{{--                                <th class="border-top-0"><p>manufacture</p> Date</th>--}}
 {{--                                Stock  Hold Qty--}}
                                 <th class="border-top-0"><p>Stock </p><p>Trash</p> Qty</th>
-                                <th class="border-top-0">description</th>
-{{--                                <th class="border-top-0">is Deleted</th>--}}
-
+{{--                                <th class="border-top-0"><p>description</p></th>--}}
                                 <th class="border-top-0">View</th>
                                 <th class="border-top-0">Edit</th>
                                 <th class="border-top-0">delete</th>
@@ -96,17 +96,16 @@
                                 <tbody>
                                 @foreach($stocks as $stock)
 
-
-{{--                                    <td class="text-truncate"> {{$category->category_name}}</td>--}}
-{{--                                    <td class="text-truncate">{{ $stock->user_id}}  </td>--}}
                                     <td class="text-truncate"> {{$stock->$product_name}}</td>
+                                    <td class="text-truncate"> {{$stock->category->category_name_en}}</td>
+                                    <td class="text-truncate"> {{$stock->user->full_name_en}}</td>
                                     <td class="text-truncate"> {{$stock->quantity}}</td>
                                     <td class="text-truncate"> {{$stock->sale_unit_price}}</td>
 {{--                                    <td class="text-truncate"> {{$stock->current_purchase_unit_price}}</td>--}}
                                     <td class="text-truncate"> {{$stock->expiry_date}}</td>
-                                    <td class="text-truncate"> {{$stock->manufacture_date}}</td>
+{{--                                    <td class="text-truncate"> {{$stock->manufacture_date}}</td>--}}
                                     <td class="text-truncate"> {{$stock->stock_trash_hold_qty}}</td>
-                                    <td class="text-truncate"> {{$stock->$description}}</td>
+{{--                                    <td class="text-truncate"> {{$stock->$description}}</td>--}}
 {{--                                    <td class="text-truncate">no</td>--}}
                                     <td class="text-truncate">   <a href="{{url('stocks/'.$stock->id)}}">  <i class="la la-file-o" style="color: blue;font-size: 25px"></i></a> </td>
                                     <td class="text-truncate">   <a href="{{url('stocks/'.$stock->id.'/edit')}}">  <i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>

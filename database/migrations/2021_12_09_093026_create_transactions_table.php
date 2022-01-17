@@ -17,8 +17,8 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('financial_year_id');
             $table->unsignedBigInteger('account_head_id');
-            $table->unsignedBigInteger('accouunt_control_id');
-            $table->unsignedBigInteger('accouunt_sub_control_id');
+            $table->unsignedBigInteger('account_control_id');
+            $table->unsignedBigInteger('account_sub_control_id');
             $table->string('invoice_number');
             $table->unsignedBigInteger('user_id');
             $table->float('credit');
@@ -26,7 +26,7 @@ class CreateTransactionsTable extends Migration
             $table->date('transaction_date');
             $table->string('transaction_title');
             $table->timestamps();
-  
+
         });
     }
 

@@ -7,6 +7,7 @@ use App\Models\AccountControl;
 use App\Models\AccountSubControl;
 use App\Models\AccountHead;
 use App\Models\Translation;
+use App\Rules\ValidRangeAccountNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -84,6 +85,18 @@ class AccountSubControlController extends Controller
         $accountSubControl->$account_sub_control_name =$request->$account_sub_control_name;
         $accountSubControl->account_head_id =$request->account_head_id;
         $accountSubControl->account_control_id =$request->account_control_id;
+
+        //make the relation ship between accounts
+
+        $lastAccountSubControl =AccountSubControl::where('account_control_id','=',$accountSubControl->account_control_id)->latest()->first();
+        $accountControl=AccountControl::where('id',$accountSubControl->account_control_id)->first();
+        if(  $lastAccountSubControl==null ){
+            $accountSubControl->account_code = $accountControl->account_code . 1;
+        }else {
+            $accountSubControl->account_code = $lastAccountSubControl->account_code +1;
+        }
+
+
 
         $accountSubControl->save();
 
@@ -170,7 +183,7 @@ class AccountSubControlController extends Controller
         if($request->ajax()){
            $data=$request->all();
            #################this for update page ################
-             if($data['account_sub_control_id']!=null){
+            if($data['account_sub_control_id']!=null){
                  $accountSubControl = AccountSubControl::find($data['account_sub_control_id']);
                  $accountControle =AccountControl::where('id',$accountSubControl->account_control_id)->first();
                  $accountControl=AccountControl::where('account_head_id',$data['account_head_id'])->get();
@@ -179,7 +192,7 @@ class AccountSubControlController extends Controller
                  #################this for create page ################
                  $accountControl=AccountControl::where('account_head_id',$data['account_head_id'])->get();
                  return response()->json([ $accountControl]);
-             }
+               }
             ######################## using this for get the Head Account and Control Account by id ########################
         }
     }
@@ -192,16 +205,11 @@ class AccountSubControlController extends Controller
     }
 
     public function searchAccountSubControlFunction(Request $request){
-//        $account_head_name=AccountHead::getAccounHeadNameLang();
-//        $account_control_name=$this->account_control_name;
-        $account_sub_control_name=$this->account_sub_control_name ;
+
+        $account_sub_control_name = $this->account_sub_control_name ;
         $search_text =$request->get('searchQuery');
         $accountSubControls=AccountSubControl::with(['accountControl','accountHead','user'])->where($account_sub_control_name,'like','%'.$search_text.'%')->get();
          return $accountSubControls;
-//      return $accountSubControls;
-//        return view('admin.includes.accountSubControls')->with(compact('accountSubControls'));
-//        return view('admin.includes.accountSubControls.accountSubControls')->with(compact(['accountSubControls','account_sub_control_name','account_control_name','account_head_name']));
-
 
     }
 }

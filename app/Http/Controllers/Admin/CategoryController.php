@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Category;
+use App\Models\PurchaseCartDetail;
 use App\Models\Stock;
 use App\Models\Translation;
 use Illuminate\Http\Request;
@@ -26,12 +27,13 @@ class CategoryController extends Controller
     }
     public function index()
     {
-        $category_name=$this->category_name;
+          $category_name=$this->category_name;
 //        $categories =Category::all();
-        $branches =Branch::with('categories')->get();
-        $branch_name=Branch::getBranchNameLang();
-        $lang=$this->lang;
-        return view('admin.includes.categories.categories')->with(compact([ 'branches','category_name','branch_name','lang']));
+          $branches =Branch::with('categories')->get();
+          $purchases = PurchaseCartDetail::all();
+          $branch_name=Branch::getBranchNameLang();
+          $lang=$this->lang;
+          return view('admin.includes.categories.categories')->with(compact([ 'branches','category_name','branch_name','lang']));
 
         //
     }
@@ -45,6 +47,7 @@ class CategoryController extends Controller
     {
         $lang=$this->lang;
         $branches =Branch::with('categories')->get();
+//        return $branches;
         $category_name=$this->category_name;
         $branch_name=Branch::getBranchNameLang();
         return view('admin.includes.categories.create')->with(compact(['branches','category_name','lang','branch_name']));
@@ -61,10 +64,12 @@ class CategoryController extends Controller
         $category_name=$this->category_name;
         $validated = $request->validate([
            'branch_id' => 'required',
+           'parent_id' => 'required',
             $category_name => 'required',
         ]);
         $category =new Category();
         $category->branch_id =$request->branch_id;
+        $category->parent_id =$request->parent_id;
         $category->$category_name=$request->$category_name;
         $category->save();
         $session =Session::flash('message',__('messages.category_added'));
@@ -94,13 +99,11 @@ class CategoryController extends Controller
     {
         $lang=$this->lang;
         $category_name=$this->category_name;
-        $category = Category::find($id);
-        $branche =Branch::where('id',$category->branch_id)->first();
+        $categoryData = Category::find($id);
         $branch_list=Branch::all();
+        $getCategory= Category::with('subCategories')->where(['parent_id'=>0,'branch_id'=>$categoryData->branch_id])->get();
         $branch_name=Branch::getBranchNameLang();
-
-//        return $branch;
-        return view('admin.includes.categories.update')->with(compact(['category','branche','branch_list','lang','category_name','branch_name']));
+        return view('admin.includes.categories.update')->with(compact(['categoryData','getCategory','branch_list','lang','category_name','branch_name']));
     }
 
     /**
@@ -112,7 +115,6 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $category_name=$this->category_name;
         $validated = $request->validate([
            'branch_id' => 'required',
@@ -136,11 +138,68 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-
         $category=Category::find($id);
         $category->delete();
         $session =Session::flash('message',__('messages.category_deleted'));
         return redirect('categories')->with(compact('session'));
+
+    }
+//    public function getSelectedBranch(Request $request){
+//        $category_name=$this->category_name;
+//            if($request->ajax()){
+//                $data=$request->all();
+//                if($data['tableName']=="categories"){
+//                if(is_numeric( $data['tableid']) )  {
+//                  $categoryData =  Category::find($data['tableid']);
+//
+//                } else{
+//                    $categoryData =  "";
+//                }
+//             $getCategories = Category::with('subCategories')->where(['branch_id' => $data['branch_id'],'parent_id'=>0])->get();
+//
+//                    return view('admin.includes.categories.append_parent_level')->with(compact(['categoryData','getCategories','category_name']));
+//
+//
+//                } else{
+//
+//                    if(is_numeric( $data['tableid']) )  {
+//
+//                        $categoryData =  Category::find($data['input_category_id']);
+//
+//                    } else{
+//                        $categoryData =  "";
+//                    }
+//
+//                    $getCategories = Category::with('subCategories')->where(['branch_id' => $data['branch_id'],'parent_id'=>0])->get();
+//
+//                    return view('admin.includes.purchases.append_category_level')->with(compact(['categoryData','getCategories','category_name']));
+//
+//
+//                }
+//
+//
+//            }
+//    }
+    public function getSelectedBranch(Request $request)
+    {
+        $category_name = $this->category_name;
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            if (is_numeric($data['tableid'])) {
+
+                $categoryData = Category::find($data['tableid']);
+            }
+            else
+            {
+                $categoryData = "";
+            }
+
+            $getCategories = Category::with('subCategories')->where(['branch_id' => $data['branch_id'], 'parent_id' => 0])->get();
+            return view('admin.includes.categories.append_parent_level')->with(compact(['categoryData', 'getCategories', 'category_name']));
+
+
+        }
 
     }
 

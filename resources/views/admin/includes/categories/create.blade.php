@@ -22,32 +22,22 @@
                         <div class="form-actions top clearfix">
                             {{__('messages.add_category')}}
                         </div>
-                        <div class="row justify-content-md-center form-group">
-                            <div class="col-md-6">
-                                <label for="eventRegInput2">{{__('messages.branch_name')}}</label>
 
-                                <select name="branch_id" class="select2 form-control"  >
-                                    <optgroup label="{{__('messages.category_name')}}">
-                                        @foreach($branches as $branch)
-                                            <option   value="{{$branch->id}} " > {{$branch->$branch_name}} </option>
-                                        @endforeach
-                                    </optgroup>
-                                </select>
-                            </div>
+                        @include('admin.includes.branches.select_branch')
+                        <div id="appendCategoryLevel">
+                            @include("admin.includes.categories.append_parent_level")
                         </div>
+
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
-
-
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
                                             <label for="eventRegInput2">{{__('messages.category_name')}}</label>
                                             <input type="text" id="eventRegInput2" class="form-control" placeholder="{{__('messages.category_name')}}" name="{{$category_name}}">
                                         </div>
                                     </div>
-
                                 </div>
-                            </div>
+                        </div>
 
                         <div class="form-actions clearfix">
                             <div class="buttons-group float-right mb-1">

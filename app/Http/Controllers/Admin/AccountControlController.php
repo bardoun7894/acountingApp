@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use function PHPUnit\Framework\isEmpty;
 
 class AccountControlController extends Controller
 {
@@ -53,7 +54,6 @@ class AccountControlController extends Controller
         $lang=Translation::getLang();
         $account_control_name=$this->account_control_name;
         $account_head_name=AccountHead::getAccounHeadNameLang();
-
         $accountHeads=AccountHead::with('accountControls')->get();
 //        return $accountHead->get();
         return view('admin.includes.accountControls.create')->with(compact(['accountHeads','lang','account_control_name','account_head_name']));
@@ -68,6 +68,8 @@ class AccountControlController extends Controller
     public function store(Request $request)
     {
 
+
+
         $account_control_name=$this->account_control_name;
         $validated = $request->validate([
             'account_head_id' => 'required',
@@ -75,8 +77,19 @@ class AccountControlController extends Controller
         ]);
         $accountControl =new AccountControl();
         $accountControl->user_id = Auth::user()->getAuthIdentifier();
-        $accountControl->$account_control_name =$request->$account_control_name;
-        $accountControl->account_head_id =$request->account_head_id;
+        $accountControl->$account_control_name =$request->$account_control_name ;
+        $accountControl->account_head_id =$request->account_head_id ;
+        $lastAccountControl =AccountControl::where('account_head_id','=',$accountControl->account_head_id)->latest()->first();
+        $accountHead=AccountHead::where('id',$request->account_head_id)->first();
+
+        if(  $lastAccountControl==null ){
+          $accountControl->account_code = $accountHead->account_code . 1;
+        }else {
+          $accountControl->account_code = $lastAccountControl->account_code +1;
+        }
+
+
+
         $accountControl->save();
         $session =Session::flash('message','AccountControl added Successfully');
         return redirect('accountControls')->with(compact(['session', 'account_control_name']));

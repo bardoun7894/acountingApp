@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountControl;
+use App\Models\AccountHead;
+use App\Models\AccountSubControl;
 use App\Models\Supplier;
 use App\Models\Translation;
+use App\Rules\ValidSubAccountExist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class SupplierController extends Controller
@@ -49,7 +54,12 @@ class SupplierController extends Controller
         $supplier_name=$this->supplier_name;
         $address=$this->address;
         $description=$this->description;
-        return view('admin.includes.suppliers.create')->with(compact(['lang','supplier_name','address','description',]));
+
+        $accountSubControl=AccountSubControl::where('account_sub_control_name_en','=','Suppliers')->latest()->first();
+
+
+            return view('admin.includes.suppliers.create')->with(compact(['lang','supplier_name','address','description',]));
+
     }
 
     /**
@@ -69,7 +79,6 @@ class SupplierController extends Controller
             $description => 'required',
             'phone' => 'required',
             'email' => 'required|email|unique:suppliers,email',
-
         ]);
         $supplier =new Supplier();
         $supplier->$supplier_name = $request->$supplier_name;
@@ -77,7 +86,31 @@ class SupplierController extends Controller
         $supplier->$description = $request->$description;
         $supplier->phone = $request->phone;
         $supplier->email = $request->email;
+
+
+        $account_sub_control_name=AccountSubControl::getAccountSubControlNameLang();
+        $lastAccountSubControl = AccountSubControl::where('account_sub_control_name_en','=','Suppliers')->latest()->first();
+           //create a sub control that have relation ship with supplier
+        if(!isset($lastAccountSubControl->account_sub_control_name_en)){
+            $accountSubControl = new AccountSubControl();
+            $accountSubControl->user_id = Auth::user()->getAuthIdentifier();
+            $accountSubControl->$account_sub_control_name = Translation::getLang()=="en"?"Suppliers":'الموردون';
+            $accountControl=AccountControl::with('accountHead')->where('account_control_name_en','Creditors')->first();
+            $accountSubControl->account_head_id = $accountControl->account_head_id ;
+            $accountSubControl->account_control_id = $accountControl->id ;
+            $accountSubControl->account_code = $accountControl->account_code . 1 ;
+            $accountSubControl->save();
+        }
+
+          $lastSup=Supplier::latest()->first();
+        if(isset($lastSup)){
+            $supplier->account_code = $lastSup->account_code +1 ;
+        }else{
+            $supplier->account_code =  $accountSubControl->account_code . "0001";
+        }
         $supplier->save();
+
+
         $session =Session::flash('message','Supplier added Successfully');
         return redirect('suppliers')->with(compact('session'));
 

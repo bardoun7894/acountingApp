@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountControl;
+use App\Models\AccountSubControl;
 use App\Models\Customer;
+use App\Models\Supplier;
 use App\Models\Translation;
+use App\Rules\ValidSubAccountExist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
+use mysql_xdevapi\Table;
+use function PHPUnit\Framework\isEmpty;
 
 class CustomerController extends Controller
 {
@@ -42,10 +50,10 @@ class CustomerController extends Controller
         $customer_name=$this->customer_name;
         $address=$this->address;
         $description=$this->description;
+        $accountSubControl=AccountSubControl::where('account_sub_control_name_en','=','Customers')->latest()->first();
+   return view('admin.includes.customers.create')->with(compact(['lang','customer_name','address','description']));
 
-        return view('admin.includes.customers.create')->with(compact(['lang','customer_name','address','description',]));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -63,7 +71,6 @@ class CustomerController extends Controller
             $description => 'required',
             'contact_number' => 'required',
             'area' => 'required',
-
         ]);
         $customer =new Customer();
         $customer->$customer_name = $request->$customer_name;
@@ -71,6 +78,30 @@ class CustomerController extends Controller
         $customer->$description = $request->$description;
         $customer->contact_number = $request->contact_number;
         $customer->area = $request->area;
+
+        //make relation ship with accountcode
+
+        $account_sub_control_name=AccountSubControl::getAccountSubControlNameLang();
+        $lastAccountSubControl = AccountSubControl::where('account_sub_control_name_en','=','Customers')->latest()->first();
+        //create a sub control that have relation ship with supplier
+        if(!isset($lastAccountSubControl->account_sub_control_name_en)){
+            $accountSubControl = new AccountSubControl();
+            $accountSubControl->user_id = Auth::user()->getAuthIdentifier();
+            $accountSubControl->$account_sub_control_name = Translation::getLang()=="en"?"Customers":'الزبناء';
+            $accountControl=AccountControl::with('accountHead')->where('account_control_name_en','Debitors')->first();
+            $accountSubControl->account_head_id = $accountControl->account_head_id ;
+            $accountSubControl->account_control_id = $accountControl->id ;
+            $accountSubControl->account_code = $accountControl->account_code . 1 ;
+            $accountSubControl->save();
+        }
+         $lastCus=Customer::latest()->first();
+
+        if(isset($lastCus)){
+            $customer->account_code = $lastCus->account_code +1 ;
+        }else{
+            $customer->account_code =  $accountSubControl->account_code . "0001";
+        }
+
         $customer->save();
         $session =Session::flash('message','Customer added Successfully');
         return redirect('customers')->with(compact('session'));

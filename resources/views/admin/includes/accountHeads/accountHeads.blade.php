@@ -46,7 +46,6 @@
                         <thead>
                         <tr>
                             <th class="border-top-0">#</th>
-
                             <th class="border-top-0">AccountHead Name</th>
                             <th class="border-top-0">user type</th>
                             <th class="border-top-0">Edit</th>
@@ -59,17 +58,16 @@
                            <tbody>
 
                             <td class="text-truncate"> {{$accountHead->id}}</td>
-{{--                            <td class="text-truncate">  @if($accountHead->user_type_id==1 ) admin @else AccountHead  @endif       </td>--}}
+{{--                        <td class="text-truncate">  @if($accountHead->user_type_id==1 ) admin @else AccountHead  @endif       </td>--}}
                             <td class="text-truncate"> {{$accountHead->$account_head_name}}</td>
-
-                          <td class="text-truncate"> {{$user->user_type->$user_type }} </td>
-
+                            <td class="text-truncate"> {{$user->user_type->$user_type }} </td>
                             <td class="text-truncate">   <a href="{{url('accountHeads/'.$accountHead->id.'/edit')}}"><i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>
-                          <form action="{{url('accountHeads/'.$accountHead->id)}}" method="post">
-                              @csrf
-                              @method('delete')
-                              <td class="text-truncate"> <button type="submit" style="background: transparent;border: none;"><i class="la la-trash" style="color: red;font-size: 25px"></i></button> </td>
-                           </form>
+                              <form action="{{url('accountHeads/'.$accountHead->id)}}" method="post">
+                                  @csrf
+                                  @method('delete')
+                                  <td class="text-truncate"> <button type="submit" style="background: transparent;border: none;"><i class="la la-trash" style="color: red;font-size: 25px"></i></button> </td>
+                               </form>
+
                            </tbody>
                         @endforeach
                         @endforeach

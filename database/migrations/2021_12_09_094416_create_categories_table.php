@@ -16,6 +16,7 @@ class CreateCategoriesTable extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->integer('branch_id')->unsigned();
+            $table->integer('parent_id')->unsigned()->nullable();
             $table->string('category_name_en')->nullable();
             //arabic category name
             $table->string('category_name_ar')->nullable();

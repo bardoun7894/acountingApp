@@ -69,6 +69,11 @@ private $user_type;
         $accountHead =new AccountHead();
         $accountHead->user_id = Auth::user()->getAuthIdentifier();
         $accountHead->$account_head_name =$request->$account_head_name;
+
+        $last =AccountHead::latest()->first();
+
+        $accountHead->id =  $last->id +1;
+
         $accountHead->save();
 
         $session =Session::flash('message',__('messages.accountHead'));

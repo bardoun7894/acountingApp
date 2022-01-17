@@ -15,9 +15,9 @@ return [
     'home'=>"Home",
     ####################### User ################################
 
-    'add_user' => 'add User',
     'add_supplier' => 'add Supplier',
     'users' => 'Users',
+    'user' => 'User',
     'user_type' => 'User Type',
     ####################### Category ################################
 
@@ -37,19 +37,26 @@ return [
 
 
     'accountHeads'=>'Account Heads',
-    'accountControls'=>'Account Controls',
-    'accountSubControls'=> 'Account Sub Controls',
-
-    'update_account_head'=>'Update Account Head ',
     'account_head_name'=>'Account Head Name',
-    'account_control_name'=>'Account Control Name',
-    'account_sub_control_name'=>'Account Sub Control Name',
-
-    'update_account_control'=>'Update Account Control',
-
+    'update_account_head'=>'Update Account Head ',
     'add_account_head'=>' Add Account Head',
+
+    'accountControls'=>'Account Controls',
+    'account_control_name'=>'Account Control Name',
+    'account_control_number'=>'Account Control Number',
+    'account_sub_control_number'=>'Account Sub Control Number',
+    'update_account_control'=>'Update Account Control',
     'add_account_control'=>' Add Account Control',
+
+    'accountSubControls'=> 'Account Sub Controls',
+    'account_sub_control_name'=>'Account Sub Control Name',
     'add_sub_account_control'=>' Add Account Sub Control',
+
+     'unit'=>'Unit',
+     'unit_name'=>'Unit Name',
+     'units'=>'Units',
+     'add_unit'=>'Add Unit',
+
 
 
     ####################### Session messages ################################
@@ -80,6 +87,10 @@ return [
     'branches' => 'Branches',
     'add_branch' => 'Add branch',
     'update_branch' => 'Update Branch',
+    ####################### products ################################
+
+    'product_name'=>'Product Name',
+    'quantity'=>'Quantity',
 
     'sales' => 'sales',
     'purchases' => 'Purchases',

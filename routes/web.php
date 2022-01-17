@@ -51,7 +51,12 @@ Route::group(
 
     Route::get('/redirect',[HomeController::class,'redirect'])->name('redirect');
     Route::get('/getSupplierInvoice',[Admin\SupplierController::class,'getSupplierInvoice'])->name('getSupplierInvoice');
+    Route::get('/getUserInvoice',[Admin\UserController::class,'getUserInvoice'])->name('getUserInvoice');
     Route::get('/getCustomerInvoice',[Admin\CustomerController::class,'getCustomerInvoice'])->name('getCustomerInvoice');
+//    Route::get('/test',function (){
+//        $data= \App\Models\Customer::with("accountSubControl")->get();
+//        return $data;
+//    } );
 
 ####################################  Search Methodes ####################################
     Route::post('/searchAccountSubControl',[Admin\AccountSubControlController::class,'searchAccountSubControlFunction'])->name('searchAccountSubControl');
@@ -61,6 +66,7 @@ Route::group(
     Route::post('/searchSupplier',[Admin\SupplierController::class,'searchSupplierFunction'])->name('searchSupplier');
     Route::post('/searchCustomer',[Admin\CustomerController::class,'searchCustomerFunction'])->name('searchCustomer');
     Route::post('/searchUser',[Admin\UserController::class,'searchUserFunction'])->name('searchUser');
+    Route::post('/searchPurchase',[\App\Http\Controllers\PurchaseInvoiceController::class,'searchPurchaseFunction'])->name('searchPurchase');
 
 ####################################  delete Methoders ####################################
 
@@ -69,9 +75,16 @@ Route::group(
     Route::get('/delete-FinanceYear/{id}',[Admin\FinanceYearController::class,'deleteFinanceYear'])->name('delete-FinanceYear');
     Route::get('/delete-Supplier/{id}',[Admin\SupplierController::class,'deleteSupplier'])->name('delete-Supplier');
     Route::get('/delete-Customer/{id}',[Admin\CustomerController::class,'deleteCustomer'])->name('delete-Customer');
+    Route::get('/delete-Purchase/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'deletePurchase'])->name('delete-Purchase');
 ####################################  select option  Methodes ####################################
 
     Route::post('/get_selected_account_control',[Admin\AccountSubControlController::class,'getSelectedAccountControl'])->name('getSelectedAccountControl');
+    Route::post('/get_selected_branch',[Admin\CategoryController::class,'getSelectedBranch'])->name('getSelectedBranch');
+    Route::post('/get_selected_purchase_branch',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSelectedPurchaseBranch'])->name('getSelectedPurchaseBranch');
+    Route::post('/get_selected_purchase_product',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSelectedPurchaseCategory'])->name('getSelectedPurchaseCategory');
+    Route::post('/getProductItembyId',[\App\Http\Controllers\PurchaseInvoiceController::class,'getProductItembyId'])->name('getSelectedProduct');
+    Route::post('/getSupplierItembyId',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSupplierItembyId'])->name('getSelectedSupplier');
+    Route::post('/getSumTotalItem',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSumTotalItem'])->name('getSumTotalItem');
 ####################################  resources  ####################################
 
     Route::resources([
@@ -81,7 +94,9 @@ Route::group(
         'categories'=>Admin\CategoryController::class,
         'financeYears'=>Admin\FinanceYearController::class,
         'branches'=>Admin\BranchController::class,
+        'units'=>\App\Http\Controllers\UnitController::class,
         'stocks'=>Admin\StockController::class,
+        'purchases'=>\App\Http\Controllers\PurchaseInvoiceController::class,
         'accountHeads'=>Admin\AccountHeadController::class,
         'accountControls'=>Admin\AccountControlController::class,
         'accountSubControls'=>Admin\AccountSubControlController::class,

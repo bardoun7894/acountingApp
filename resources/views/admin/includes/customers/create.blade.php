@@ -54,6 +54,8 @@
                                         {{__('messages.add_customer')}}
                                     </div>
 
+{{--                                     <input name="accountSubControlCustomers" hidden value="{{$accountSubControl!=null?$accountSubControl->id:null}}">--}}
+
                                     <div class="row justify-content-md-center">
                                         <div class="col-md-6">
                                             <div class="form-body">

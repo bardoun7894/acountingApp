@@ -23,7 +23,7 @@ $current_user =\Illuminate\Support\Facades\Auth::user();
 
             <li class=" nav-item" ><a href="#"><i class="la la-th-large" ></i><span class="menu-title" data-i18n="Stock">{{__('messages.purchases')}}</span></a>
                 <ul class="menu-content">
-                    <li><a class="menu-item" href="{{url('accountHeads')}}"><i></i><span data-i18n="accountHeads">{{__('messages.accountHeads')}}</span></a>
+                    <li><a class="menu-item" href="{{url('purchases')}}"><i></i> <span data-i18n="purchases">{{__('messages.purchases')}}</span></a>
 
                 </ul>
             </li>
@@ -57,10 +57,12 @@ $current_user =\Illuminate\Support\Facades\Auth::user();
                             <li><a class="menu-item" href="{{url('accountSubControls')}}"><i></i><span data-i18n="accountSubControls">{{__('messages.accountSubControls')}}</span></a>
                             </li>
                             <li><a class="menu-item" href="{{url('accountControls')}}" ><i></i><span data-i18n="accountControls">{{__('messages.accountControls')}}</span></a>
-                            <li><a class="menu-item"href="{{url('financeYears')}}" ><i></i><span data-i18n="accountControls">{{__('messages.financeYears')}}</span></a>
+                            <li><a class="menu-item"href="{{url('financeYears')}}" ><i></i><span data-i18n="financeYears">{{__('messages.financeYears')}}</span></a>
                             </li>
-                        </ul>
 
+                        </ul>
+                    <li><a class="menu-item"href="{{url('units')}}" ><i></i><span data-i18n="units">{{__('messages.units')}}</span></a>
+                    </li>
                     <li><a class="menu-item" href="invoice-template.html"><i></i><span data-i18n="Invoice Template">Invoice Template</span></a>
                     </li>
                     <li><a class="menu-item" href="invoice-list.html"><i></i><span data-i18n="Invoice List">Invoice List</span></a>

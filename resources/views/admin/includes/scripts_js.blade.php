@@ -14,7 +14,7 @@
 <!-- BEGIN: Theme JS-->
 <script src="{{ url('admin/app-assets/js/core/app-menu.js')}}"></script>
 <script src="{{ url('admin/app-assets/js/core/app.js')}}"></script>
-<script src="{{ url('js/my_admin_js.js')}}"></script>
+<script type="module" src="{{ url('js/my_admin_js.js')}}"></script>
 <script src="{{mix('js/app.js')}}"></script>
 <!-- END: Theme JS-->
 <!-- BEGIN: Page JS-->

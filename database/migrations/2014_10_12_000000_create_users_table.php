@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('contact_number')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('image')->nullable();
+            $table->unsignedInteger('branch_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

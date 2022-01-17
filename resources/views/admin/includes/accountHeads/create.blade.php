@@ -25,17 +25,12 @@
 
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
-
-
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
                                             <label for="eventRegInput2">AccountHead Name</label>
                                             <input type="text" id="eventRegInput2" class="form-control" placeholder="AccountHead name" name="{{$account_head_name}}">
                                         </div>
                                     </div>
-
-
-
                                 </div>
                             </div>
 

@@ -25,7 +25,7 @@
                         </div>
                         <div class="row justify-content-md-center form-group">
                             <div class="col-md-6">
-                                <label for="eventRegInput2">AccountHead Name</label>
+                                <label for="eventRegInput2">{{__("messages.account_head_name")}}</label>
 
                                 <select name="account_head_id" class="select2 form-control"  >
                                     <optgroup label="AccountControl name">
@@ -38,22 +38,19 @@
                         </div>
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
-
-
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
-                                            <label for="eventRegInput2">AccountControl Name</label>
-                                            <input type="text" id="eventRegInput2" class="form-control" placeholder="AccountControl name" name="{{$account_control_name}}">
+                                            <label for="eventRegInput2">{{__("messages.account_control_name")}}</label>
+                                            <input type="text" id="eventRegInput2" class="form-control" placeholder="{{__("messages.account_control_name")}}" name="{{$account_control_name}}">
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
-
                         <div class="form-actions clearfix">
                             <div class="buttons-group float-right mb-1">
                                 <button type="submit"  class="btn btn-primary mr-1">
-                                    <i class="la la-check-square-o"></i> Save
+                                    <i class="la la-check-square-o"></i> {{__("messages.save")}}
                                 </button>
                             </div>
                         </div>

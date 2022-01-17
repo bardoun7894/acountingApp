@@ -125,12 +125,7 @@ class FinanceYearController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {  $financeYear=FinanceYear::find($id);
-        $financeYear->delete();
-        $session =Session::flash('message','FinanceYear Deleted Successfully');
-        return redirect('financeYears')->with(compact('session'));
-    }
+//
 
     public function searchFinanceYearFunction(Request $request){
 

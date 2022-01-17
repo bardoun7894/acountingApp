@@ -9,6 +9,9 @@ class Customer extends Model
 {
     use HasFactory;
 
+    protected $fillable=[
+        'account_code'
+    ];
    static public function getCustomerNameLang(){
         return "customer_name_".Translation::getLang();
     }
@@ -17,6 +20,9 @@ class Customer extends Model
     }
     static   public function getAddressLang(){
         return "address_".Translation::getLang();
+    }
+    public function accountSubControl(){
+       return $this->belongsTo(AccountSubControl::class);
     }
 
 
