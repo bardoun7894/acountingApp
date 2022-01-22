@@ -204,12 +204,4 @@ class AccountSubControlController extends Controller
         return redirect('accountSubControls')->with(compact('session'));
     }
 
-    public function searchAccountSubControlFunction(Request $request){
-
-        $account_sub_control_name = $this->account_sub_control_name ;
-        $search_text =$request->get('searchQuery');
-        $accountSubControls=AccountSubControl::with(['accountControl','accountHead','user'])->where($account_sub_control_name,'like','%'.$search_text.'%')->get();
-         return $accountSubControls;
-
-    }
 }

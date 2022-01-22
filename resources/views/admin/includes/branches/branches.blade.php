@@ -9,7 +9,7 @@
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
-                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('branches/create')}}" target="_blank">{{__('messages.add_branch')}}</a></li>
+                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('branches/create')}}" target="_self">{{__('messages.add_branch')}}</a></li>
                     </ul>
                 </div>
             </div>
@@ -39,10 +39,10 @@
 
             @endif
             <div class="card-content">
-                <div class="table-responsive">
-                    <table id="dataex-select-initialisation" class=" table table-hover table-l mb-0">
+                <div   class="card-content d-flex p-2">
+                    <table id="datatableBootstrap"   class="table table-striped table-bordered table-sm " >
 
-                        <thead>
+                    <thead>
                         <tr>
                             <th class="border-top-0">#</th>
 

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Store extends Model
 {
     use HasFactory;
+    static public function getStoreNameLang(){
+        return 'store_name_'.Translation::getLang();
+    }
 }

@@ -14,37 +14,35 @@
                 </div>
             @endif
 
-            <div class="card-content collpase show">
+            <div class="card-content collapse show">
                 <div class="card-body">
 
-                    <form class="form" method="POST" action="{{url('/'.$lang.'/categories')}}">
+                    <form class="form" method="POST" action="{{url('/'.$lang.'/branches')}}">
                         @csrf
                         <div class="form-actions top clearfix">
-                            {{__('messages.add_category')}}
-                        </div>
-
-                        @include('admin.includes.branches.select_branch')
-                        <div id="appendCategoryLevel">
-
-                                @include("admin.includes.categories.append_parent_level")
-
+                            {{__('messages.add_branch')}}
                         </div>
 
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
+
+
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
-                                            <label for="eventRegInput2">{{__('messages.category_name')}}</label>
-                                            <input type="text" id="eventRegInput2" class="form-control" placeholder="{{__('messages.category_name')}}" name="{{$category_name}}">
+                                            <label for="eventRegInput2">{{__('messages.branch_name')}}</label>
+                                            <input type="text" id="eventRegInput2" class="form-control" placeholder="{{__('messages.branch_name')}}" name="{{$branch_name}}">
                                         </div>
                                     </div>
+
+
+
                                 </div>
-                        </div>
+                            </div>
 
                         <div class="form-actions clearfix">
                             <div class="buttons-group float-right mb-1">
                                 <button type="submit"  class="btn btn-primary mr-1">
-                                    <i class="la la-check-square-o"></i> {{__('messages.save')}}
+                                    <i class="la la-check-square-o"></i>{{__('messages.save')}}
                                 </button>
                             </div>
                         </div>

@@ -191,13 +191,7 @@ class SupplierController extends Controller
         $session =Session::flash('message','Supplier Deleted Successfully');
         return redirect('suppliers')->with(compact('session'));
     }
-    public function searchSupplierFunction(Request $request){
-        $supplier_name=$this->supplier_name;
 
-        $search_text =$request->get('searchQuery');
-        $suppliers= Supplier::where($supplier_name,'like','%'.$search_text.'%')->get();
-        return  $suppliers;
-    }
 
     public function getSupplierInvoice(){
         $supplier_name=$this->supplier_name;

@@ -580,24 +580,27 @@
 
   // change language according to data-language of dropdown item
   $(".dropdown-language .dropdown-item").on("click", function () {
+
     var $this = $(this);
     $this.siblings(".selected").removeClass("selected")
     $this.addClass("selected");
     var selectedLang = $this.text()
       //get the language path
       var urlPath = window.location.href; // raw javascript
-      const lang = urlPath.split("/")[3];
-      //get tableName
-      const tableName = urlPath.split("/")[4];
+      var lan ="";
 
     var selectedFlag = $this.find(".flag-icon").attr("class");
 
     $("#dropdown-flag .flag-icon").removeClass().addClass(selectedFlag);
     var currentLanguage = $this.data("language");
+
       if(currentLanguage==="en"){
-          window.location.href="/en"+"/"+tableName
+           lan = urlPath.replace('ar','en');
+          window.location.href = lan;
       }else{
-          window.location.href="/ar"+"/"+tableName
+          lan = urlPath.replace('en','ar');
+          window.location.href = lan;
+
       }
     i18next.changeLanguage(currentLanguage, function (err, t) {
       $(".main-menu , .navbar-horizontal").localize();

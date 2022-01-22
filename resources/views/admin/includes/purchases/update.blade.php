@@ -120,17 +120,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row justify-content-md-center">
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="form-group col-12 mb-2">
-                                                    <label for="eventRegInput2">{{__("messages.stock_trash_hold_qty")}}</label>
 
-                                                    <input type="number" id="eventRegInput2" class="form-control" value="{{$purchase->stock_trash_hold_qty}}" placeholder="Stock Trash Hold Qty" name="stock_trash_hold_qty">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="row justify-content-md-center">
                                         <div class="col-md-6">
                                             <div class="row">

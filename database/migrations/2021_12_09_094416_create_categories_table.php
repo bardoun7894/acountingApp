@@ -17,8 +17,8 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->integer('branch_id')->unsigned();
             $table->integer('parent_id')->unsigned()->nullable();
+            $table->integer('store_id')->unsigned()->nullable();
             $table->string('category_name_en')->nullable();
-            //arabic category name
             $table->string('category_name_ar')->nullable();
             $table->timestamps();
         });

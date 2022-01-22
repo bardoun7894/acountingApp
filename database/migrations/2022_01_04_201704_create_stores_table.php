@@ -14,9 +14,10 @@ class CreateStoresTable extends Migration
     public function up()
     {
         Schema::create('stores', function (Blueprint $table) {
-//            $table->id();
+           $table->id();
             $table->string('store_name_en')->nullable();
             $table->string('store_name_ar')->nullable();
+            $table->unsignedInteger('branch_id')->nullable();
             $table->string('sale_cash_acc_no')->nullable();
             $table->string('sale_debit_acc_no')->nullable();
             $table->string('buy_cash_acc_no')->nullable();
@@ -29,23 +30,6 @@ class CreateStoresTable extends Migration
             $table->string('disc_cr_acc_no')->nullable();
             $table->string('disc_de_acc_no')->nullable();
             $table->tinyInteger('status')->default(0);
-//            create stores table
-//id
-//name
-//name_ar
-//sale_cash_acc_no   --foreign key from accounts table  حساب المبيعات النقدية
-//sale_debit_acc_no  --foreign key from accounts table حساب المبيعات الاجلة
-//buy_cash_acc_no    --foreign key from accounts table حساب المشتريات النقدية
-//buy_debit_acc_no   --foreign key from accounts table حساب  المشتريات الاجلة
-//Rsale_acc_no       --foreign key from accounts table حساب مرتجع المبيعات
-//Rbuy_acc_no        --foreign key from accounts tableحساب مرتجع المشتريات
-//store_start_acc_no  --foreign key from accounts table حساب مخزون بداية الفترة
-//INVENTORY_acc_no   --foreign key from accounts table حساب تسويات الجرد
-//CAPITAL_acc_no     --foreign key from accounts table حساب راس المال
-//disc_cr_acc_no     --foreign key from accounts table حساب الخصم المكتسب
-//disc_de_acc_no     --foreign key from accounts table حساب الخصم الممنوح
-//stat
-
             $table->timestamps();
         });
     }

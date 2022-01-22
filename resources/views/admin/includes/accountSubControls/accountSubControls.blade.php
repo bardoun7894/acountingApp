@@ -9,7 +9,7 @@
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
-                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('accountSubControls/create')}}" target="_blank">{{__('messages.add_account_control')}}</a></li>
+                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('accountSubControls/create')}}" target="_self">{{__('messages.add_account_control')}}</a></li>
                     </ul>
                 </div>
             </div>
@@ -36,18 +36,12 @@
                 @default
             @endswitch
             @endif
-            <div class="input-group d-inline-flex p-4" >
-                <input type="search" id="search-account-sub-control" class="form-control rounded" placeholder="Search" aria-label="Search" name="search_text"
-                aria-describedby="search-addon" />
-                <button type="submit" class="btn btn-outline-primary">{{__('messages.search')}}</button>
-            </div>
 
 
             <div class="card-content">
-                <div class="table-responsive" style="padding: 10px">
-
-                    <table  class=" table table-hover table-l mb-0">
-                        <thead>
+                <div   class="card-content d-flex p-2">
+                    <table id="datatableBootstrap"   class="table table-striped table-bordered table-sm " >
+                    <thead>
                         <tr>
                             <th class="border-top-0">#</th>
                             <th class="border-top-0">{{__('messages.account_head_name')}}</th>
@@ -83,7 +77,6 @@
 
                     </table>
                 </div>
-
 
             </div>
         </div>

@@ -55,7 +55,9 @@
                         <div class="row">
 
                             <div class="col-md-6">
-                                @include('admin.includes.branches.select_branch')
+
+
+                                   @include('admin.includes.branches.select_branch')
 
                                 <div id="appendPurchaseCategoryLevel">
                                     @include("admin.includes.purchases.append_purchase_category_level")
@@ -109,17 +111,6 @@
                                                 <label for="eventRegInput2">{{__("messages.sale_unit_price")}}</label>
 
                                                 <input type="number" id="saleUnitPrice" class="form-control" placeholder="Sale Unit Price" name="sale_unit_price">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-md-center">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="form-group col-12 mb-2">
-                                                <label for="eventRegInput2">{{__("messages.stock_trash_hold_qty")}}</label>
-
-                                                <input type="number" id="eventRegInput2" class="form-control" placeholder="Stock Trash Hold Qty" name="stock_trash_hold_qty">
                                             </div>
                                         </div>
                                     </div>

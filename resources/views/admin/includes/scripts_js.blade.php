@@ -10,7 +10,8 @@
 <script src="{{ url('admin/app-assets/vendors/js/charts/morris.min.js')}}"></script>
 <script src="{{ url('admin/app-assets/vendors/js/timeline/horizontal-timeline.js')}}"></script>
 <!-- END: Page Vendor JS-->
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <!-- BEGIN: Theme JS-->
 <script src="{{ url('admin/app-assets/js/core/app-menu.js')}}"></script>
 <script src="{{ url('admin/app-assets/js/core/app.js')}}"></script>
@@ -20,3 +21,4 @@
 <!-- BEGIN: Page JS-->
 <script src="{{ url('admin/app-assets/js/scripts/pages/dashboard-ecommerce.js')}}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

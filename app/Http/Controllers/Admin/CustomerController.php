@@ -82,24 +82,14 @@ class CustomerController extends Controller
         //make relation ship with accountcode
 
         $account_sub_control_name=AccountSubControl::getAccountSubControlNameLang();
-        $lastAccountSubControl = AccountSubControl::where('account_sub_control_name_en','=','Customers')->latest()->first();
+        $lastAccountSubControl = AccountSubControl::where('account_code','=','211')->latest()->first();
         //create a sub control that have relation ship with supplier
-        if(!isset($lastAccountSubControl->account_sub_control_name_en)){
-            $accountSubControl = new AccountSubControl();
-            $accountSubControl->user_id = Auth::user()->getAuthIdentifier();
-            $accountSubControl->$account_sub_control_name = Translation::getLang()=="en"?"Customers":'الزبناء';
-            $accountControl=AccountControl::with('accountHead')->where('account_control_name_en','Debitors')->first();
-            $accountSubControl->account_head_id = $accountControl->account_head_id ;
-            $accountSubControl->account_control_id = $accountControl->id ;
-            $accountSubControl->account_code = $accountControl->account_code . 1 ;
-            $accountSubControl->save();
-        }
-         $lastCus=Customer::latest()->first();
 
+         $lastCus=Customer::latest()->first();
         if(isset($lastCus)){
             $customer->account_code = $lastCus->account_code +1 ;
         }else{
-            $customer->account_code =  $accountSubControl->account_code . "0001";
+                $customer->account_code =  $lastAccountSubControl->account_code . "0001";
         }
 
         $customer->save();
@@ -185,13 +175,7 @@ class CustomerController extends Controller
         $session =Session::flash('message','Customer Deleted Successfully');
         return redirect('customers')->with(compact('session'));
     }
-    public function searchCustomerFunction(Request $request){
-        $customer_name=$this->customer_name;
 
-        $search_text =$request->get('searchQuery');
-        $customers= Customer::where($customer_name,'like','%'.$search_text.'%')->get();
-        return  $customers;
-    }
 
     public function getCustomerInvoice(){
         $customer_name=$this->customer_name;

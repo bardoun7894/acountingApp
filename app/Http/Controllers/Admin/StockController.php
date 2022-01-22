@@ -23,10 +23,12 @@ class StockController extends Controller
     private $unit_name;
     private $description;
     private $category_name;
+    private $lang;
 
     function __construct()
     {
         $this->product_name=Stock::getProductNameLang();
+        $this->lang=Translation::getLang();
         $this->unit_name=Unit::getUnitNameLang();
         $this->description=Stock::getDescriptionLang();
         $this->category_name=Category::getCategoryNameLang(Translation::getLang());
@@ -53,10 +55,11 @@ class StockController extends Controller
     {   $category_name=$this->category_name;
         $product_name=$this->product_name;
         $unit_name=$this->unit_name;
+        $lang=$this->lang;
         $description=$this->description;
         $categories =Category::all();
         $units=Unit::where('status',1)->get();
-        return view('admin.includes.stocks.create')->with(compact(['categories','units','product_name','unit_name','category_name','description']));
+        return view('admin.includes.stocks.create')->with(compact(['categories','lang','units','product_name','unit_name','category_name','description']));
     }
 
     /**
@@ -79,7 +82,7 @@ class StockController extends Controller
             'current_purchase_unit_price'=>'required',
             'expiry_date'=>'required',
             'manufacture_date'=>'required',
-            'stock_trash_hold_qty'=>'required',
+
         ]);
         $stock =new Stock();
         $stock->category_id =$request->category_id;
@@ -91,7 +94,6 @@ class StockController extends Controller
         $stock->current_purchase_unit_price = $request->current_purchase_unit_price;
         $stock->expiry_date = $request->expiry_date;
         $stock->manufacture_date = $request->manufacture_date;
-        $stock->stock_trash_hold_qty = $request->stock_trash_hold_qty;
         $stock->user_id =Auth::user()->id;
 
         $stock->save();
@@ -119,13 +121,13 @@ class StockController extends Controller
      */
     public function edit($id)
     {
-
+            $lang=$this->lang;
         $stock = Stock::find($id);
         $category_name=$this->category_name;
         $product_name=$this->product_name;
         $description=$this->description;
         $categories =Category::all();
-        return view('admin.includes.stocks.update')->with(compact(['stock','categories','category_name','product_name','description']));
+        return view('admin.includes.stocks.update')->with(compact(['stock','lang','categories','category_name','product_name','description']));
     }
 
     /**
@@ -149,7 +151,6 @@ class StockController extends Controller
             'current_purchase_unit_price'=>'required',
             'expiry_date'=>'required',
             'manufacture_date'=>'required',
-            'stock_trash_hold_qty'=>'required',
         ]);
        $stock = Stock::find($id);
 
@@ -161,7 +162,6 @@ class StockController extends Controller
         $stock->current_purchase_unit_price = $request->current_purchase_unit_price;
         $stock->expiry_date = $request->expiry_date;
         $stock->manufacture_date = $request->manufacture_date;
-        $stock->stock_trash_hold_qty = $request->stock_trash_hold_qty;
         $stock->user_id =Auth::user()->id;
         $stock->update();
         $session =Session::flash('message','Stock Updated Successfully');
@@ -175,7 +175,8 @@ class StockController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+
+    public function deleteStock($id)
     {
         $stock=Stock::find($id);
         $stock->delete();

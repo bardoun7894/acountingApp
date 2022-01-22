@@ -1,7 +1,7 @@
-import SearchTable from "./searchTable.js";
+// import SearchTable from "./searchTable.js";
 import CategoryPage from "./categoryPage.js";
 import PurchasePage  from "./purchasePage.js";
-
+import UserPage  from "./userPage.js";
 
 
 //get the language path
@@ -9,7 +9,7 @@ import PurchasePage  from "./purchasePage.js";
     const lang = urlPath.split("/")[3];
     //get tableName
     const tableName = urlPath.split("/")[4];
-    const editUrl = urlPath.split("en")[1];
+    const editUrl = urlPath.split(lang)[1];
     const tableid = urlPath.split("/")[5];
    //get dynamic row for search in table
    let dynamicRowId ="#"+tableName+"-dynamicRow";
@@ -18,12 +18,18 @@ import PurchasePage  from "./purchasePage.js";
     new CategoryPage();
  //Purchase function
   new PurchasePage();
-
-   //search in table
-
-   new SearchTable();
+  //user page
+  new UserPage();
 
    $(document).ready(function(){
+       if(urlPath.split('/').length===5){
+           $('#datatableBootstrap').DataTable({
+                 responsive:true,
+               language: {
+                   "url":lang==="en"?"//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json":"//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json"
+               }
+           });
+       }
        if(editUrl.includes('Invoice')){
       //print Invoice
       document.getElementById('btnPrintInvoice').addEventListener('click',function (p) {
@@ -40,29 +46,22 @@ import PurchasePage  from "./purchasePage.js";
   $(dynamicRowId).on('click','.confirmDelete',function (p){
      var record =$(this).attr('record');
      var recordId =$(this).attr('recordId');
-      // Swal.fire({
-      //     title: 'هل تريد الاستمرار؟',
-      //     icon: 'question',
-      //     iconHtml: '؟',
-      //     confirmButtonText: 'نعم',
-      //     cancelButtonText: 'لا',
-      //     showCancelButton: true,
-      //     showCloseButton: true
-      // })
-           Swal.fire({
-             title: 'Are you sure?',
-             text: "You want to remove "+record+" ?",
+
+      Swal.fire({
+             title: lang==='ar'?'هل تريد الاستمرار؟':'Are you sure?',
+             text:lang==='ar'?" هل تريد حذف هذه البيانات": "You want to remove "+record+" ?",
              icon: 'warning',
              showCancelButton: true,
              confirmButtonColor: '#3085d6',
              cancelButtonColor: '#d33',
-             confirmButtonText: 'Yes, delete it!'
+             confirmButtonText: lang==='ar'?'نعم':'Yes, delete it!'   ,
+             cancelButtonText: lang==='ar'?'لا':'no',
          }).then((result) => {
              if (result.isConfirmed) {
-                 Swal.fire(
-                     'Deleted!',
-                     'Your file has been deleted.',
-                     'success'
+                 swal.fire(
+                     lang==='ar'?'تم الحذف':'Deleted!',
+                     lang==='ar'?'تم حذف البيانات':'Your data has been deleted.',
+                     lang==='ar'? 'نجاح':'success'
                  )
                  window.location.href="/"+lang+"/delete-"+record+"/"+recordId
              }

@@ -20,13 +20,14 @@ return [
     'user_type' => 'نوع المستخدم',
 
     'add_user' => 'أضف مستخدم جديد',
+    'create_user' => 'أضف مستخدم جديد',
     'edit_user'=>'تعديل المستخدم',
     'update_user'=>'تعديل المستخدم',
 
-    'categories' => 'التصنيفات',
-    'add_category' => 'أضف تصنيف جديد',
-    'update_category' => 'تعديل التصنيف ',
-    'category_name' => 'اسم التصنيف',
+    'categories' => 'الاصناف',
+    'add_category' => 'أضف صنف جديد',
+    'update_category' => 'تعديل الصنف ',
+    'category_name' => 'اسم الصنف',
     'branch_name' => 'اسم الفرع',
     'add_branch' => 'اضف فرع جديد',
     'update_branch' => 'تعديل الفرع',
@@ -59,29 +60,34 @@ return [
 
     ####################### Session messages ################################
     ############## added messages #########  ###
-    'category_added'=>'تمت اضافة التصنيفات بنجاح',
+    'category_added'=>'تمت اضافة الاصناف بنجاح',
     'branch_added'=>'تمت اضافة الفروع بنجاح',
     'user_added'=>'تمت اضافة المستخدم بنجاح',
     'product_added'=>'تمت اضافة المنتج بنجاح',
     'accountHead_added'=>'تمت اضافة رأس الحساب بنجاح',
     'accountControl_added'=>'تمت اضافة التحكم بالحساب بنجاح',
     ##############  updated messages #########  ###
-    'category_updated'=>'تم تعديل التصنيفات بنجاح',
+    'category_updated'=>'تم تعديل الصنف بنجاح',
     'branch_updated'=>'تم تعديل الفروع بنجاح',
     'user_updated'=>'تم تعديل المستخدم بنجاح',
     'product_updated'=>'تم تعديل المنتج بنجاح',
     'accountHead_updated'=>'تم تعديل  رأس الحساب بنجاح',
     'accountControl_updated'=>'تم تعديل  التحكم بالحساب بنجاح',
     ##############  deleted messages #########  ###
-    'category_deleted'=>'تم حذف التصنيفات',
+    'category_deleted'=>'تم حذف الصنف',
     'branch_deleted'=>'تم حذف الفروع',
     'user_deleted'=>'تم حذف المستخدم',
     'product_deleted'=>'تم حذف المنتج',
     'accountHead_deleted'=>'تم حذف رأس الحساب',
     'accountControl_deleted'=>'تم حذف التحكم بالحساب ',
+    ####################### Store ################################
+    'add_store' => 'أضف متجر',
+    'store_name' => 'اسم المتجر',
+    'stores' => 'المتاجر',
+    'store' => 'المتجر',
     ####################### Branches ################################
 
-    'admin' => 'الادمين',
+    'admin' => 'الادمن',
     'purchases' => 'المشتريات',
     'role' => 'دور',
     'fullName' => 'الاسم الكامل',
@@ -114,6 +120,20 @@ return [
 
     'quantity'=>'الكمية',
 
+    ####################### purchases ################################
+    'sub_total'=>'الاجمالي',
+    'tax'=>'الضريبة',
+    'discount'=>'الخصم',
+    'order_total'=>'المبلغ الكلي',
+    'purchase_invoice'=>'فاتورة مشتريات',
+    'add_purchase' => 'أضف شراء جديد',
+    'continue_to_checkout' => 'اتمام الدفع',
+    'purchase_price'=>'ثمن الشراء',
+    'sale_price'=>'ثمن البيع',
+    'expire_date'=>'تاريخ الانتهاء',
+    'manufacture_date'=>'تاريخ الصنع',
+
+
     ####################### options ################################
 
     "print_invoice"=>"طبع الفاتورة",
@@ -121,6 +141,7 @@ return [
     'description' => 'الوصف',
 
     'save' => 'حفظ',
+    'view' => 'مشاهدة',
     'search' => 'بحث',
     'edit' => 'تعديل',
     'update' => 'تعديل',

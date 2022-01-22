@@ -14,8 +14,9 @@
     <link rel="apple-touch-icon" href="{{ url('admin/app-assets/images/ico/apple-icon-120.png')}}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url('admin/app-assets/images/ico/favicon.ico')}}">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700" rel="stylesheet">
+    <link href=" https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <!-- BEGIN: Vendor CSS-->
 {{--    <link rel="stylesheet" type="text/css" href="{{url('admin/app-assets/vendors/css/tables/datatable/datatables.min.css)'}}">--}}
     <link rel="stylesheet" type="text/css" href="{{ url( 'admin/app-assets/vendors/css/vendors.min.css')}}">
@@ -44,6 +45,7 @@
 
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="{{url('admin/assets/css/style.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url('css/mainPage.css')}}">
     <!-- END: Custom CSS-->
 
 </head>

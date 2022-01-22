@@ -16,6 +16,7 @@ class CreateStocksTable extends Migration
         Schema::create('stocks', function (Blueprint $table) {
         $table->id();
         $table->integer('category_id')->unsigned();
+        $table->integer('store_id')->unsigned()->nullable();
         $table->integer('user_id')->unsigned();
         $table->integer('quantity');
         $table->string('image')->nullable();
@@ -32,7 +33,6 @@ class CreateStocksTable extends Migration
         $table->float('current_purchase_unit_price');
         $table->date('expiry_date');
         $table->date('manufacture_date');
-        $table->integer('stock_trash_hold_qty');
         $table->boolean('isdeleted')->default(false);
         $table->timestamps();
       });

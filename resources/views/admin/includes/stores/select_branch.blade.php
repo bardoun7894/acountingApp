@@ -1,5 +1,5 @@
-<div   @if(isset($userType) && $userType->user_type_en !== "admin") hidden @endif   class="row justify-content-md-center form-group">
-    <div class="col-md-6" id="branchDivSelect"  >
+<div class="row justify-content-md-center form-group">
+    <div class="col-md-6">
         <label  for="branchId">{{__('messages.branch_name')}}</label>
         <select id="branchId"  name="branch_id" class="select2 form-control"  >
             <optgroup label="{{__('messages.category_name')}}">

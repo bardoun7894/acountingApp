@@ -47,7 +47,7 @@
             <div class="card-content collpase show">
                 <div class="card-body">
 
-                    <form class="form" method="POST" action="{{url('stocks')}}">
+                    <form class="form" method="POST" action="{{url('/'.$lang.'/stocks')}}">
                         @csrf
                         <div class="form-actions top clearfix">
                              Add New Stock
@@ -114,15 +114,7 @@
                                 </div>
                             </div>
                           </div>
-                       <div class="row justify-content-md-center">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="form-group col-12 mb-2">
-                                        <input type="number" id="eventRegInput2" class="form-control" placeholder="Stock Trash Hold Qty" name="stock_trash_hold_qty">
-                                    </div>
-                                </div>
-                            </div>
-                          </div>
+
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
                                 <div class="row">

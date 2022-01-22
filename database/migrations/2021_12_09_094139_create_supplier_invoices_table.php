@@ -15,15 +15,19 @@ class CreateSupplierInvoicesTable extends Migration
     {
         Schema::create('supplier_invoices', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('invoice_no');
+            $table->string('invoice_no');
             $table->integer('supplier_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->date('invoice_date');
-            $table->date('due_date');
-            $table->string('title');
-            $table->string('description_en');
-            $table->string('description_ar');
-            $table->float('total_amount');
+            $table->dateTime('invoice_date');
+            $table->string('title_ar')->nullable();
+            $table->string('title_en')->nullable();
+            $table->string('description_ar')->nullable();
+            $table->string('description_en')->nullable();
+            $table->double('total_amount');
+            $table->unsignedInteger('branch_id')->nullable();
+            $table->double('sub_total_amount')->nullable();
+            $table->double('tax')->nullable();
+            $table->unsignedInteger('store_id')->nullable();
 
 
             $table->timestamps();

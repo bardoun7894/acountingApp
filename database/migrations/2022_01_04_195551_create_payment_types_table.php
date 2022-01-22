@@ -17,9 +17,6 @@ class CreatePaymentTypesTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('name_ar')->nullable();
-            $table->integer('currency_id')->nullable();
-            $table->integer('sub_account_control')->nullable();
-            $table->boolean('multi_currency')->default(false);
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });

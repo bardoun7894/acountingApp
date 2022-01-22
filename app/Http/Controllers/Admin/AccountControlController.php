@@ -177,14 +177,5 @@ class AccountControlController extends Controller
         return redirect('accountControls')->with(compact('session'));
     }
 
-    public function searchAccountControlFunction(Request $request){
-        $account_head_name=AccountHead::getAccounHeadNameLang();
-        $account_control_name=$this->account_control_name;
-        $search_text =$request->get('searchQuery');
-    $accountControls= AccountControl::with('accountHead')->where($account_control_name,'like','%'.$search_text.'%')->get();
-      return  $accountControls;
-//      return view('admin.includes.accountSubControls')->with(compact('accountSubControls'));
-//        return view('admin.includes.accountControls.accountControls')->with(compact(['accountControls','account_control_name','account_head_name']));
 
-    }
 }

@@ -1,39 +1,65 @@
 import getSelectorBasedInOther from './selectBasedInOtherSelect.js'
+import getStoreBasedInBranch from   './storePage.js'
 
 //get the language path
 let urlPath = window.location.href; // raw javascript
 const lang = urlPath.split("/")[3];
 //get tableName
 const tableName = urlPath.split("/")[4];
-const editUrl = urlPath.split("en")[1];
+const editUrl = urlPath.split(lang)[1];
 const tableid = urlPath.split("/")[5];
 //get dynamic row for search in table
 
-
-
 export default class  PurchasePage{
-
      constructor() {
          getPurchaseCategoryBasedInbranch()
          $(document).on('change','#supplier_id', function() {
              getSupplierItem()
          });
-         getSupplierItem()
-         totalPayment();
+
+
      }
 
 }
 
 function getPurchaseCategoryBasedInbranch() {
+    if (editUrl === "/purchases/" + tableid + "/edit" || editUrl === "/purchases/create") {
 
     $(document).ready(function () {
-        if (editUrl === "/purchases/" + tableid + "/edit" || editUrl === "/purchases/create") {
             //getPurchaseCategoryBasedInBranch
             getCategoryBasedInBranch()
             $(document).on('change', '#branchId', function () {
                 getCategoryBasedInBranch()
 
             });
+
+
+
+
+
+    });
+}
+    $(document).ready(function () {
+        if(editUrl==='/purchases')
+        {
+            getStoreBasedInBranch()
+            getSupplierBasedInBranch()
+            getSupplierItem()
+            $(document).on('change', '#branchId', function () {
+                getStoreBasedInBranch()
+                getSupplierBasedInBranch()
+
+        });
+            $('#discountId').keyup((e) => {
+                console.log(e.currentTarget.value);
+                getTotalOrder()
+            });
+            $('#taxId').keyup((e) => {
+                console.log(e.currentTarget.value);
+                getTotalOrder()
+            });
+
+            totalPayment();
         }
     });
 
@@ -66,6 +92,17 @@ function getCategoryBasedInBranch(){
     });
 }
 
+
+function getSupplierBasedInBranch(){
+    var branch_id = $("#branchId").val();
+    getSelectorBasedInOther({ 'branch_id': branch_id },
+      'get_selected_purchase_supplier_based_branch').then((data)=>{
+        $('#appendSupplierLevel').html(data);
+    } ).then(()=>{
+        getSupplierItem()
+    });
+}
+
 function getProductItem(){
     var stock_id = $("#stockId").val();
     getSelectorBasedInOther({
@@ -80,18 +117,35 @@ function getProductItem(){
 function getSupplierItem(){
     var supplier_id = $("#supplier_id").val();
     getSelectorBasedInOther({   'supplier_id':supplier_id }, 'getSupplierItembyId').then((data)=>{
-        document.getElementById("supplier_phone").value = data.phone;
-       document.getElementById("supplier_address").value = data.address_en;
+      if(data!=="0"){
+          document.getElementById("supplier_phone").value = data.phone;
+          document.getElementById("supplier_address").value = data.address_en;
+      }else{
+          document.getElementById("supplier_phone").value = ""   ;
+          document.getElementById("supplier_address").value = "" ;
+      }
 
     });
+
+}
+function getTotalOrder() {
+    let sub_total= 0;
+    let tax= 0;
+    let discount= 0;
+     sub_total = parseFloat(document.getElementById("sub_total").value)
+     tax=     parseFloat(document.getElementById("taxId").value)
+     discount=  parseFloat(document.getElementById("discountId").value)
+    let totalPayment = sub_total+tax+discount;
+    document.getElementById("order_total").value = totalPayment;
+
 
 }
 
 function totalPayment(){
     getSelectorBasedInOther({},'getSumTotalItem').then((data)=>{
-
-        document.getElementById("sub_total").value = data.sub_total ;
-
+        document.getElementById("sub_total").value = data.sub_total  ;
+    }).then(()=>{
+        getTotalOrder()
     })
 
 }

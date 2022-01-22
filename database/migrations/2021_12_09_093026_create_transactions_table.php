@@ -24,7 +24,8 @@ class CreateTransactionsTable extends Migration
             $table->float('credit');
             $table->float('debit');
             $table->date('transaction_date');
-            $table->string('transaction_title');
+            $table->string('transaction_title_en');
+            $table->string('transaction_title_ar');
             $table->timestamps();
 
         });

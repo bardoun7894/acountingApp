@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Branch;
+use App\Models\Store;
 use App\Models\Translation;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -16,14 +21,22 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     private $full_name ;
+    private $branch_name;
+    private $store_name;
+    private $lang;
+
     function __construct()
     {
         $this->full_name=User::getFullnameLang();
+        $this->branch_name=Branch::getBranchNameLang();
+        $this->store_name=Store::getStoreNameLang();
+        $this->lang=Translation::getLang();
     }
 
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id','!=',Auth::user()->getAuthIdentifier())->get();
+
         return view('admin.includes.users.users')->with(compact('users'));
 
         //
@@ -36,9 +49,22 @@ class UserController extends Controller
      */
     public function create()
     {
-         return view('admin.includes.users.create');
+        $lang=$this->lang;
+        $full_name = $this->full_name;
+        $branch_name=$this->branch_name;
+        $branches =Branch::all();
+        $store_name=$this->store_name;
+        $stores=Store::all();
+         return view('admin.includes.users.create')->with(compact(['branches','lang','full_name','stores','branch_name','store_name']));
     }
-
+    public function getSelectedBranchStore(Request $request){
+        if($request->ajax()){
+            $data=$request->all();
+            $stores=Store::where('branch_id',$data['branch_id'])->get();
+            $store_name=$this->store_name;
+            return view('admin.includes.stores.select_store')->with(compact(['stores','store_name',]));
+        }
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -48,21 +74,22 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $full_name =$this->full_name;
+
         $validated = $request->validate([
-            'user_type_id' => 'required',
-            $full_name => 'required',
             'username' => 'required|unique',
+            $full_name => 'required',
             'contact_number' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => ['required','min:6'],
+            'user_type_id' => ['required']
         ]);
           $user =new User();
-          $user->user_type_id =(int)$request->user_type_id;
+          $user->user_type_id =(int) $request->user_type_id;
           $user->$full_name = $request->$full_name;
           $user->username = $request->username;
           $user->contact_number = $request->contact_number;
           $user->email = $request->email;
-          $user->password = bcrypt($request->password);
+          $user->password = Hash::make($request->password);
           $user->save();
 
           $session =Session::flash('message','User added Successfully');
@@ -90,10 +117,12 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $lang=$this->lang;
 
         $full_name=$this->full_name;
         $user = User::find($id);
-        return view('admin.includes.users.update')->with(compact(['user','full_name']));
+        $lang=$this->lang;
+        return view('admin.includes.users.update')->with(compact(['user','lang','full_name']));
           }
 
     /**
@@ -108,28 +137,28 @@ class UserController extends Controller
         $full_name=$this->full_name;
         $validated = $request->validate([
             'user_type_id' => 'required',
-            $full_name => 'required',
+             $full_name => 'required',
             'username' => 'required',
             'contact_number' => 'required',
             'email' => 'required|email|',
-            'password' => 'required|min:6',
+//        'password' => 'required|min:6',
         ]);
         $user=User::find($id);
-        $user->user_type_id =(int) $request->input('user_type_id');
-        $user->$full_name = $request->input($full_name);
-        $user->username = $request->input('username');
-        $user->contact_number = $request->input('contact_number');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password'));
-
-        $user->update();
+        $user->user_type_id =(int) $request->user_type_id;
+        $user->$full_name = $request->$full_name;
+        $user->username = $request->username;
+        $user->contact_number = $request->contact_number;
+        $user->email = $request->email;
+        if($request->password !=""){
+            $user->password = bcrypt($request->password);
+         }
+        $user->save();
 
       $session =Session::flash('message','User Updated Successfully');
         return redirect('users')->with(compact(['session','full_name']));
-        //
     }
 
-    public function deleteSupplier($id)
+    public function deleteUser($id)
     {
         $user=User::find($id);
         $user->delete();
@@ -137,12 +166,7 @@ class UserController extends Controller
         return redirect('users')->with(compact('session'));
 
     }
-    public function searchUserFunction(Request $request){
-        $full_name=$this->full_name;
-        $search_text =$request->get('searchQuery');
-        $users= User::where($full_name,'like','%'.$search_text.'%')->get();
-        return  $users;
-    }
+
 
     public function getUserInvoice(){
         $full_name=$this->full_name;

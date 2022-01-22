@@ -47,7 +47,9 @@
 
             <div class="card-content collpase show">
                 <div class="card-body">
-                    <form class="form" method="POST" action="{{url('users/'.$user->id)}}">
+
+
+                    <form class="form" method="POST" action="{{url('/'.$lang.'/users/'.$user->id)}}">
                         @csrf
                         @method('PUT')
                         <div class="form-actions top clearfix">
@@ -84,7 +86,7 @@
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
                                             <label for="eventRegInput5">{{__("messages.password")}}</label>
-                                            <input type="password"  class="form-control" name="password" placeholder="{{__("messages.password")}}" value="{{$user->password}}">
+                                            <input type="password"  class="form-control updateUserPassword" name="password"   placeholder="*************"  readonly="true">
                                         </div>
                                     </div>
 

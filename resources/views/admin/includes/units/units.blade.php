@@ -9,7 +9,7 @@
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
-                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('units/create')}}" target="_blank">{{__('messages.add_unit')}}</a></li>
+                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('units/create')}}" target="_self">{{__('messages.add_unit')}}</a></li>
                     </ul>
                 </div>
             </div>
@@ -39,10 +39,10 @@
 
             @endif
             <div class="card-content">
-                <div class="table-responsive">
-                    <table id="dataex-select-initialisation" class=" table table-hover table-l mb-0">
+                <div   class="card-content d-flex p-2">
+                    <table id="datatableBootstrap"   class="table table-striped table-bordered table-sm " >
 
-                        <thead>
+                    <thead>
                         <tr>
                             <th class="border-top-0">#</th>
 
@@ -53,8 +53,10 @@
                             <th class="border-top-0">{{__('messages.delete')}}</th>
                         </tr>
                         </thead>
-                        @foreach($units as $unit)
                            <tbody>
+                           @foreach($units as $unit)
+                          <tr>
+
 
                             <td class="text-truncate"> {{$unit->id}}</td>
 {{--                            <td class="text-truncate">  @if($unit->user_type_id==1 ) admin @else Branch  @endif       </td>--}}
@@ -62,13 +64,13 @@
 {{--                            <td class="text-truncate"> {{$unit->full_name_ar}}</td>--}}
 
                             <td class="text-truncate">   <a href="{{url('units/'.$unit->id.'/edit')}}"><i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>
-                          <form action="{{url('units/'.$unit->id)}}" method="post">
-                              @csrf
-                              @method('delete')
-                              <td class="text-truncate"> <button type="submit" style="background: transparent;border: none;"><i class="la la-trash" style="color: red;font-size: 25px"></i></button> </td>
-                           </form>
+                    <td>
+                        <a  class="confirmDelete"  record="Unit"  recordId="{{$unit->id}}">  <i class="la la-trash" style="color: red;font-size: 25px"></i>
+                        </a>
+                    </td>
+                                    </tr>
+                           @endforeach
                            </tbody>
-                        @endforeach
                     </table>
                 </div>
             </div>

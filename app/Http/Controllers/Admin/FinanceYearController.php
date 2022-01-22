@@ -127,12 +127,6 @@ class FinanceYearController extends Controller
      */
 //
 
-    public function searchFinanceYearFunction(Request $request){
-
-        $search_text =$request->get('searchQuery');
-        $financeYear= FinanceYear::where('financial_year','like','%'.$search_text.'%')->get();
-        return  $financeYear;
-    }
     public function deleteFinanceYear($id){
         $financeYear=FinanceYear::find($id);
         $financeYear->delete();

@@ -39,7 +39,7 @@ $full_name='full_name_'.\App\Models\Translation::getLang();
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
-                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('users/create')}}" target="_blank">{{__('messages.add_user')}}</a></li>
+                        <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('users/create')}}" target="_self">{{__('messages.add_user')}}</a></li>
                     </ul>
                 </div>
             </div>
@@ -68,50 +68,8 @@ $full_name='full_name_'.\App\Models\Translation::getLang();
             @endswitch
 
             @endif
+            @include('admin.includes.users.user_table')
 
-            <div class="input-group d-inline-flex p-4" >
-                <input type="search" id="search-user" class="form-control rounded" placeholder="Search" aria-label="Search" name="search_text"
-                       aria-describedby="search-addon" />
-                <button  class="btn btn-outline-primary">{{__('messages.search')}}</button>
-            </div>
-
-            <div class="card-content">
-                <div class="table-responsive">
-                    <table id="dataex-select-initialisation" class=" table table-hover table-l mb-0">
-                        <thead>
-                        <tr>
-                            <th class="border-top-0">#</th>
-                            <th class="border-top-0">{{__('messages.role')}}</th>
-                            <th class="border-top-0">{{__('messages.fullName')}}</th>
-                            <th class="border-top-0">{{__('messages.userName')}}</th>
-                            <th class="border-top-0">{{__('messages.email')}}</th>
-                            <th class="border-top-0">{{__('messages.phoneNumber')}}</th>
-                            <th class="border-top-0">{{__('messages.edit')}}</th>
-                            <th class="border-top-0">{{__('messages.delete')}}</th>
-                        </tr>
-                        </thead>
-                           <tbody id="users-dynamicRow">
-                           @foreach($users as $user)
-                               <tr>
-                               <td class="text-truncate"> {{$user->id }}</td>
-                               <td class="text-truncate">  @if($user->user_type_id==1 ) admin @else user  @endif  </td>
-                               <td class="text-truncate">{{$user->$full_name}}   </td>
-                               <td class="text-truncate"> {{$user->username}}</td>
-                               <td class="text-truncate"> {{$user->email}}</td>
-                               <td class="text-truncate"> {{$user->contact_number}}</td>
-                               <td class="text-truncate">   <a href="{{url('users/'.$user->id.'/edit')}}"><i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>
-
-                               <td>
-                                   <a  class="confirmDelete"  record="User"  recordId="{{$user->id}}">  <i class="la la-trash" style="color: red;font-size: 25px"></i>
-                                   </a>
-                               </td>
-                           </tr>
-
-                           @endforeach
-                           </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </div>
         </div>

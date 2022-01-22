@@ -48,7 +48,7 @@
             <div class="card-content collpase show">
                 <div class="card-body">
 
-                    <form class="form" method="POST" action="{{url('users')}}">
+                    <form class="form" method="POST" action="{{url('/'.$lang.'/users')}}">
                         @csrf
                         <div class="form-actions top clearfix">
                             {{__('messages.add_user')}}
@@ -57,10 +57,11 @@
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
                                 <div class="form-body">
+
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
                                             <label for="eventRegInput1">  {{__('messages.fullName')}}</label>
-                                            <input type="text" id="eventRegInput1" class="form-control" placeholder="{{__('messages.fullName')}}" name="full_name">
+                                            <input type="text" id="eventRegInput1" class="form-control" placeholder="{{__('messages.fullName')}}" name="{{$full_name}}">
                                         </div>
                                     </div>
 
@@ -80,7 +81,7 @@
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
                                             <label for="eventRegInput5">{{__('messages.phoneNumber')}}</label>
-                                            <input type="tel" id="eventRegInput5" class="form-control" name="{{__('messages.phoneNumber')}}" placeholder="contact number">
+                                            <input type="tel" id="eventRegInput5" class="form-control" name="{{__('messages.phoneNumber')}}" placeholder="{{__('messages.phoneNumber')}}">
                                         </div>
                                     </div>
 
@@ -89,6 +90,15 @@
                                             <label for="eventRegInput5">{{__('messages.password')}}</label>
                                             <input type="password" id="eventRegInput5" class="form-control" name="password" placeholder="{{__('messages.password')}}">
                                         </div>
+                                    </div>
+                                    {{--       get    branches--}}
+
+                                    @include('admin.includes.branches.select_branch')
+
+                                    {{--                              get  stores--}}
+
+                                    <div id="appendStoreLevel">
+                                        @include('admin.includes.stores.select_store')
                                     </div>
 
                                     <div class="row">
@@ -112,7 +122,7 @@
                         <div class="form-actions clearfix">
                             <div class="buttons-group float-right mb-1">
                                 <button type="submit"  class="btn btn-primary mr-1">
-                                    <i class="la la-check-square-o"></i> Save
+                                    <i class="la la-check-square-o"></i> {{__("messages.save")}}
                                 </button>
                             </div>
                         </div>

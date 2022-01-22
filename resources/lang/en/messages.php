@@ -15,10 +15,17 @@ return [
     'home'=>"Home",
     ####################### User ################################
 
+
     'add_supplier' => 'add Supplier',
     'users' => 'Users',
     'user' => 'User',
     'user_type' => 'User Type',
+    ####################### Store ################################
+    'store_name' => 'Store Name',
+
+    'add_store' => 'add Store',
+    'stores' => 'Stores',
+    'store' => 'Store',
     ####################### Category ################################
 
     'categories' => 'Categories',
@@ -32,6 +39,7 @@ return [
     'update_stock'=>'Update stock',
 
     'add_user'=>'Add User',
+    'create_user'=>'Create User',
     'edit_user'=>'Edit User',
     'update_user'=>'Update User',
 
@@ -121,11 +129,27 @@ return [
     'customerName' => 'Customer Name',
     'customers' => 'Customers',
     'customers_report' => 'Customers Report List',
+    ####################### purchases ################################
+    'sub_total'=>'Sub total',
+    'tax'=>'Tax',
+    'discount'=>'Discount',
+    'order_total'=>'Order Total',
 
+    'purchase_price'=>'Purchase Price',
+    'sale_price'=>'Sale Price',
+    'expire_date'=>'Expire Date',
+    'manufacture_date'=>'Manufacture Date',
+
+    'purchase_invoice'=> 'Purchase Invoice',
+
+    'add_purchase' => 'Add New Purchase',
+    'continue_to_checkout' => 'Continue to checkout',
 
     ####################### options ################################
     "print_invoice"=>" Print Invoice",
+    'view' => 'View',
 
+    'admin' => 'Admin',
     'save' => 'Save',
     'search' => 'Search',
     'edit' => 'edit',

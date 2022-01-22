@@ -40,7 +40,7 @@ $full_name='full_name_'.\App\Models\Translation::getLang();
                     <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                     <div class="heading-elements">
                         <ul class="list-inline mb-0">
-                            <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('suppliers/create')}}" target="_blank">{{__('messages.add_suplier')}}</a></li>
+                            <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('suppliers/create')}}" target="_self">{{__('messages.add_suplier')}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -72,14 +72,8 @@ $full_name='full_name_'.\App\Models\Translation::getLang();
                 @endswitch
 
                 @endif
-                <div class="input-group d-inline-flex p-4" >
-                    <input type="search" id="search-supplier" class="form-control rounded" placeholder="Search" aria-label="Search" name="search_text"
-                           aria-describedby="search-addon" />
-                    <button type="submit" class="btn btn-outline-primary">{{__('messages.search')}}</button>
-                </div>
-                <div class="card-content">
-                    <div class="table-responsive">
-                        <table id="dataex-select-initialisation" class=" table table-hover table-l mb-0">
+                <div class="card-content d-flex p-2">
+                        <table  id="datatableBootstrap"  class=" table table-striped table-bordered">
                             <thead>
                             <tr>
                                 <th class="border-top-0">#</th>
@@ -111,7 +105,6 @@ $full_name='full_name_'.\App\Models\Translation::getLang();
                                </tbody>
 
                         </table>
-                    </div>
                 </div>
             </div>
         </div>
