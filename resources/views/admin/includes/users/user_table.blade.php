@@ -6,6 +6,8 @@
         <tr>
             <th class="border-top-0">#</th>
             <th class="border-top-0">{{__('messages.role')}}</th>
+            <th class="border-top-0">{{__('messages.store_name')}}</th>
+            <th class="border-top-0">{{__('messages.branch_name')}}</th>
             <th class="border-top-0">{{__('messages.fullName')}}</th>
             <th class="border-top-0">{{__('messages.userName')}}</th>
             <th class="border-top-0">{{__('messages.email')}}</th>
@@ -16,9 +18,12 @@
         </thead>
         <tbody id="users-dynamicRow">
         @foreach($users as $user)
+
             <tr>
                 <td class="text-truncate"> {{$user->id }}</td>
                 <td class="text-truncate">  @if($user->user_type_id==1 ) admin @else user  @endif  </td>
+                <td class="text-truncate">{{$user->store->$store_name}}   </td>
+                <td class="text-truncate">{{$user->branch->$branch_name}}   </td>
                 <td class="text-truncate">{{$user->$full_name}}   </td>
                 <td class="text-truncate"> {{$user->username}}</td>
                 <td class="text-truncate"> {{$user->email}}</td>

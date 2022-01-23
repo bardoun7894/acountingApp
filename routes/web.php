@@ -59,6 +59,8 @@ Route::group(
     Route::get('/delete-AccountControl/{id}',[Admin\AccountControlController::class,'deleteAccountControl'])->name('delete-AccountControl');
     Route::get('/delete-FinanceYear/{id}',[Admin\FinanceYearController::class,'deleteFinanceYear'])->name('delete-FinanceYear');
     Route::get('/delete-Supplier/{id}',[Admin\SupplierController::class,'deleteSupplier'])->name('delete-Supplier');
+     Route::get('/delete-PaymentType/{id}',[\App\Http\Controllers\PaymentTypeController::class,'deletePaymentType']);
+    Route::get('/delete-Unit/{id}',[\App\Http\Controllers\UnitController::class,'deleteUnit']);
     Route::get('/delete-User/{id}',[Admin\UserController::class,'deleteUser']) ;
     Route::get('/delete-Stock/{id}',[Admin\StockController::class,'deleteStock']) ;
     Route::get('/delete-Customer/{id}',[Admin\CustomerController::class,'deleteCustomer'])->name('delete-Customer');
@@ -87,6 +89,8 @@ Route::group(
         'financeYears'=>Admin\FinanceYearController::class,
         'branches'=>Admin\BranchController::class,
         'units'=>\App\Http\Controllers\UnitController::class,
+        'payment_types'=>\App\Http\Controllers\PaymentTypeController::class,
+        'stores'=>\App\Http\Controllers\StoreController::class,
         'stocks'=>Admin\StockController::class,
         'purchases'=>\App\Http\Controllers\PurchaseInvoiceController::class,
         'accountHeads'=>Admin\AccountHeadController::class,

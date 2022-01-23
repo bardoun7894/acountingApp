@@ -109,13 +109,7 @@ class UnitController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function deleteUnit($id)
     {
         $unit=Unit::find($id);
         $unit->delete();

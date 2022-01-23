@@ -14,7 +14,9 @@ class Branch extends Model
     public function stocks(){
         return $this->hasMany(Stock::class);
     }
-
+   public function stores(){
+        return $this->hasMany(Store::class);
+    }
     static public function getBranchNameLang(){
            return "branch_name_".Translation::getLang();
     }

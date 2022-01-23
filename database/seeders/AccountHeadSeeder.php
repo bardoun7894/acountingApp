@@ -15,10 +15,10 @@ class AccountHeadSeeder extends Seeder
     public function run()
     {
    $data=[
-       ['id'=>9, 'user_id'=>1,'account_head_name_en'=>'assets','account_head_name_ar'=>'الأصول','account_head_code'=>'1'],
-       ['id'=>10,'user_id'=>1,'account_head_name_en'=>'liabilities','account_head_name_ar'=>'','account_head_code'=>'2'],
-       ['id'=>13,'user_id'=>1,'account_head_name_en'=>'Expenses','account_head_name_ar'=>'', 'account_head_code'=>'3'],
-       ['id'=>14,'user_id'=>1,'account_head_name_en'=>'Revenue','account_head_name_ar'=>'', 'account_head_code'=>'4'],
+    ['id'=>1, 'user_id'=>1,'account_head_name_en'=>'assets','account_head_name_ar'=>'الأصول','account_code'=>'1'],
+    ['id'=>2,'user_id'=>1,'account_head_name_en'=>'liabilities','account_head_name_ar'=>'','account_code'=>'2'],
+    ['id'=>3,'user_id'=>1,'account_head_name_en'=>'Expenses','account_head_name_ar'=>'', 'account_code'=>'3'],
+    ['id'=>4,'user_id'=>1,'account_head_name_en'=>'Revenue','account_head_name_ar'=>'', 'account_code'=>'4'],
    ];
    AccountHead::insert($data);
 

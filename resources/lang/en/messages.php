@@ -45,6 +45,7 @@ return [
 
 
     'accountHeads'=>'Account Heads',
+    'accounts'=>'Accounts',
     'account_head_name'=>'Account Head Name',
     'update_account_head'=>'Update Account Head ',
     'add_account_head'=>' Add Account Head',

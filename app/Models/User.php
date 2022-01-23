@@ -45,6 +45,14 @@ class User extends Authenticatable
     {
       return $this->belongsTo(UserType::class);
     }
+    public function store()
+    {
+      return $this->belongsTo(Store::class);
+    }
+    public function branch()
+    {
+      return $this->belongsTo(Branch::class);
+    }
     public function accountHeads()
     {
         return $this->hasMany(AccountHead::class);

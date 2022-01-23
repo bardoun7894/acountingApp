@@ -34,6 +34,7 @@ return [
     'branches' => 'الفروع',
     'stocks'=>'المخازن',
 
+    'accounts'=> 'حسابات',
     'accountHeads'=> 'رأس الحساب',
     'accountControls'=> 'التحكم الحساب',
     'accountSubControls'=> 'التحكم الفرعي الحساب',

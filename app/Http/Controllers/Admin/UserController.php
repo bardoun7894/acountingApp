@@ -35,9 +35,14 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::where('id','!=',Auth::user()->getAuthIdentifier())->get();
 
-        return view('admin.includes.users.users')->with(compact('users'));
+
+
+        $users = User::with(['store','branch'])->where('id','!=',Auth::user()->getAuthIdentifier())->get();
+        $store_name=$this->store_name;
+        $branch_name=$this->branch_name;
+
+        return view('admin.includes.users.users')->with(compact(['users','store_name','branch_name']));
 
         //
     }
@@ -76,8 +81,11 @@ class UserController extends Controller
         $full_name =$this->full_name;
 
         $validated = $request->validate([
-            'username' => 'required|unique',
+
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
             $full_name => 'required',
+            'store_id' => 'required',
+            'branch_id' => 'required',
             'contact_number' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => ['required','min:6'],
@@ -85,6 +93,8 @@ class UserController extends Controller
         ]);
           $user =new User();
           $user->user_type_id =(int) $request->user_type_id;
+          $user->store_id = $request->store_id;
+          $user->branch_id = $request->branch_id;
           $user->$full_name = $request->$full_name;
           $user->username = $request->username;
           $user->contact_number = $request->contact_number;
@@ -137,6 +147,8 @@ class UserController extends Controller
         $full_name=$this->full_name;
         $validated = $request->validate([
             'user_type_id' => 'required',
+            'store_id' => 'required',
+            'branch_id' => 'required',
              $full_name => 'required',
             'username' => 'required',
             'contact_number' => 'required',
@@ -145,6 +157,8 @@ class UserController extends Controller
         ]);
         $user=User::find($id);
         $user->user_type_id =(int) $request->user_type_id;
+        $user->store_id = $request->store_id;
+        $user->branch_id = $request->branch_id;
         $user->$full_name = $request->$full_name;
         $user->username = $request->username;
         $user->contact_number = $request->contact_number;

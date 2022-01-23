@@ -81,7 +81,7 @@
                                     <div class="row">
                                         <div class="form-group col-12 mb-2">
                                             <label for="eventRegInput5">{{__('messages.phoneNumber')}}</label>
-                                            <input type="tel" id="eventRegInput5" class="form-control" name="{{__('messages.phoneNumber')}}" placeholder="{{__('messages.phoneNumber')}}">
+                                            <input type="tel" id="eventRegInput5" class="form-control" name="contact_number" placeholder="{{__('messages.phoneNumber')}}">
                                         </div>
                                     </div>
 

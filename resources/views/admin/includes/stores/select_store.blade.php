@@ -1,3 +1,4 @@
+
 <div class="row justify-content-md-center form-group">
     <div class="col-md-12">
         <label for="eventRegInput2">{{__("messages.store_name")}}</label>

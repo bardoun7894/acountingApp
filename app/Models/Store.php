@@ -11,4 +11,7 @@ class Store extends Model
     static public function getStoreNameLang(){
         return 'store_name_'.Translation::getLang();
     }
+    public function branch(){
+        return $this->belongsTo(Branch::class);
+    }
 }
