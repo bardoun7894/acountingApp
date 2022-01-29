@@ -9,7 +9,6 @@
             <th class="border-top-0">  {{__("messages.purchase_price")}}  </th>
             <th class="border-top-0"> {{__("messages.sale_price")}} </th>
             <th class="border-top-0">{{__("messages.expire_date")}}</th>
-            <th class="border-top-0">{{__("messages.manufacture_date")}}</th>
             <th class="border-top-0">{{__("messages.item_cost")}}</th>
             <th class="border-top-0">{{__("messages.edit")}}</th>
             <th class="border-top-0">{{__("messages.delete")}}</th>
@@ -24,7 +23,6 @@
             <td class="text-truncate"> {{$purchase->purchase_unit_price}}</td>
             <td class="text-truncate"> {{$purchase->sale_unit_price}}</td>
             <td class="text-truncate"> {{$purchase->expiry_date}}</td>
-            <td class="text-truncate"> {{$purchase->manufacture_date}}</td>
             <td class="text-truncate"> {{ $purchase->purchase_unit_price* $purchase->purchase_qty}}</td>
             {{--                                    <td class="text-truncate"> {{$purchase->$description}}</td>--}}
             {{--                                    <td class="text-truncate">no</td>--}}

@@ -16,13 +16,14 @@ class CreateSupplierPaymentsTable extends Migration
         Schema::create('supplier_payments', function (Blueprint $table) {
           $table->id();
           $table->unsignedBigInteger('supplier_id');
+          $table->unsignedBigInteger('branch_id')->nullable();
           $table->unsignedBigInteger('user_id');
           $table->unsignedBigInteger('payment_id');
           $table->unsignedBigInteger('supplier_invoice_id');
           $table->string('invoice_no');
           $table->float('payment_amount');
           $table->float('total_amount');
-          $table->float('remaining_balance'); 
+          $table->float('remaining_balance');
           $table->timestamps();
         });
     }

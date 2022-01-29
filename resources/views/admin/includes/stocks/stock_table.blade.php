@@ -10,8 +10,7 @@
         <th class="border-top-0">  {{__("messages.purchase_price")}}  </th>
         <th class="border-top-0"> {{__("messages.sale_price")}} </th>
         <th class="border-top-0">{{__("messages.expire_date")}}</th>
-        <th class="border-top-0">{{__("messages.manufacture_date")}}</th>
-          <th class="border-top-0">{{__("messages.description")}}</th>
+        <th class="border-top-0">{{__("messages.description")}}</th>
         <th class="border-top-0">{{__("messages.view")}}</th>
         <th class="border-top-0">{{__("messages.edit")}}</th>
         <th class="border-top-0">{{__("messages.delete")}}</th>

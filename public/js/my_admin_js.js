@@ -1,7 +1,8 @@
-// import SearchTable from "./searchTable.js";
+
 import CategoryPage from "./categoryPage.js";
 import PurchasePage  from "./purchasePage.js";
 import UserPage  from "./userPage.js";
+import Accounts from "./accounts.js";
 
 
 //get the language path
@@ -20,6 +21,8 @@ import UserPage  from "./userPage.js";
   new PurchasePage();
   //user page
   new UserPage();
+//account page
+  new Accounts()
 
    $(document).ready(function(){
        if(urlPath.split('/').length===5){

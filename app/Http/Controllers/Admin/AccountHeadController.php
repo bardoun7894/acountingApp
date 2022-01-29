@@ -76,7 +76,7 @@ private $user_type;
 
         $accountHead->save();
 
-        $session =Session::flash('message',__('messages.accountHead'));
+        $session =Session::flash('message',__('messages.data_added'));
         return redirect('accountHeads')->with(compact(['session','account_head_name']));
 
     }
@@ -126,24 +126,15 @@ private $user_type;
         $accountHead->$account_head_name = $request->input($account_head_name);
         $accountHead->update();
 
-        $session =Session::flash('message',__('messages.accountHead_updated'));
+        $session =Session::flash('message',__('messages.data_updated'));
         return redirect('accountHeads')->with(compact(['session','account_head_name']));
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
+    public function deleteAccountActivity($id){
         $accountHead=AccountHead::find($id);
         $accountHead->delete();
-        $session =Session::flash('message',__('messages.accountHead_deleted'));
-//return  __('messages.accountHead_deleted');
+        $session =Session::flash('message',__('messages.data_removed'));
         return redirect('accountHeads')->with(compact('session'));
-
     }
 }

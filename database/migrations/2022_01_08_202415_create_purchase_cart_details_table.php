@@ -24,7 +24,7 @@ class CreatePurchaseCartDetailsTable extends Migration
             $table->unsignedInteger('unit_id');
             $table->string('description_ar')->nullable();
             $table->string('description_en')->nullable();
-            $table->date('manufacture_date');
+
             $table->date('expiry_date');
             $table->timestamps();
         });

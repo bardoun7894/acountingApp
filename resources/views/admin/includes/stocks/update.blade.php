@@ -113,15 +113,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-md-center">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="form-group col-12 mb-2">
-                                        <input type="date" id="eventRegInput2" class="form-control" placeholder="Manufacture Date" name="manufacture_date" value="{{$stock->manufacture_date}}">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">
                                 <div class="row">

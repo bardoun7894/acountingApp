@@ -22,30 +22,11 @@
                              Update AccountControl
                         </div>
 
-                        <div class="row justify-content-md-center form-group">
-                            <div class="col-md-6">
-                                <label for="eventRegInput2">Account Head Name</label>
-
-                                <select   id="accountHeadId" name="account_head_id" class="select2 form-control"  >
-                                    <optgroup label="AccountControl name">
-                                        @foreach($accountHead_list as $accountHead)
-                                            <option   @if($accountHead->$account_head_name==$accountHeade->$account_head_name) value="{{$accountHeade->id}}"  selected @else value="{{$accountHead->id}}" @endif> {{   $accountHead->$account_head_name}} </option>
-                                        @endforeach
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
+                        @include('admin.includes.accountHeads.accountHead_table')
 
 
-                        <div class="row justify-content-md-center form-group">
-                            <div class="col-md-6">
-                                <label for="eventRegInput2">{{__('messages.account_control_name')}}</label>
-                                <select id="accountControlId" name="account_control_id" class="select2 form-control"  >
-                                    <optgroup id="accountControlOptGroup" label="AccountControl name" >
-                                    </optgroup>
-                                </select>
-
-                            </div>
+                        <div id="appendAccountControlLevel">
+                            @include('admin.includes.accountControls.accountControl_table')
                         </div>
 
                         <div class="row justify-content-md-center">

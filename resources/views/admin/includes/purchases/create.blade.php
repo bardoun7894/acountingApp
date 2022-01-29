@@ -80,6 +80,10 @@
                                     </div>
                                 </div>
 
+
+
+                            </div>
+                            <div class="col-md-6">
                                 <div class="row justify-content-md-center">
                                     <div class="col-md-6">
                                         <div class="row">
@@ -90,9 +94,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-                            <div class="col-md-6">
                                 <div class="row justify-content-md-center">
                                     <div class="col-md-6">
                                         <div class="row">
@@ -122,16 +123,6 @@
                                                 <label for="eventRegInput2">{{__("messages.expiry_date")}}</label>
 
                                                 <input type="date" id="eventRegInput2" class="form-control" placeholder="Expiry Date" name="expiry_date">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-md-center">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="form-group col-12 mb-2">
-                                                <label for="eventRegInput2">{{__("messages.manufacture_date")}}</label>
-                                                <input type="date" id="eventRegInput2" class="form-control" placeholder="Manufacture Date" name="manufacture_date">
                                             </div>
                                         </div>
                                     </div>

@@ -26,6 +26,16 @@ return [
     'add_store' => 'add Store',
     'stores' => 'Stores',
     'store' => 'Store',
+    ####################### session Data ################################
+    'data_added' => 'Data has added Successfully',
+    'data_removed' => 'Data has been removed',
+    'data_updated' => 'Data has updated Successfully',
+
+    ####################### Payment Type ################################
+    'payment_type_name' => 'Payment Type Name',
+    'add_payment_type' => 'add Store',
+    'payment_types' => 'Payment Types',
+    'payment_type' => 'Payment Type',
     ####################### Category ################################
 
     'categories' => 'Categories',
@@ -42,6 +52,7 @@ return [
     'create_user'=>'Create User',
     'edit_user'=>'Edit User',
     'update_user'=>'Update User',
+    ####################### Account Heads ################################
 
 
     'accountHeads'=>'Account Heads',
@@ -49,6 +60,7 @@ return [
     'account_head_name'=>'Account Head Name',
     'update_account_head'=>'Update Account Head ',
     'add_account_head'=>' Add Account Head',
+    ####################### Account Controls ################################
 
     'accountControls'=>'Account Controls',
     'account_control_name'=>'Account Control Name',
@@ -56,6 +68,14 @@ return [
     'account_sub_control_number'=>'Account Sub Control Number',
     'update_account_control'=>'Update Account Control',
     'add_account_control'=>' Add Account Control',
+       ####################### Account Controls ################################
+
+    'accountActivities'=>'Account Activities',
+    'accountActivity'=>'Account Activity',
+    'add_account_activity_name'=>'Add Account Activity',
+    'account_activity_name'=>'Account Activity Name',
+    'account_activity_number'=>'Account Control Number',
+    ####################### Account Sub Controls ################################
 
     'accountSubControls'=> 'Account Sub Controls',
     'account_sub_control_name'=>'Account Sub Control Name',
@@ -139,7 +159,6 @@ return [
     'purchase_price'=>'Purchase Price',
     'sale_price'=>'Sale Price',
     'expire_date'=>'Expire Date',
-    'manufacture_date'=>'Manufacture Date',
 
     'purchase_invoice'=> 'Purchase Invoice',
 

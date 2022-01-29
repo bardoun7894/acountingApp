@@ -20,7 +20,8 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('account_control_id');
             $table->unsignedBigInteger('account_sub_control_id');
             $table->string('invoice_number');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('branch_id')->nullable();
             $table->float('credit');
             $table->float('debit');
             $table->date('transaction_date');

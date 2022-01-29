@@ -23,29 +23,18 @@
                         <div class="form-actions top clearfix">
                          {{__('messages.add_account_sub_control')}}
                         </div>
-                        <div class="row justify-content-md-center form-group">
-                            <div class="col-md-6">
-                                <label for="eventRegInput2">{{__('messages.account_head_name')}}</label>
-                                <select   id="accountHeadId" name="account_head_id" class="select2 form-control"  >
-                                    <optgroup label="AccountControl name">
-                                        @foreach($accountHeads as $accountHead)
-                                          <option   value="{{$accountHead->id}}" > {{$accountHead->$account_head_name}} </option>
-                                        @endforeach
 
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row justify-content-md-center form-group">
-                            <div class="col-md-6">
-                                <label for="eventRegInput2">{{__('messages.account_control_name')}}</label>
-                                <select id="accountControlId" name="account_control_id" class="select2 form-control"  >
-                                    <optgroup id="accountControlOptGroup" label="AccountControl name" >
-                                    </optgroup>
-                                </select>
+                        @include('admin.includes.accountHeads.accountHead_table')
 
-                            </div>
+
+                        <div id="appendAccountControlLevel">
+                            @include('admin.includes.accountControls.accountControl_table')
                         </div>
+
+{{--                        <div id="appendAccountSubControlLevel">--}}
+{{--                            @include('admin.includes.accountSubControls.accountSubControl_table')--}}
+{{--                        </div>--}}
+
 
                         <div class="row justify-content-md-center">
                             <div class="col-md-6">

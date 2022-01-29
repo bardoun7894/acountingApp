@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\PurchaseInvoiceController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,9 @@ class Stock extends Model
     public  function category(){
        return $this->belongsTo(Category::class);
           }
+    public  function purchases(){
+        return $this->hasMany(PurchaseCartDetail::class);
+      }
     public function user(){
          return $this->belongsTo(User::class);
        }

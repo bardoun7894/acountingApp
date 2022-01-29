@@ -15,26 +15,22 @@ class AccountControlSeeder extends Seeder
     public function run()
     {
         $data=[
-    ['id'=>0,
-        'account_control_name_en'=>'Cash',
-        'account_control_name_ar'=>'كاش',
-        'account_head_id'=>'9',
-        'user_id'=>1]
-      , ['id'=>1,
-                'account_control_name_en'=>'account receivable'
-                ,'account_control_name_ar'=>'حساب العميل',
-                'account_head_id'=>'9'
-                ,'user_id'=>'1']
-   , ['id'=>2,  'account_control_name_en'=>'Note Payable',
-                'account_control_name_ar'=>"",
-                'account_head_id'=>'10',
-                'user_id'=>'1']
-   , ['id'=>3,'account_control_name_en'=>'Salary','account_control_name_ar'=>"",'account_head_id'=>'13','user_id'=>'1']
-   , ['id'=>4,'account_control_name_en'=>'Sale Income','account_control_name_ar'=>"",'account_head_id'=>'14','user_id'=>'1']
-   , ['id'=>5,'account_control_name_en'=>'Land','account_control_name_ar'=>"",'account_head_id'=>'12','user_id'=>'1']
-   , ['id'=>6,'account_control_name_en'=>'Bank Transfer','account_control_name_ar'=>"",'account_head_id'=>'12','user_id'=>'1']
 
-  ];
+//            account_head
+        [ 'id'=>1,'account_code'=>'11','account_control_name_en'=>'Fixed Assets',
+        'account_control_name_ar'=>'الأصول الثابتة','account_head_id'=>'1','user_id'=>1 ] ,
+        [ 'id'=>2,'account_code'=>'12',
+         'account_control_name_en'=>'Inventory','account_control_name_ar'=>'المخزون',
+          'account_head_id'=>'1','user_id'=>1 ] ,
+        [ 'id'=>3,'account_code'=>'13',
+         'account_control_name_en'=>'Debitors','account_control_name_ar'=>'المدينون',
+         'account_head_id'=>'1','user_id'=>1  ] ,
+        [ 'id'=>4,'account_code'=>'14',
+            'account_control_name_en'=>'Current Assets','account_control_name_ar'=>'الاصولة المتداولة',
+            'account_head_id'=>'1','user_id'=>1 ] ,
+
+        ];
+
         AccountControl::insert($data);
     }
 }

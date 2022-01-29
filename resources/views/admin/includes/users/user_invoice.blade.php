@@ -1,7 +1,6 @@
 
 @extends('admin.dashboard')
 @section('content')
-
       <div class="content-overlay"></div>
         <div class="content-wrapper">
             <div class="content-header row">

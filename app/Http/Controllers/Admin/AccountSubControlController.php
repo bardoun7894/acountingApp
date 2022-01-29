@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountActivity;
 use App\Models\AccountControl;
+use App\Models\AccountSetting;
 use App\Models\AccountSubControl;
 use App\Models\AccountHead;
 use App\Models\Translation;
@@ -12,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\Console\Input\Input;
+use function PHPUnit\Framework\isNan;
 
 class AccountSubControlController extends Controller
 {
@@ -25,11 +28,13 @@ class AccountSubControlController extends Controller
     private $account_sub_control_name;
     private $account_control_name;
     private $account_head_name;
+    private $account_activity_name;
 
     function __construct()
     {
         $this->account_sub_control_name =AccountSubControl::getAccountSubControlNameLang();
         $this->account_control_name =AccountControl::getAccountControlNameLang();
+        $this->account_activity_name =AccountActivity::getAccountActivityNameLang();
         $this->account_head_name =AccountHead::getAccounHeadNameLang();
     }
 
@@ -57,7 +62,7 @@ class AccountSubControlController extends Controller
         $account_sub_control_name=$this->account_sub_control_name;
         $account_control_name=$this->account_control_name;
         $account_head_name=$this->account_head_name;
-//        $accountSubControls=AccountSubControl::with(['accountControl','accountHead','user'])->get();
+//      $accountSubControls=AccountSubControl::with(['accountControl','accountHead','user'])->get();
         $accountHeads=AccountHead::with('accountControls')->get();
 
         return view('admin.includes.accountSubControls.create')->with(compact(['lang','account_sub_control_name','account_head_name','account_control_name','accountHeads']));
@@ -124,13 +129,11 @@ class AccountSubControlController extends Controller
      */
     public function edit($id)
     {
+
         $lang=Translation::getLang();
         $account_sub_control_name=$this->account_sub_control_name;
         $account_control_name=$this->account_control_name;
         $account_head_name=$this->account_head_name;
-
-//      $accountSubControls=AccountSubControl::with(['accountControl','accountHead','user'])->get();
-//      $accountHeads=AccountHead::with('accountControls')->get();
 
         $accountSubControl = AccountSubControl::find($id);
         ######################## using this for get the Head Account and Control Account by id ########################
@@ -138,10 +141,10 @@ class AccountSubControlController extends Controller
         $accountControle =AccountControl::where('id',$accountSubControl->account_control_id)->first();
         ######################## using this for get all the Head Account and Control Account ########################
 
-        $accountHead_list=AccountHead::all();
-        $accountControl_list=AccountControl::all();
+        $accountHeads=AccountHead::all();
+        $accountControls=AccountControl::all();
 
-        return view('admin.includes.accountSubControls.update')->with(compact(['accountSubControl','accountHeade','accountControle','account_sub_control_name','account_control_name','account_head_name','lang','accountHead_list','accountControl_list']));
+        return view('admin.includes.accountSubControls.update')->with(compact(['accountSubControl','accountHeade','accountHeads','accountControle','account_sub_control_name','account_control_name','account_head_name','lang']));
     }
 
     /**
@@ -180,20 +183,64 @@ class AccountSubControlController extends Controller
      */
 
     public function getSelectedAccountControl(Request $request){
+
+        $account_control_name=$this->account_control_name;
         if($request->ajax()){
            $data=$request->all();
            #################this for update page ################
-            if($data['account_sub_control_id']!=null){
-                 $accountSubControl = AccountSubControl::find($data['account_sub_control_id']);
-                 $accountControle =AccountControl::where('id',$accountSubControl->account_control_id)->first();
-                 $accountControl=AccountControl::where('account_head_id',$data['account_head_id'])->get();
-                 return response()->json([$accountControl,$accountControle]);
+            if( $data['table_id'] !='create'){
+
+                    $accountSubControl = AccountSubControl::find($data['table_id']);
+                    $accountControle =AccountControl::where('id',$accountSubControl->account_control_id)->first();
+                    $accountHeade=AccountHead::where('id',$accountSubControl->account_control_id)->first();
+                    $accountHeads=AccountHead::all();
+                    $accountControls =AccountControl::where('account_head_id',$data['account_head_id'])->get();
+
+
+                    return view('admin.includes.accountControls.accountControl_table')->
+                    with(compact(['accountControle','accountControls','accountHeade','accountHeads', 'account_control_name']));
+
              }else{
                  #################this for create page ################
-                 $accountControl=AccountControl::where('account_head_id',$data['account_head_id'])->get();
-                 return response()->json([ $accountControl]);
+                $accountControls=AccountControl::where('account_head_id',$data['account_head_id'])->get();
+
+                 return view('admin.includes.accountControls.accountControl_table')->with(compact('accountControls', 'account_control_name'));
                }
             ######################## using this for get the Head Account and Control Account by id ########################
+        }
+    }
+
+    public function getSelectedAccountSubControl(Request $request){
+///this will work just for AccountSettings
+        $account_sub_control_name=$this->account_sub_control_name;
+        if($request->ajax()) {
+            $data = $request->all();
+            if ($data['tableName'] == 'accountSettings') {
+                #################this for update page ################
+                if ($data['table_id'] != 'create') {
+                    $accountSetting = AccountSetting::find($data['table_id']);
+                    $accountControle = AccountControl::where('id', $accountSetting->account_control_id)->first();
+                    $accountSubControle = AccountSubControl::where('id', $accountSetting->account_sub_control_id)->first();
+                    $accountHeade = AccountHead::where('id', $accountSetting->account_head_id)->get();
+                    $accountActivite = AccountActivity::where('id', $accountSetting->account_activity_id)->get();
+
+                    $accountHeads = AccountHead::all();
+                    $accountControls = AccountControl::where(['account_head_id' => $data['account_head_id']])->get();
+                    $accountSubControls = AccountSubControl::where(['account_control_id' => $data['account_control_id']])->get();
+                    $accountActivities = AccountActivity::all();
+
+                    return view('admin.includes.accountSubControls.accountSubControl_table')->
+                    with(compact(['accountSubControls', 'accountControls',
+                        'accountHeads', 'accountActivities',
+                        'accountControle', 'accountSubControle',
+                        'accountHeade', 'accountActivite' ,'account_sub_control_name' ]));
+                } else {
+                    #################this for create page ################
+                    $accountSubControls = AccountSubControl::where('account_control_id', $data['account_control_id'])->get();
+                    return view('admin.includes.accountSubControls.accountSubControl_table')->with(compact('accountSubControls', 'account_sub_control_name'));
+                }
+                ######################## using this for get the Head Account and Control Account by id ########################
+            }
         }
     }
 

@@ -50,7 +50,7 @@ class CustomerController extends Controller
         $customer_name=$this->customer_name;
         $address=$this->address;
         $description=$this->description;
-        $accountSubControl=AccountSubControl::where('account_sub_control_name_en','=','Customers')->latest()->first();
+        $accountSubControl=AccountSubControl::where('account_code','=','211')->latest()->first();
    return view('admin.includes.customers.create')->with(compact(['lang','customer_name','address','description']));
 
     }

@@ -33,6 +33,7 @@ return [
     'update_branch' => 'تعديل الفرع',
     'branches' => 'الفروع',
     'stocks'=>'المخازن',
+    ####################### Accounts ################################
 
     'accounts'=> 'حسابات',
     'accountHeads'=> 'رأس الحساب',
@@ -40,11 +41,18 @@ return [
     'accountSubControls'=> 'التحكم الفرعي الحساب',
     'account_head_name'=>'اسم رأس الحساب',
     'account_control_name'=>'اسم التحكم بالحساب',
-
+    ####################### Account SUb Controls ################################
     'account_control_number'=>'رقم التحكم بالحساب',
     'account_sub_control_number'=>'رقم الحساب الفرعي',
 
     'account_sub_control_name'=>'اسم التحكم الفرعي بالحساب',
+    ####################### Account Activity ################################
+
+    'accountActivities'=>'أنشطة الحساب',
+    'accountActivity'=>'نشاط الحساب',
+    'account_activity_name'=>'اسم نشاط الحساب',
+    'add_account_activity_name'=>'اضافة نشاط الحساب',
+    'account_activity_number'=>'رقم نشاط الحساب',
 
     'update_account_head'=>'تعديل رأس الحساب',
     'update_account_control'=>'تعديل رأس الحساب',
@@ -86,6 +94,16 @@ return [
     'store_name' => 'اسم المتجر',
     'stores' => 'المتاجر',
     'store' => 'المتجر',
+ ####################### session Data ################################
+    'data_added' => 'تم الاضافة بنجاح',
+    'data_removed' => 'تم حذف البيانات',
+    'data_updated' => 'تم التعديل بنجاح',
+
+    ####################### Payment Type ################################
+    'payment_type_name' => 'اسم نوع الحساب',
+    'add_payment_type' => 'اضف نوع حساب جديد',
+    'payment_types' => 'أنواع الحساب',
+    'payment_type' => 'نوع الحساب',
     ####################### Branches ################################
 
     'admin' => 'الادمن',
@@ -132,7 +150,6 @@ return [
     'purchase_price'=>'ثمن الشراء',
     'sale_price'=>'ثمن البيع',
     'expire_date'=>'تاريخ الانتهاء',
-    'manufacture_date'=>'تاريخ الصنع',
 
 
     ####################### options ################################

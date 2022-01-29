@@ -32,7 +32,6 @@ class CreateStocksTable extends Migration
         $table->tinyInteger('allowexpire')->default(0);
         $table->float('current_purchase_unit_price');
         $table->date('expiry_date');
-        $table->date('manufacture_date');
         $table->boolean('isdeleted')->default(false);
         $table->timestamps();
       });

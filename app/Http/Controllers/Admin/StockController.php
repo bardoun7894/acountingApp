@@ -81,7 +81,7 @@ class StockController extends Controller
             'sale_unit_price'=>'required',
             'current_purchase_unit_price'=>'required',
             'expiry_date'=>'required',
-            'manufacture_date'=>'required',
+
 
         ]);
         $stock =new Stock();
@@ -93,7 +93,6 @@ class StockController extends Controller
         $stock->sale_unit_price = $request->sale_unit_price;
         $stock->current_purchase_unit_price = $request->current_purchase_unit_price;
         $stock->expiry_date = $request->expiry_date;
-        $stock->manufacture_date = $request->manufacture_date;
         $stock->user_id =Auth::user()->id;
 
         $stock->save();
@@ -161,7 +160,6 @@ class StockController extends Controller
         $stock->sale_unit_price = $request->sale_unit_price;
         $stock->current_purchase_unit_price = $request->current_purchase_unit_price;
         $stock->expiry_date = $request->expiry_date;
-        $stock->manufacture_date = $request->manufacture_date;
         $stock->user_id =Auth::user()->id;
         $stock->update();
         $session =Session::flash('message','Stock Updated Successfully');

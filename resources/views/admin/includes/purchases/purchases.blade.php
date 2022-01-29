@@ -31,6 +31,16 @@
 
        <div class="content-body">
 
+           @if ($errors->any())
+               <div class="alert alert-danger">
+                   <ul>
+                       @foreach ($errors->all() as $error)
+                           <li>{{ $error }}</li>
+                       @endforeach
+                   </ul>
+               </div>
+           @endif
+
            <form method="POST"  action="{{route("purchases.addSupplierInvoice")}}">
                @csrf
 
@@ -63,7 +73,6 @@
                 </div>
                 @break
                 @case('Stock added Successfully')
-
                 <div class="alert alert-success">
                     {{ session()->get('message') }}
                 </div>
@@ -79,12 +88,16 @@
         </div>
         <div class="card-content">
             <ul class="list-group mb-3">
-                <li class="list-group-item d-flex justify-content-end ">
-                    <div class="row justify-content-between" >
-                        <p class="mt-1">{{__("messages.sub_total")}}</p>
-                        <input  type="text"  class="form-control col-6 border-0 blue"  name="sub_total_amount" id="sub_total"  >
-                    </div>
-                </li>
+                <div>
+                    <li class="list-group-item d-flex justify-content-end ">
+                        <div class="row justify-content-between" >
+                            <p class="mt-1">{{__("messages.sub_total")}}</p>
+                            <input  type="text"  class="form-control col-6 border-0 blue"  name="sub_total_amount" id="sub_total"  >
+                        </div>
+                    </li>
+
+                </div>
+
                 <li class="list-group-item d-flex justify-content-between">
                     <span class="discount">{{__("messages.discount")}}</span>
                     {{--                                    <span class="discount">$100</span>--}}
@@ -103,16 +116,13 @@
                     <span class="order_total">{{__("messages.order_total")}}</span>
                     <input class="border-0" id="order_total" name="total_amount" >
                 </li>
-                <li class="list-group-item">
+<div class="row justify-content-around  m-2">
 
-                    <div class="float-end text-right">
-                        <label>
-                            <span> is Order Payment is Paid ?</span>
-                            <input type="checkbox"  id="isPaymentPaid" >
-                        </label>
-                    </div>
+    @include('admin.includes.payment_types.select_payment_type')
 
-                </li>
+    @include('admin.includes.sell_types.select_sell_type')
+</div>
+
             </ul>
         </div>
         <button class="btn btn-info btn-lg btn-block" type="submit"> {{__("messages.continue_to_checkout")}}</button>

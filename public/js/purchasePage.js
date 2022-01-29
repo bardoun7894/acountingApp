@@ -112,12 +112,11 @@ function getProductItem(){
      document.getElementById("purchaseUnitPrice").value = data.current_purchase_unit_price;
 
     });
-
 }
 function getSupplierItem(){
     var supplier_id = $("#supplier_id").val();
     getSelectorBasedInOther({   'supplier_id':supplier_id }, 'getSupplierItembyId').then((data)=>{
-      if(data!=="0"){
+      if(data!==""){
           document.getElementById("supplier_phone").value = data.phone;
           document.getElementById("supplier_address").value = data.address_en;
       }else{

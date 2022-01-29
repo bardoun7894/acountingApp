@@ -56,7 +56,9 @@ Route::group(
 ####################################  delete Methods ####################################
 
     Route::get('/delete-AccountSubControl/{id}',[Admin\AccountSubControlController::class,'deleteAccountSubControl'])->name('delete-AccountSubControl');
-    Route::get('/delete-AccountControl/{id}',[Admin\AccountControlController::class,'deleteAccountControl'])->name('delete-AccountControl');
+    Route::get('/delete-AccountHead/{id}',[Admin\AccountHeadController::class,'deleteAccountHead']);
+    Route::get('/delete-AccountControl/{id}',[Admin\AccountControlController::class,'deleteAccountControl']);
+    Route::get('/delete-AccountActivity/{id}',[\App\Http\Controllers\AccountActivityController::class,'deleteAccountActivity']);
     Route::get('/delete-FinanceYear/{id}',[Admin\FinanceYearController::class,'deleteFinanceYear'])->name('delete-FinanceYear');
     Route::get('/delete-Supplier/{id}',[Admin\SupplierController::class,'deleteSupplier'])->name('delete-Supplier');
      Route::get('/delete-PaymentType/{id}',[\App\Http\Controllers\PaymentTypeController::class,'deletePaymentType']);
@@ -68,7 +70,8 @@ Route::group(
 
     ####################################  select option  Methodes ####################################
 
-    Route::post('/get_selected_account_control',[Admin\AccountSubControlController::class,'getSelectedAccountControl'])->name('getSelectedAccountControl');
+    Route::post('/get_selected_account_head',[Admin\AccountSubControlController::class,'getSelectedAccountControl'])->name('getSelectedAccountControl');
+    Route::post('/get_selected_account_control',[Admin\AccountSubControlController::class,'getSelectedAccountSubControl'])->name('getSelectedAccountControl');
     Route::post('/get_selected_branch',[Admin\CategoryController::class,'getSelectedBranch'])->name('getSelectedBranch');
  //purchases
     Route::post('/get_selected_purchase_store_based_branch',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSelectedBranchStore'])->name('getSelectedBranchStore');
@@ -93,7 +96,9 @@ Route::group(
         'stores'=>\App\Http\Controllers\StoreController::class,
         'stocks'=>Admin\StockController::class,
         'purchases'=>\App\Http\Controllers\PurchaseInvoiceController::class,
-        'accountHeads'=>Admin\AccountHeadController::class,
+         'accountHeads'=>Admin\AccountHeadController::class,
+         'accountActivities'=>\App\Http\Controllers\AccountActivityController::class,
+        'accountSettings'=>\App\Http\Controllers\AccountSettingController::class,
         'accountControls'=>Admin\AccountControlController::class,
         'accountSubControls'=>Admin\AccountSubControlController::class,
     ]);

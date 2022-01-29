@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\paymentType;
+use App\Models\PaymentType;
 use App\Models\Translation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -24,7 +24,7 @@ class PaymentTypeController extends Controller
     public function index()
     {
         $payment_type_name=$this->payment_type_name;
-        $payment_types= PaymentType::all();
+        $payment_types= PaymentType::where('status',1)->get();
         return view('admin.includes.payment_types.payment_types')->with(compact(['payment_types','payment_type_name']));
      }
 
@@ -84,7 +84,7 @@ class PaymentTypeController extends Controller
         $payment_type_name=$this->payment_type_name;
         $lang=$this->lang;
         $payment_type = PaymentType::find($id);
-        return view('admin.includes.payment_types.update')->with(compact(['PaymentType','payment_type_name','lang']));
+        return view('admin.includes.payment_types.update')->with(compact(['payment_type','payment_type_name','lang']));
     }
 
     /**
