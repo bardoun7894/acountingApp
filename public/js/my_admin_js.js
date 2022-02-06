@@ -1,6 +1,7 @@
 
 import CategoryPage from "./categoryPage.js";
 import PurchasePage  from "./purchasePage.js";
+import SalePage  from "./salePage.js";
 import UserPage  from "./userPage.js";
 import Accounts from "./accounts.js";
 
@@ -19,6 +20,8 @@ import Accounts from "./accounts.js";
     new CategoryPage();
  //Purchase function
   new PurchasePage();
+  //Purchase function
+  new SalePage();
   //user page
   new UserPage();
 //account page
@@ -28,6 +31,10 @@ import Accounts from "./accounts.js";
        if(urlPath.split('/').length===5){
            $('#datatableBootstrap').DataTable({
                  responsive:true,
+               dom: 'Bfrtip',
+               buttons: [
+                   'copy', 'csv', 'excel', 'pdf', 'print'
+               ],
                language: {
                    "url":lang==="en"?"//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json":"//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json"
                }

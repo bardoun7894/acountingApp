@@ -21,14 +21,15 @@ $current_user =\Illuminate\Support\Facades\Auth::user();
            {{-- navigation items --}}
 
 
-            <li class=" nav-item" ><a href="#"><i class="la la-th-large" ></i><span class="menu-title" data-i18n="Stock">{{__('messages.purchases')}}</span></a>
+            <li class=" nav-item" ><a href="#"><i class="la la-shopping-cart" ></i><span class="menu-title" data-i18n="Stock">{{__('messages.purchases')}}</span></a>
                 <ul class="menu-content">
-                    <li><a class="menu-item" href="{{url('purchases')}}"><i></i> <span data-i18n="purchases">{{__('messages.purchases')}}</span></a>
+                    <li><a class="menu-item" href="{{url('allPurchases')}}"><i></i> <span data-i18n="purchases">{{__('messages.all_purchases')}}</span></a>
+                    <li><a class="menu-item" href="{{url('purchases')}}"><i></i> <span data-i18n="purchases">{{__('messages.purchase_order')}}</span></a>
 
                 </ul>
             </li>
 
-            <li class=" nav-item"><a href="ecommerce-product-detail.html"><i class="la la-list"></i><span class="menu-title" data-i18n="Product Detail">{{__('messages.sales')}}</span></a>
+            <li class=" nav-item"><a href="ecommerce-product-detail.html"><i class="la la-buysellads"></i><span class="menu-title" data-i18n="Product Detail">{{__('messages.sales')}}</span></a>
             </li>
        <li class=" nav-item" ><a href="#"><i class="la la-clipboard" ></i><span class="menu-title" data-i18n="Stock">{{__('messages.stocks')}}</span></a>
                 <ul class="menu-content">

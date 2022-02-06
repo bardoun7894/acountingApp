@@ -16,20 +16,68 @@ class AccountControlSeeder extends Seeder
     {
         $data=[
 
-//            account_head
-        [ 'id'=>1,'account_code'=>'11','account_control_name_en'=>'Fixed Assets',
-        'account_control_name_ar'=>'الأصول الثابتة','account_head_id'=>'1','user_id'=>1 ] ,
-        [ 'id'=>2,'account_code'=>'12',
-         'account_control_name_en'=>'Inventory','account_control_name_ar'=>'المخزون',
-          'account_head_id'=>'1','user_id'=>1 ] ,
-        [ 'id'=>3,'account_code'=>'13',
-         'account_control_name_en'=>'Debitors','account_control_name_ar'=>'المدينون',
-         'account_head_id'=>'1','user_id'=>1  ] ,
-        [ 'id'=>4,'account_code'=>'14',
-            'account_control_name_en'=>'Current Assets','account_control_name_ar'=>'الاصولة المتداولة',
+//            account_head 1
+
+            [ 'id'=>1,'account_code'=>'11','account_control_name_en'=>'Current Assets',
+        'account_control_name_ar'=>'الأصول المتداولة',
+            'account_head_id'=>'1','user_id'=>1 ] ,
+            [ 'id'=>2,'account_code'=>'12','account_control_name_en'=>'Fixed Assets',
+                'account_control_name_ar'=>'الأصول الثابتة',
+                'account_head_id'=>'1','user_id'=>1 ] ,
+            [ 'id'=>3,'account_code'=>'13','account_control_name_en'=>'intangible Assets',
+        'account_control_name_ar'=>'الأصول الغير ملموسة',
             'account_head_id'=>'1','user_id'=>1 ] ,
 
+    //liabilities
+       [ 'id'=>4,'account_code'=>'21','account_control_name_en'=>'Current Liabilities',
+        'account_control_name_ar'=>'الالتزامات المتداولة',
+        'account_head_id'=>'2','user_id'=>1 ] ,
+       [ 'id'=>5,'account_code'=>'22',
+         'account_control_name_en'=>'Fixed Liabilities',
+         'account_control_name_ar'=>'الالتزامات الثابتة',
+         'account_head_id'=>'2','user_id'=>1 ],
+
+//            ايرادات المبيعات Sales Revenues 31
+//ايرادات أخرى Other Sales 32
+   [ 'id'=>6,'account_code'=>'31',
+         'account_control_name_en'=>'Sales Revenues',
+         'account_control_name_ar'=>'ايرادات المبيعات',
+         'account_head_id'=>'3','user_id'=>1 ],
+
+      [ 'id'=>7,'account_code'=>'32',
+         'account_control_name_en'=>'Other Revenues',
+         'account_control_name_ar'=>'ايرادات أخرى',
+        'account_head_id'=>'3','user_id'=>1 ],
+
+// صافي المبيعات Cost Of Good Sold 41
+//	المشتريات Purchases   411
+//	المشتريات Purchases  Expenses  412
+//	مردودات مشتريات Purchases Returns   413
+//	مسموحات مشتريات   Purchases Discount   414
+//   	مصاريف البيع والتسويق sale and marketing expenses 42
+//	      مصاريف البيع  sale expenses 421
+//	      عمولات البيع    sale commissions 422
+//	   دعاية واعلان   Advertising    423
+//    مصاريف ادارية وعمومية   administrative expenses 43
+//	الأجور Payroll 431
+//	الايجار Rents 432
+//	كهرباء Electricity 433
+//	الصيانة Maintenance 434
+     [ 'id'=>8,'account_code'=>'41',
+                'account_control_name_en'=>'Cost Of Good Sold',
+                'account_control_name_ar'=>'صافي المبيعات',
+                'account_head_id'=>'4','user_id'=>1 ],
+            [ 'id'=>9,'account_code'=>'42',
+                'account_control_name_en'=>'sale and marketing expenses',
+                'account_control_name_ar'=>'مصاريف البيع والتسويق',
+                'account_head_id'=>'4','user_id'=>1 ],
+            [ 'id'=>10,'account_code'=>'43',
+                'account_control_name_en'=>'administrative expenses',
+                'account_control_name_ar'=>'مصاريف ادارية وعمومية',
+                'account_head_id'=>'4','user_id'=>1 ],
         ];
+
+
 
         AccountControl::insert($data);
     }

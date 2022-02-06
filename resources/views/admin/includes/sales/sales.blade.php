@@ -4,13 +4,13 @@
     <div class="content-wrapper">
         <div class="content-header row">
             <div class="content-header-left col-md-6 col-12 mb-2">
-                <h3 class="content-header-title">{{__("messages.purchases")}}</h3>
+                <h3 class="content-header-title">{{__("messages.sales")}}</h3>
                 <div class="row breadcrumbs-top">
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{url('/redirect')}}">{{__("messages.home")}}</a>
                             </li>
-                            <li class="breadcrumb-item active"><a >{{__("messages.purchases")}}</a>
+                            <li class="breadcrumb-item active"><a >{{__("messages.sales")}}</a>
                             </li>
 
                         </ol>
@@ -22,7 +22,7 @@
                 <div class="btn-group float-md-right" role="group" aria-label="Button group with nested dropdown">
                     <button class="btn btn-info round dropdown-toggle dropdown-menu-right box-shadow-2 px-2 mb-1" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ft-settings icon-left"></i> Settings</button>
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <a class="dropdown-item" href="{{url('/getPurchaseInvoice')}}">{{__("messages.purchase_invoice")}}</a>
+                        <a class="dropdown-item" href="{{url('/getSaleInvoice')}}">{{__("messages.sale_invoice")}}</a>
                         {{--                        <a class="dropdown-item" href="component-buttons-extended.html">Buttons</a>--}}
                     </div>
                 </div>
@@ -41,21 +41,21 @@
                </div>
            @endif
 
-           <form method="POST"  action="{{route("purchases.addSupplierInvoice")}}">
+           <form method="POST"  action="{{route("sales.addCustomerInvoice")}}">
                @csrf
 
                <div class="row">
-                   @include('admin.includes.purchases.info_supplier_section')
+                   @include('admin.includes.sales.info_customer_section')
 
 
         <div class="card" >
 
         <div class="card-header">
-            <h4 class="card-title">{{__("messages.purchases")}}</h4>
+            <h4 class="card-title">{{__("messages.sales")}}</h4>
             <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
             <div class="heading-elements">
                 <ul class="list-inline mb-0">
-                    <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('purchases/create')}}" target="_self">{{__("messages.add_purchase")}}</a></li>
+                    <li><a class="btn btn-sm btn-blue box-shadow-2 round btn-min-width pull-right" href="{{url('sales/create')}}" target="_self">{{__("messages.add_sale")}}</a></li>
                 </ul>
             </div>
         </div>
@@ -85,9 +85,9 @@
                 @endswitch
 
             @endif
-        <div id="purchase_table" class="card-content d-flex p-2">
+        <div id="sale_table" class="card-content d-flex p-2">
 
-            @include('admin.includes.purchases.purchases_table')
+            @include('admin.includes.sales.sales_table')
         </div>
         <div class="card-content">
             <ul class="list-group mb-3">
@@ -101,7 +101,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon3">{{$currency->$s_name}}</span>
                                     </div>
-                                    <input type="text"   class="form-control" readonly="readonly"  name="sub_total_amount" id="sub_total" aria-describedby="basic-addon3">
+                                    <input type="text"   class="form-control" readonly="readonly"  name="sub_total_amount" id="sub_total"  aria-describedby="basic-addon3">
                                 </div>
                             </fieldset>
 

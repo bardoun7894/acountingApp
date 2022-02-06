@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class SupplierInvoiceDetail extends Model
 {
     use HasFactory;
+
+
+    public function stock(){
+      return  $this->belongsTo(Stock::class);
+    }
+
 }

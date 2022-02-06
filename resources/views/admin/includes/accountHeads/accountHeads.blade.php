@@ -13,22 +13,22 @@
                     </ul>
                 </div>
             </div>
-{{--           {{__('messages.accountHead_deleted')}}--}}
+{{--           {{__('messages.data_deleted')}}--}}
 {{--           {{ \Illuminate\Support\Facades\Lang::get('messages.deleted')  }}--}}
             @if(session()->has('message'))
                @switch(session()->get('message'))
-                  @case(__('messages.accountHead_deleted'))
+                  @case(__('messages.data_deleted'))
                   <div class="alert alert-danger">
                     {{ session()->get('message') }}
                   </div>
                     @break
-                @case('AccountHead Updated Successfully')
+                @case(__('messages.data_updated'))
 
                 <div class="alert alert-success">
                     {{ session()->get('message') }}
                 </div>
                     @break
-                @case('AccountHead added Successfully')
+                    @case(__('messages.added_updated'))
 
                     <div class="alert alert-success">
                         {{ session()->get('message') }}

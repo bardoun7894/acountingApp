@@ -144,7 +144,13 @@ return [
     'tax'=>'الضريبة',
     'discount'=>'الخصم',
     'order_total'=>'المبلغ الكلي',
+
     'purchase_invoice'=>'فاتورة مشتريات',
+    'purchase_order'=>'أمر شراء',
+    'all_purchases'=>'جميع المشتريات',
+    'invoice_date'=>'تاريخ الفاتورة',
+    'invoice_number'=>'رقم الفاتورة',
+    'paid_amount'=>'المبلغ المدفوع',
     'add_purchase' => 'أضف شراء جديد',
     'continue_to_checkout' => 'اتمام الدفع',
     'purchase_price'=>'ثمن الشراء',
@@ -164,6 +170,7 @@ return [
     'edit' => 'تعديل',
     'update' => 'تعديل',
     'delete' => 'حذف',
+    'status' => 'الحالة',
 
     'settings'=>'الاعدادات'
 

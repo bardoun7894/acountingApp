@@ -78,6 +78,7 @@ class CustomerController extends Controller
         $customer->$description = $request->$description;
         $customer->contact_number = $request->contact_number;
         $customer->area = $request->area;
+        $customer->area = Auth::user()->branch_id;
 
         //make relation ship with accountcode
 

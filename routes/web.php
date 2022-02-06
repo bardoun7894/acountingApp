@@ -67,6 +67,8 @@ Route::group(
     Route::get('/delete-Stock/{id}',[Admin\StockController::class,'deleteStock']) ;
     Route::get('/delete-Customer/{id}',[Admin\CustomerController::class,'deleteCustomer'])->name('delete-Customer');
     Route::get('/delete-Purchase/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'deletePurchase'])->name('delete-Purchase');
+    Route::get('/allPurchases',[\App\Http\Controllers\PurchaseInvoiceController::class,'allPurchases']);
+    Route::get('/purchase_invoice/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchaseSupplierInvoice']);
 
     ####################################  select option  Methodes ####################################
 
@@ -76,12 +78,18 @@ Route::group(
  //purchases
     Route::post('/get_selected_purchase_store_based_branch',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSelectedBranchStore'])->name('getSelectedBranchStore');
     Route::post('/get_selected_purchase_supplier_based_branch',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSelectedBranchSupplier'])->name('getSelectedBranchSupplier');
+    Route::post('/get_selected_sale_customer_based_branch',[\App\Http\Controllers\SaleController::class,'getSelectedBranchCustomer'])->name('getSelectedBranchSupplier');
     Route::post('/get_selected_purchase_branch',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSelectedPurchaseBranch'])->name('getSelectedPurchaseBranch');
+    Route::post('/get_selected_sale_branch',[\App\Http\Controllers\SaleController::class,'getSelectedSaleBranch']);
     Route::post('/get_selected_purchase_product',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSelectedPurchaseCategory'])->name('getSelectedPurchaseCategory');
+    Route::post('/get_selected_sale_product',[\App\Http\Controllers\SaleController::class,'getSelectedSaleCategory']);
     Route::post('/addSupplierInvoice',[ \App\Http\Controllers\PurchaseInvoiceController::class,'addSupplierInvoiceFunction'])->name('purchases.addSupplierInvoice');
+    Route::post('/addCustomerInvoice',[ \App\Http\Controllers\SaleController::class,'addCustomerInvoiceFunction'])->name('sales.addCustomerInvoice');
     Route::post('/getProductItembyId',[\App\Http\Controllers\PurchaseInvoiceController::class,'getProductItembyId'])->name('getSelectedProduct');
     Route::post('/getSupplierItembyId',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSupplierItembyId'])->name('getSelectedSupplier');
+    Route::post('/getCustomerItembyId',[\App\Http\Controllers\SaleController::class,'getCustomerItembyId'])->name('getSelectedSupplier');
     Route::post('/getSumTotalItem',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSumTotalItem'])->name('getSumTotalItem');
+    Route::post('/getSumTotalItem',[\App\Http\Controllers\SaleController::class,'getSumTotalItem'])->name('getSumTotalItem');
 ####################################  resources  ####################################
 
     Route::resources([
@@ -96,6 +104,7 @@ Route::group(
         'stores'=>\App\Http\Controllers\StoreController::class,
         'stocks'=>Admin\StockController::class,
         'purchases'=>\App\Http\Controllers\PurchaseInvoiceController::class,
+        'sales'=>\App\Http\Controllers\SaleController::class,
          'accountHeads'=>Admin\AccountHeadController::class,
          'accountActivities'=>\App\Http\Controllers\AccountActivityController::class,
         'accountSettings'=>\App\Http\Controllers\AccountSettingController::class,

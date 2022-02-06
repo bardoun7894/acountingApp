@@ -5,15 +5,15 @@
     <div class="content-wrapper">
         <div class="content-header row">
             <div class="content-header-left col-md-6 col-12 mb-2">
-                <h3 class="content-header-title">{{__("messages.purchases")}}</h3>
+                <h3 class="content-header-title">{{__("messages.sales")}}</h3>
                 <div class="row breadcrumbs-top">
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{url('/redirect')}}">{{__("messages.home")}}</a>
                             </li>
-                            <li class="breadcrumb-item"><a href="{{url('/purchases')}}">{{__("messages.purchases")}}</a>
+                            <li class="breadcrumb-item"><a href="{{url('/sales')}}">{{__("messages.sales")}}</a>
                             </li>
-                            <li class="breadcrumb-item active">{{__("messages.add_purchase")}}
+                            <li class="breadcrumb-item active">{{__("messages.add_sale")}}
                             </li>
                         </ol>
                     </div>
@@ -47,24 +47,26 @@
             <div class="card-content collpase show">
                 <div class="card-body">
 
-                    <form class="form" method="POST" action="{{url('purchases')}}">
+                    <form class="form" method="POST" action="{{url('sales')}}">
                         @csrf
                         <div class="form-actions top clearfix">
-                             Add New Purchase
+                             Add New Sale
                         </div>
+                        @include('admin.includes.branches.select_branch')
+
                         <div class="row">
+
 
                             <div class="col-md-6">
 
 
-                                   @include('admin.includes.branches.select_branch')
 
-                                <div id="appendPurchaseCategoryLevel">
-                                    @include("admin.includes.purchases.append_purchase_category_level")
+                                <div id="appendSaleCategoryLevel">
+                                    @include("admin.includes.sales.append_sale_category_level")
                                 </div>
 
-                                <div id="appendPurchaseProductLevel">
-                                    @include("admin.includes.purchases.append_purchase_product_level")
+                                <div id="appendSaleProductLevel">
+                                    @include("admin.includes.sales.append_sale_product_level")
                                 </div>
 
                                 <div class="row justify-content-md-center form-group">
@@ -80,16 +82,14 @@
                                     </div>
                                 </div>
 
-
-
                             </div>
                             <div class="col-md-6">
                                 <div class="row justify-content-md-center">
                                     <div class="col-md-6">
                                         <div class="row">
                                             <div class="form-group col-12 mb-2">
-                                                <label for="eventRegInput2">{{__("messages.quantity")}}</label>
-                                                <input type="number"  id="eventRegInput2" class="form-control" placeholder="Quantity" name="quantity" >
+                                                <label for="sale_quantity">{{__("messages.quantity")}}</label>
+                                                <input type="number" id="sale_quantity" class="form-control" placeholder="Quantity" name="quantity" @error('quantity') is-invalid @enderror">
                                             </div>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                             <div class="form-group col-12 mb-2">
                                                 <label for="eventRegInput2">{{__("messages.purchase_unit_price")}}</label>
 
-                                                <input type="number" id="purchaseUnitPrice" class="form-control" placeholder="Purchase Unit Price" name=" current_purchase_unit_price">
+                                                <input type="number" id="purchaseUnitPrice" class="form-control"   readonly="readonly">
                                             </div>
                                         </div>
                                     </div>
@@ -110,23 +110,12 @@
                                         <div class="row">
                                             <div class="form-group col-12 mb-2">
                                                 <label for="eventRegInput2">{{__("messages.sale_unit_price")}}</label>
-
-                                                <input type="number" id="saleUnitPrice" class="form-control" placeholder="Sale Unit Price" name="sale_unit_price">
+                                                <input type="number" id="saleUnitPrice" class="form-control" placeholder="Sale Unit Price" @error('sale_unit_price') is-invalid @enderror name="sale_unit_price">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row justify-content-md-center">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="form-group col-12 mb-2">
-                                                <label for="eventRegInput2">{{__("messages.expiry_date")}}</label>
 
-                                                <input type="date" id="eventRegInput2" class="form-control" placeholder="Expiry Date" name="expiry_date">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
                             </div>
 

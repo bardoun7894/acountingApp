@@ -161,7 +161,11 @@ return [
     'expire_date'=>'Expire Date',
 
     'purchase_invoice'=> 'Purchase Invoice',
-
+    'purchase_order'=>'Purchase Order',
+    'all_purchases'=>'All Purchases',
+    'invoice_date'=>'Invoice Date',
+    'invoice_number'=>'Invoice Number',
+    'paid_amount'=>'Paid Amount',
     'add_purchase' => 'Add New Purchase',
     'continue_to_checkout' => 'Continue to checkout',
 
@@ -177,6 +181,7 @@ return [
     'delete' => 'delete',
     'settings'=>'Settings',
 
+    'status' => 'Status',
      'address' => 'Address',
      'description' => 'Description',
 

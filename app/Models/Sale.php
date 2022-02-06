@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerInvoice extends Model
+class Sale extends Model
 {
     use HasFactory;
 
-    public static function getTitleLang()
+    public function stock()
     {
-        return "title_".Translation::getLang();
+       return $this->belongsTo(Stock::class);
     }
 }

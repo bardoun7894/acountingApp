@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AccountSetting;
 use App\Models\Branch;
 use App\Models\Category;
+use App\Models\Currency;
 use App\Models\FinanceYear;
 use App\Models\PaymentType;
 use App\Models\Product;
@@ -19,6 +20,7 @@ use App\Models\SupplierPayment;
 use App\Models\Transaction;
 use App\Models\Translation;
 use App\Models\Unit;
+use App\Models\User;
 use App\Models\UserType;
 use App\Rules\AccountSettingYearRule;
 use App\Rules\FinanceYearRule;
@@ -27,6 +29,7 @@ use Carbon\Traits\Date;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -48,16 +51,20 @@ class PurchaseInvoiceController extends Controller
     private $title;
     private $payment_type_name;
     private $sell_type_name;
+    private $address;
+    private $s_name;
 
     function __construct()
     {
         $this->product_name=Stock::getProductNameLang();
+        $this->s_name=Currency::getSNameLang();
         $this->sell_type_name=SellType::getSellTypeNameLang();
         $this->payment_type_name=PaymentType::getPaymentTypeNameLang();
         $this->title=SupplierInvoice::getTitleLang();
         $this->branch_name=Branch::getBranchNameLang();
         $this->store_name=Store::getStoreNameLang();
         $this->supplier_name=Supplier::getSupplierNameLang();
+        $this->address=Supplier::getaddressLang();
         $this->unit_name=Unit::getUnitNameLang();
         $this->description=Stock::getDescriptionLang();
         $this->category_name=Category::getCategoryNameLang(Translation::getLang());
@@ -76,6 +83,8 @@ class PurchaseInvoiceController extends Controller
         $supplier_name=$this->supplier_name;
         $suppliers=Supplier::all();
         $payment_types=PaymentType::where('status',1)->get();
+        $currency=Currency::where('status',1)->first();
+        $s_name=$this->s_name;
         $sell_types=SellType::where('status',1)->get();
         $stores=Store::all();
         if(\Illuminate\Support\Facades\Auth::user()->user_type_id==1){
@@ -84,11 +93,25 @@ class PurchaseInvoiceController extends Controller
             $purchases=PurchaseCartDetail::with('stock')->where('branch_id',\Illuminate\Support\Facades\Auth::user()->branch_id)->get();
         }
         $branches=Branch::all();
-        return view('admin.includes.purchases.purchases')->with(compact([ 'suppliers','payment_types','sell_types','stores','store_name','branches','supplier_name','payment_type_name','sell_type_name','purchases','product_name','branch_name','description']));
 
+        return view('admin.includes.purchases.purchases')->with(compact([ 'suppliers', 'currency','s_name','payment_types','sell_types','stores','store_name','branches','supplier_name','payment_type_name','sell_type_name','purchases','product_name','branch_name','description']));
         //
     }
 
+
+
+
+    public function allPurchases(){
+
+        $supplierInvoices=SupplierInvoice::with(['supplier','supplier_payments'])->where('store_id',Auth::user()->store_id)->get();
+
+        $paidAmount = DB::table('supplier_payments')
+            ->join('supplier_invoices', 'supplier_payments.supplier_invoice_id', '=', 'supplier_invoices.id')
+            ->sum('supplier_payments.payment_amount');
+
+        return view('admin.includes.purchases.allPurchases')->with(compact([ 'supplierInvoices','paidAmount']));
+        //
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -103,17 +126,16 @@ class PurchaseInvoiceController extends Controller
             $branches=Branch::with('categories')->where('id',\Illuminate\Support\Facades\Auth::user()->branch_id)->get();
         }
 
-        $category_name=$this->category_name;
-        $branch_name=$this->branch_name;
-        $product_name=$this->product_name;
-        $unit_name=$this->unit_name;
-        $description=$this->description;
+        $category_name=$this->category_name ;
+        $branch_name=$this->branch_name ;
+        $product_name=$this->product_name ;
+        $unit_name=$this->unit_name ;
+        $description=$this->description ;
         $getProducts = Stock::all();
         $units=Unit::where('status',1)->get();
 
         $supplier_name=$this->supplier_name;
         $suppliers=Supplier::all();
-
 
         return view('admin.includes.purchases.create')->with(compact([ 'suppliers','getProducts','branches','branch_name','units','product_name','supplier_name','unit_name','category_name','description','userType']));
 
@@ -129,7 +151,6 @@ class PurchaseInvoiceController extends Controller
     {
         $product_name=$this->product_name;
         $description=$this->description;
-
         $validated = $request->validate([
             'branch_id' => 'required',
             'category_id' => 'required',
@@ -141,7 +162,7 @@ class PurchaseInvoiceController extends Controller
             'sale_unit_price'=>'required',
             'current_purchase_unit_price'=>'required',
             'expiry_date'=>'required',
-        ]);
+          ]);
 
 
            $purchaseCart =new PurchaseCartDetail();
@@ -157,7 +178,8 @@ class PurchaseInvoiceController extends Controller
             $purchaseCart->expiry_date = $request->expiry_date;
 
             $purchaseCart->save();
-            $session =Session::flash('message','Purchase added Successfully');
+
+           $session =Session::flash('message',__('messages.data_added'));
             return redirect('purchases')->with(compact(['session','product_name','description']));
 
 
@@ -179,16 +201,14 @@ class PurchaseInvoiceController extends Controller
     }
   public function addSupplierInvoiceFunction(Request $request)
     {
-
         $title=$this->title;
-
       $financial_year = FinanceYear::where('isActive',1)->first();
       //purchase Product debit transaction
         //purchase  id 3
 
       $data = [
           'financial_year' => $financial_year,
-      ];
+          ];
       $validated = $request->merge($data);
 
       $validated = $request->validate([
@@ -206,18 +226,21 @@ class PurchaseInvoiceController extends Controller
 
 
       $supplier=Supplier::find($request->supplier_id);
-      $invoice_date= date('Y-m-d H:i');
+
+
+        $invoice_date= date('Y-m-d H:i');
 
         //get total allow tax
-      $stocksAllowedTax =Stock::with('purchases')->where('allowtax',1)->get();
       $stocks =Stock::with('purchases')->where('store_id', Auth::user()->store_id)->get();
-      $totalallowtax = 0 ;
-      foreach ($stocksAllowedTax as $stock){
-          foreach ($stock->purchases as $purchase) {
-            $totalallowtax += $purchase->purchase_qty * $purchase->purchase_unit_price;
-          }
-       }
-      $supplier_invoice =new SupplierInvoice();
+
+        //get total allow tax
+        $totalallowtax = DB::table('stocks')
+            ->join('purchase_cart_details', 'stocks.id', '=', 'purchase_cart_details.stock_id')
+            ->where('allowtax',1)->where('store_id', Auth::user()->store_id)
+            ->selectRaw('sum(purchase_cart_details.purchase_qty * purchase_cart_details.purchase_unit_price) as sum')->first();
+
+
+        $supplier_invoice =new SupplierInvoice();
       $supplier_invoice->supplier_id = $request->supplier_id;
 
       if(Auth::user()->getAuthIdentifier()==1){
@@ -228,7 +251,7 @@ class PurchaseInvoiceController extends Controller
             $supplier_invoice->branch_id =Auth::user()->branch_id;
         }
        $supplier_invoice->user_id =Auth::user()->getAuthIdentifier();
-       $invoice_number="PUR".$invoice_date. $supplier_invoice->user_id;
+       $invoice_number = "PUR".date('YmdHis'). $supplier_invoice->user_id;
        $supplier_invoice->invoice_no =$invoice_number;
        $supplier_invoice->invoice_date =$invoice_date;
        $supplier_invoice->discount = $request->discount;
@@ -248,7 +271,6 @@ class PurchaseInvoiceController extends Controller
               $supplier_invoice_detail->purchase_quantity = $purchaseStock->purchase_qty;
               $supplier_invoice_detail-> purchase_unit_price = $purchaseStock->purchase_unit_price;
               $supplier_invoice_detail->save() ;
-
               //update stock
               $stockProduct=Stock::find($purchaseStock->stock_id);
               $stockProduct->expiry_date=$purchaseStock->expiry_date;
@@ -259,7 +281,6 @@ class PurchaseInvoiceController extends Controller
           }
 
       }
-
          //purchase Product debit transaction purchase Activity
          //account_activity=3 =>purchase
 
@@ -284,12 +305,11 @@ class PurchaseInvoiceController extends Controller
 
         //account_activity=5 =>purchase Payment Pending // DEBIT ENTRY TRANSACTION
 
-        $creditEntry = $this->getAccountSetting(1,5,3,5);
-
+        $creditEntry = $this->getAccountSetting(2,9,8,5);
         $setcreditEntry=new Transaction();
         $setcreditEntry->financial_year_id=$financial_year->id;
-        $setcreditEntry->account_head_id= $creditEntry->account_head_id;   //these form Account Setting $debitEntry
-        $setcreditEntry->account_control_id= $creditEntry->account_control_id; //these form Account Setting $debitEntry
+        $setcreditEntry->account_head_id= $creditEntry->account_head_id;          //these form Account Setting $debitEntry
+        $setcreditEntry->account_control_id= $creditEntry->account_control_id;    //these form Account Setting $debitEntry
         $setcreditEntry->account_sub_control_id=$creditEntry->account_sub_control_id; //these form Account Setting $debitEntry
         $setcreditEntry->invoice_number=$invoice_number;
         $setcreditEntry->transaction_date=$invoice_date;
@@ -354,17 +374,22 @@ class PurchaseInvoiceController extends Controller
             $setcreditEntry->transaction_title_en=" Purchase Payment Paid ( ".$supplier-> supplier_name_en." )";
             $setcreditEntry->transaction_title_ar= isset($supplier-> supplier_name_ar)?" ( ".$supplier-> supplier_name_ar ."تم الدفع ( ":" ( ". $supplier-> supplier_name_en ."تم الدفع ( ";
             $setcreditEntry->save();
-
         }
+        //delete table purchase data
         PurchaseCartDetail::query()->truncate();
-
-
-
-
-      $session = Session::flash('message','Supplier Invoice added Successfully');
-       return redirect('purchases')->with(compact(['session']));
-
+     return   $this->purchaseSupplierInvoice($supplier_invoice->id);
     }
+
+  public function purchaseSupplierInvoice($supplierInvoiceId){
+        $supplier_name=$this->supplier_name;
+        $product_name=Stock::getProductNameLang();
+        $address=$this->address;
+        $supplier_invoice = SupplierInvoice::find($supplierInvoiceId);
+        $supplier_invoice_details = SupplierInvoiceDetail::with('stock')->where('supplier_invoice_id',$supplierInvoiceId)->get();
+      $supplier=Supplier::where('id',$supplier_invoice->supplier_id)->first();
+        return view('admin.includes.purchases.purchase_invoice')->with(compact(['supplier_name','product_name','address','supplier','supplier_invoice','supplier_invoice_details']));
+    }
+
 
     /**
      * Display the specified resource.
@@ -448,7 +473,7 @@ class PurchaseInvoiceController extends Controller
         $purchaseCart->user_id =Auth::user()->id;
         $purchaseCart->expiry_date = $request->expiry_date;
         $purchaseCart->update();
-        $session =Session::flash('message','Purchase Cart Updated Successfully');
+        $session =Session::flash('message',__('messages.data_updated'));
         return redirect('purchases')->with(compact(['session','description','product_name']));
         //
     }
@@ -500,8 +525,8 @@ class PurchaseInvoiceController extends Controller
     }
     public function getProductItembyId(Request $request){
         if($request->ajax()){
-            $data=$request->all();
-            $productData =  Stock::find($data['stock_id']);
+            $data=$request->stock_id;
+            $productData =  Stock::where('id',$data)->first();
             return $productData;
           }
     }
@@ -544,7 +569,8 @@ class PurchaseInvoiceController extends Controller
     public function deletePurchase($id){
         $purchase=PurchaseCartDetail::find($id);
         $purchase->delete();
-        $session =Session::flash('message','Purchase cart item Deleted Successfully');
+
+        $session =Session::flash('message',__('messages.data_removed'));
         return redirect('purchases')->with(compact('session'));
 
     }
