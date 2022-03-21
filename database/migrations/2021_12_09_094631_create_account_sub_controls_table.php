@@ -15,7 +15,7 @@ class CreateAccountSubControlsTable extends Migration
     {
         Schema::create('account_sub_controls', function (Blueprint $table) {
             $table->id();
-            $table->string('account_sub_control_code')->nullable();
+            $table->string('account_code')->nullable();
             $table->integer('user_id')->unsigned();
             $table->integer('account_control_id')->unsigned();
             $table->integer('account_head_id')->unsigned();

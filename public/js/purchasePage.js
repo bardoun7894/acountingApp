@@ -37,6 +37,8 @@ function getPurchaseCategoryBasedInbranch() {
 
 
 
+
+
     });
 }
     $(document).ready(function () {
@@ -48,7 +50,6 @@ function getPurchaseCategoryBasedInbranch() {
             $(document).on('change', '#branchId', function () {
                 getStoreBasedInBranch()
                 getSupplierBasedInBranch()
-
         });
             $('#discountId').keyup((e) => {
                 console.log(e.currentTarget.value);
@@ -83,13 +84,7 @@ function getCategoryBasedInBranch(){
             getPurchaseProductBasedInCategory()
         });
         getPurchaseProductBasedInCategory()
-    }).then(()=>{
-        $(document).on('change','#stockId', function() {
-            getProductItem()
-        });
-        getProductItem();
-
-    });
+    })
 }
 
 
@@ -143,6 +138,7 @@ function getTotalOrder() {
 
 function totalPayment(){
     getSelectorBasedInOther({},'getSumTotalItem').then((data)=>{
+
         document.getElementById("sub_total").value = data.sub_total  ;
     }).then(()=>{
         getTotalOrder()
@@ -164,6 +160,12 @@ function totalPayment(){
             'tableName': tableName
         }, 'get_selected_purchase_product').then((data)=>{
             $('#appendPurchaseProductLevel').html(data);
+
+        }).then(()=>{
+            $(document).on('change','#stockId', function() {
+                getProductItem()
+            });
+            getProductItem();
 
         });
 

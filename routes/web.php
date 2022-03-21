@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User;
 use App\Http\Controllers\Admin;
@@ -59,17 +60,40 @@ Route::group(
     Route::get('/delete-AccountHead/{id}',[Admin\AccountHeadController::class,'deleteAccountHead']);
     Route::get('/delete-AccountControl/{id}',[Admin\AccountControlController::class,'deleteAccountControl']);
     Route::get('/delete-AccountActivity/{id}',[\App\Http\Controllers\AccountActivityController::class,'deleteAccountActivity']);
+    Route::get('/delete-AccountSetting/{id}',[\App\Http\Controllers\AccountSettingController::class,'deleteAccountSetting']);
     Route::get('/delete-FinanceYear/{id}',[Admin\FinanceYearController::class,'deleteFinanceYear'])->name('delete-FinanceYear');
     Route::get('/delete-Supplier/{id}',[Admin\SupplierController::class,'deleteSupplier'])->name('delete-Supplier');
      Route::get('/delete-PaymentType/{id}',[\App\Http\Controllers\PaymentTypeController::class,'deletePaymentType']);
     Route::get('/delete-Unit/{id}',[\App\Http\Controllers\UnitController::class,'deleteUnit']);
     Route::get('/delete-User/{id}',[Admin\UserController::class,'deleteUser']) ;
     Route::get('/delete-Stock/{id}',[Admin\StockController::class,'deleteStock']) ;
+    Route::get('/delete-Store/{id}',[\App\Http\Controllers\StoreController::class,'deleteStore']) ;
+    Route::get('/delete-Branch/{id}',[Admin\BranchController::class,'deleteBranch']) ;
+    Route::get('/delete-Category/{id}',[Admin\CategoryController::class,'deleteCategory']) ;
     Route::get('/delete-Customer/{id}',[Admin\CustomerController::class,'deleteCustomer'])->name('delete-Customer');
     Route::get('/delete-Purchase/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'deletePurchase'])->name('delete-Purchase');
     Route::get('/allPurchases',[\App\Http\Controllers\PurchaseInvoiceController::class,'allPurchases']);
+    Route::get('/purchasePaymentPending',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchasePaymentPending']);
+    Route::get('/purchase_payment_history/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchasePaymentHistory']);
     Route::get('/purchase_invoice/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchaseSupplierInvoice']);
+    Route::get('/paid_amount/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'paid_amount']);
 
+
+    Route::get('/trm',function(){
+
+
+      return DB::table('supplier_invoices')
+          ->join('supplier_payments','supplier_invoices.id','=','supplier_payments.supplier_invoice_id')
+          ->select('supplier_invoices.id','supplier_invoices.branch_id','supplier_invoices.invoice_date',
+           'supplier_invoices.supplier_id','supplier_invoices.invoice_no','supplier_invoices.total_amount',
+            DB::raw('supplier_invoices.total_amount - supplier_payments.payment_amount as `remaining payment` ' )
+           ,DB::raw('sum(supplier_payments.payment_amount) as payment ' ))->groupBy('supplier_payments.id')->where('supplier_invoices.total_amount','>','supplier_payments.payment')
+            ->get();
+
+
+
+
+    });
     ####################################  select option  Methodes ####################################
 
     Route::post('/get_selected_account_head',[Admin\AccountSubControlController::class,'getSelectedAccountControl'])->name('getSelectedAccountControl');
@@ -89,7 +113,7 @@ Route::group(
     Route::post('/getSupplierItembyId',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSupplierItembyId'])->name('getSelectedSupplier');
     Route::post('/getCustomerItembyId',[\App\Http\Controllers\SaleController::class,'getCustomerItembyId'])->name('getSelectedSupplier');
     Route::post('/getSumTotalItem',[\App\Http\Controllers\PurchaseInvoiceController::class,'getSumTotalItem'])->name('getSumTotalItem');
-    Route::post('/getSumTotalItem',[\App\Http\Controllers\SaleController::class,'getSumTotalItem'])->name('getSumTotalItem');
+    Route::post('/getSumTotalSaleItem',[\App\Http\Controllers\SaleController::class,'getSumTotalItem']);
 ####################################  resources  ####################################
 
     Route::resources([

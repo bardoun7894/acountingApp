@@ -10,19 +10,19 @@ class Stock extends Model
 {
     use HasFactory;
     public  function category(){
-       return $this->belongsTo(Category::class);
+       return  $this->belongsTo(Category::class) ;
           }
     public  function purchases(){
-        return $this->hasMany(PurchaseCartDetail::class);
+        return  $this->hasMany(PurchaseCartDetail::class);
       }
     public function user(){
-         return $this->belongsTo(User::class);
+         return  $this->belongsTo(User::class);
        }
     static public function getProductNameLang(){
-        return "product_name_".Translation::getLang();
+        return  "product_name_".Translation::getLang();
    }
    static public function getDescriptionLang(){
-       return "description_".Translation::getLang();
+       return  "description_".Translation::getLang();
    }
 
 }

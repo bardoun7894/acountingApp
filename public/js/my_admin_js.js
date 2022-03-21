@@ -2,12 +2,14 @@
 import CategoryPage from "./categoryPage.js";
 import PurchasePage  from "./purchasePage.js";
 import SalePage  from "./salePage.js";
+import StorePage  from "./storePage.js";
 import UserPage  from "./userPage.js";
 import Accounts from "./accounts.js";
 
 
 //get the language path
     let urlPath = window.location.href; // raw javascript
+
     const lang = urlPath.split("/")[3];
     //get tableName
     const tableName = urlPath.split("/")[4];
@@ -22,6 +24,7 @@ import Accounts from "./accounts.js";
   new PurchasePage();
   //Purchase function
   new SalePage();
+
   //user page
   new UserPage();
 //account page

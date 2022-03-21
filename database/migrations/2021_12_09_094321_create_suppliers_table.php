@@ -25,6 +25,7 @@ class CreateSuppliersTable extends Migration
             $table->string('address_ar')->nullable();
             $table->string('description_en')->nullable();
             $table->string('description_ar')->nullable();
+            $table->string('account_code')->nullable();
             $table->unsignedInteger('branch_id')->nullable();
             $table->timestamps();
       });

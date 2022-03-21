@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use function PHPUnit\Framework\returnArgument;
 
 class PurchaseInvoiceController extends Controller
 {
@@ -103,14 +104,11 @@ class PurchaseInvoiceController extends Controller
 
     public function allPurchases(){
 
-        $supplierInvoices=SupplierInvoice::with(['supplier','supplier_payments'])->where('store_id',Auth::user()->store_id)->get();
+        $supplierInvoices = SupplierInvoice::with( ['supplier','supplier_payments'] )->where('store_id',Auth::user()->store_id)->get();
 
-        $paidAmount = DB::table('supplier_payments')
-            ->join('supplier_invoices', 'supplier_payments.supplier_invoice_id', '=', 'supplier_invoices.id')
-            ->sum('supplier_payments.payment_amount');
+//        $paidAmount =DB::table('supplier_payments')->join('supplier_invoice s', 'supplier_payments.supplier_invoice_id', '=', 'supplier_invoices.id')->sum('supplier_payments.payment_amount');
 
-        return view('admin.includes.purchases.allPurchases')->with(compact([ 'supplierInvoices','paidAmount']));
-        //
+        return view('admin.includes.purchases.all_purchases.allPurchases')->with(compact([ 'supplierInvoices']));
     }
     /**
      * Show the form for creating a new resource.
@@ -133,7 +131,6 @@ class PurchaseInvoiceController extends Controller
         $description=$this->description ;
         $getProducts = Stock::all();
         $units=Unit::where('status',1)->get();
-
         $supplier_name=$this->supplier_name;
         $suppliers=Supplier::all();
 
@@ -164,8 +161,7 @@ class PurchaseInvoiceController extends Controller
             'expiry_date'=>'required',
           ]);
 
-
-           $purchaseCart =new PurchaseCartDetail();
+            $purchaseCart =new PurchaseCartDetail();
             $purchaseCart->branch_id =$request->branch_id;
             $purchaseCart->unit_id =$request->unit_id;
             $purchaseCart->category_id =$request->category_id;
@@ -186,32 +182,129 @@ class PurchaseInvoiceController extends Controller
 
     }
 
-    public function getAccountSetting($account_head_id,$account_control_id,$account_sub_control_id,$account_activity_id){
+    public function getAccountSetting($id,$account_head_id,$account_control_id,$account_sub_control_id,$account_activity_id){
         $debitEntry = AccountSetting::where('account_activity_id',$account_activity_id)->first();
         if(!isset($debitEntry)){
             $debitEntry = new AccountSetting();
-            $debitEntry->account_head_id=$account_head_id; //1
-            $debitEntry->account_control_id=$account_control_id; //2
-            $debitEntry->account_sub_control_id=$account_sub_control_id;//1
-            $debitEntry->account_activity_id=$account_activity_id;//3
+            $debitEntry->id = $id;
+            $debitEntry->account_head_id = $account_head_id;
+            $debitEntry->account_control_id = $account_control_id;
+            $debitEntry->account_sub_control_id = $account_sub_control_id;
+            $debitEntry->account_activity_id=$account_activity_id;
             $debitEntry->branch_id=Auth::user()->branch_id;
             $debitEntry->save();
         }
         return $debitEntry;
     }
+
+    public  function   PurchasePayment($supplier_id,$supplier_invoice_id,$branch_id,$invoice_no,$invoice_date,$total_amount,$paymentId,$user_id,$remaining_balance){
+       $financial_year = FinanceYear::where('isActive',1)->first() ;
+       $success_message="Purchase Success" ;
+        $d = new DateTime();
+        $payInvoiceno ="Pay".$d->format("YmdHisv");
+        ############################## is payment PAID ################################################
+            $supplier=Supplier::find($supplier_id);
+            $invoice_supplier_payment = new SupplierPayment();
+            $invoice_supplier_payment->supplier_id =  $supplier_id;
+            $invoice_supplier_payment->supplier_invoice_id = $supplier_invoice_id;
+            $invoice_supplier_payment->branch_id =   $branch_id ;
+            $invoice_supplier_payment-> invoice_no =   $invoice_no;
+            $invoice_supplier_payment-> invoice_date =  $invoice_date;
+            $invoice_supplier_payment-> total_amount =   $total_amount;
+            $invoice_supplier_payment->payment_amount =  $total_amount;
+            $invoice_supplier_payment->remaining_balance =  $remaining_balance ;
+            $invoice_supplier_payment->payment_id = $paymentId ;
+            $invoice_supplier_payment->user_id =$user_id;
+            $invoice_supplier_payment->save();
+            ##3############################  debit  entry  ################################################
+
+            //purchase Payment Pending
+            //account_activity= 8 =>purchase Payment Pending
+            $purchaseAccount = $this->getAccountSetting(8,2,4,18,8);
+
+                $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
+                $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_no,$invoice_date
+                ,Auth::user()->getAuthIdentifier(),$branch_id,
+                $remaining_balance,$total_amount,"  Purchase Payment Paid to".$supplier->supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."تم الترحيل ": $supplier-> supplier_name_en ."تم الترحيل");
+
+            ##4############################  credit entry ################################################
+
+            //purchase Payment PAID
+             //account_activity=9 =>purchase Payment PAID // DEBIT ENTRY TRANSACTION
+
+              $purchaseAccount = $this->getAccountSetting(9,1,1,2,9);
+
+            $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
+           $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_no,$invoice_date
+                ,Auth::user()->getAuthIdentifier(),$branch_id,
+                $total_amount,$remaining_balance," Purchase Payment Succeed".$supplier-> supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."تم الدفع ": $supplier-> supplier_name_en ."تم الدفع ");
+
+    }
+
+
+    public function paid_amount($id){
+     $d = new DateTime();
+     $branch_id = Auth::user()->branch_id;
+     $user_id = Auth::user()->getAuthIdentifier();
+     $invoice_no = "Pay".$d->format("YmdHisv");
+     $purchase_invoice = SupplierInvoice::find($id) ;
+     $supplier= Supplier::find($purchase_invoice->supplier_id);
+     $purchase_payment_details = SupplierPayment::where('supplier_invoice_id',$id)->get();
+
+    return view('admin.includes.purchases.paid_purchases.paid_amount')->with(compact(['purchase_payment_details','supplier']));
+    }
+
+   public function purchasePaymentPending(){
+            $supplier_name=Supplier::getSupplierNameLang();
+            $branch_name=Branch::getBranchNameLang();
+            $purchasePaymentPendings = DB::table('supplier_invoices')
+
+             ->join('supplier_payments','supplier_invoices.id','=','supplier_payments.supplier_invoice_id')
+             ->select('supplier_invoices.id as id','supplier_invoices.branch_id','supplier_invoices.invoice_date',
+              'supplier_invoices.supplier_id' , 'supplier_invoices.invoice_no','supplier_invoices.total_amount',
+              DB::raw( 'sum(supplier_payments.payment_amount) as payment'),
+              DB::raw('supplier_invoices.total_amount - sum(supplier_payments.payment_amount) as `remaining_payment`')
+
+             )->groupBy('supplier_payments.supplier_invoice_id')->where('supplier_invoices.total_amount','>','supplier_payments.payment')
+             ->get();
+
+
+        return view('admin.includes.purchases.pending_payments.pending_purchases')->with(compact([ 'purchasePaymentPendings','supplier_name','branch_name']));
+
+        }
+  public function  purchasePaymentHistory($supplier_invoice_id){
+            $supplier_name=Supplier::getSupplierNameLang();
+            $branch_name=Branch::getBranchNameLang();
+
+            $supplier_id=SupplierInvoice::find($supplier_invoice_id)->supplier_id;
+            $supplier=Supplier::find($supplier_id);
+
+      $purchasePaymentHistories = DB::table('supplier_invoices')
+             ->join('supplier_payments','supplier_invoices.id','=','supplier_payments.supplier_invoice_id')
+              ->select( 'supplier_invoices.id','supplier_invoices.branch_id','supplier_invoices.invoice_date',
+                'supplier_invoices.supplier_id','supplier_invoices.invoice_no','supplier_invoices.total_amount',
+                'supplier_payments.payment_amount','supplier_payments.remaining_balance','supplier_payments.user_id',
+            )->groupBy('supplier_payments.id')->where('supplier_invoices.total_amount','>','supplier_payments.payment')
+                ->where('supplier_invoices.id',$supplier_invoice_id)->get();
+
+            return view('admin.includes.purchases.supplier_payments_history.history_payments')->with(compact([ 'purchasePaymentHistories','supplier','supplier_name','branch_name']));
+
+
+        }
+
+
+
   public function addSupplierInvoiceFunction(Request $request)
     {
         $title=$this->title;
       $financial_year = FinanceYear::where('isActive',1)->first();
       //purchase Product debit transaction
         //purchase  id 3
-
       $data = [
           'financial_year' => $financial_year,
           ];
-      $validated = $request->merge($data);
-
-      $validated = $request->validate([
+            $validated = $request->merge($data);
+            $validated = $request->validate([
             'financial_year' =>new FinanceYearRule(),
             'branch_id' => Auth::user()->user_type_id==1?'required':"",
             'store_id' => Auth::user()->user_type_id==1?'required':"" ,
@@ -222,27 +315,20 @@ class PurchaseInvoiceController extends Controller
             'total_amount' => 'required',
             'discount' => 'required',
             'tax' => 'required',
-        ]);
-
-
+           ]);
       $supplier=Supplier::find($request->supplier_id);
-
-
-        $invoice_date= date('Y-m-d H:i');
-
+      $invoice_date= date('Y-m-d H:i');
         //get total allow tax
-      $stocks =Stock::with('purchases')->where('store_id', Auth::user()->store_id)->get();
-
+        $purchasesStocks =PurchaseCartDetail::where('branch_id', Auth::user()->branch_id)->get();
         //get total allow tax
         $totalallowtax = DB::table('stocks')
             ->join('purchase_cart_details', 'stocks.id', '=', 'purchase_cart_details.stock_id')
             ->where('allowtax',1)->where('store_id', Auth::user()->store_id)
-            ->selectRaw('sum(purchase_cart_details.purchase_qty * purchase_cart_details.purchase_unit_price) as sum')->first();
+            ->selectRaw('sum( purchase_cart_details.purchase_qty * purchase_cart_details.purchase_unit_price ) as sum')->first()->sum;
+##############################  supplier invoice  ################################################
 
-
-        $supplier_invoice =new SupplierInvoice();
+      $supplier_invoice =new SupplierInvoice();
       $supplier_invoice->supplier_id = $request->supplier_id;
-
       if(Auth::user()->getAuthIdentifier()==1){
             $supplier_invoice->store_id =$request->store_id  ;
             $supplier_invoice->branch_id =$request->branch_id;
@@ -252,25 +338,25 @@ class PurchaseInvoiceController extends Controller
         }
        $supplier_invoice->user_id =Auth::user()->getAuthIdentifier();
        $invoice_number = "PUR".date('YmdHis'). $supplier_invoice->user_id;
-       $supplier_invoice->invoice_no =$invoice_number;
-       $supplier_invoice->invoice_date =$invoice_date;
-       $supplier_invoice->discount = $request->discount;
-       $supplier_invoice->tax = $request->tax;
-       $paymentId=$request->payment_type_id;
+       $supplier_invoice->invoice_no = $invoice_number;
+       $supplier_invoice->invoice_date = $invoice_date;
+       $supplier_invoice-> discount = $request->discount;
+       $supplier_invoice-> tax = $request->tax;
+       $paymentId = $request->payment_type_id;
        $supplier_invoice->sub_total_amount = $request->sub_total_amount;
        $supplier_invoice->total_amount = $request->total_amount;
-       $supplier_invoice-> total_tax_allowed = $totalallowtax;
+       $supplier_invoice-> total_tax_allowed = $totalallowtax==1?$totalallowtax:0;
        $supplier_invoice->save();
+      ##############################  stock effect  ################################################
 
-      foreach ($stocks as $stock){
-          foreach($stock->purchases as $purchaseStock){
-             //make supplier detail
+      foreach($purchasesStocks as $purchaseStock){
+              //make supplier detail
               $supplier_invoice_detail = new SupplierInvoiceDetail();
               $supplier_invoice_detail->supplier_invoice_id = $supplier_invoice->id;
               $supplier_invoice_detail->stock_id = $purchaseStock->stock_id;
               $supplier_invoice_detail->purchase_quantity = $purchaseStock->purchase_qty;
               $supplier_invoice_detail-> purchase_unit_price = $purchaseStock->purchase_unit_price;
-              $supplier_invoice_detail->save() ;
+              $supplier_invoice_detail->save();
               //update stock
               $stockProduct=Stock::find($purchaseStock->stock_id);
               $stockProduct->expiry_date=$purchaseStock->expiry_date;
@@ -278,111 +364,121 @@ class PurchaseInvoiceController extends Controller
               $stockProduct->current_purchase_unit_price=$purchaseStock->purchase_unit_price;
               $stockProduct->sale_unit_price=$purchaseStock->sale_unit_price;
               $stockProduct->save();
+
           }
 
-      }
-         //purchase Product debit transaction purchase Activity
-         //account_activity=3 =>purchase
+       ##1############################  debit  entry  ################################################
+      //purchase Product debit transaction purchase Activity
+      //account_activity=3 => purchase product
 
-          $debitEntry = $this->getAccountSetting(3,6,4,3);
-
-          $setdebitEntry=new Transaction();
-          $setdebitEntry->financial_year_id=$financial_year->id;
-          $setdebitEntry->account_head_id= $debitEntry->account_head_id;   //these form Account Setting $debitEntry
-          $setdebitEntry->account_control_id= $debitEntry->account_control_id; //these form Account Setting $debitEntry
-          $setdebitEntry->account_sub_control_id=$debitEntry->account_sub_control_id; //these form Account Setting $debitEntry
-          $setdebitEntry->invoice_number=$invoice_number;
-          $setdebitEntry->transaction_date=$invoice_date;
-          $setdebitEntry->user_id=Auth::user()->getAuthIdentifier();
-          $setdebitEntry->branch_id=Auth::user()->branch_id;
-          $setdebitEntry->credit=0;
-          $setdebitEntry->debit=$request->total_amount;
-          $setdebitEntry->transaction_title_en=" Purchase From ".$supplier-> supplier_name_en;
-          $setdebitEntry->transaction_title_ar= isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."الشراء من ": $supplier-> supplier_name_en ."الشراء من ";
-          $setdebitEntry->save();
-
-        //purchase Payment Pending
-
-        //account_activity=5 =>purchase Payment Pending // DEBIT ENTRY TRANSACTION
-
-        $creditEntry = $this->getAccountSetting(2,9,8,5);
-        $setcreditEntry=new Transaction();
-        $setcreditEntry->financial_year_id=$financial_year->id;
-        $setcreditEntry->account_head_id= $creditEntry->account_head_id;          //these form Account Setting $debitEntry
-        $setcreditEntry->account_control_id= $creditEntry->account_control_id;    //these form Account Setting $debitEntry
-        $setcreditEntry->account_sub_control_id=$creditEntry->account_sub_control_id; //these form Account Setting $debitEntry
-        $setcreditEntry->invoice_number=$invoice_number;
-        $setcreditEntry->transaction_date=$invoice_date;
-        $setcreditEntry->user_id=Auth::user()->getAuthIdentifier();
-        $setcreditEntry->branch_id=Auth::user()->branch_id;
-        $setcreditEntry->credit=$request->total_amount;
-        $setcreditEntry->debit=0;
-        $setcreditEntry->transaction_title_en=" Purchase Payment Pending ( ".$supplier-> supplier_name_en.")";
-        $setcreditEntry->transaction_title_ar= isset($supplier-> supplier_name_ar)?"(".$supplier-> supplier_name_ar ."في انتظار الدفع (":"(". $supplier-> supplier_name_en ."في انتظار الدفع (";
-        $setcreditEntry->save();
-     //is payment PAID
-        if($request->sell_type_id==1){
-            $invoice_no="PPP".date('ymdhis') . $supplier_invoice->user_id;
-            $invoice_supplier_payment = new SupplierPayment();
-            $invoice_supplier_payment->supplier_id =  $supplier_invoice->supplier_id;
-            $invoice_supplier_payment->supplier_invoice_id = $supplier_invoice->id;
-            $invoice_supplier_payment->branch_id =   $supplier_invoice->branch_id ;
-            $invoice_supplier_payment->invoice_no =   $invoice_no;
-            $invoice_supplier_payment->invoice_date =  $supplier_invoice->invoice_date;
-            $invoice_supplier_payment->total_amount =   $supplier_invoice->total_amount;;
-            $invoice_supplier_payment->payment_amount =  $supplier_invoice->total_amount;;
-            $invoice_supplier_payment->remaining_balance =  0 ;
-            $invoice_supplier_payment->payment_id = $paymentId ;
-            $invoice_supplier_payment->user_id = Auth::user()->getAuthIdentifier();
-            $invoice_supplier_payment->save();
-            //purchase Payment Pending
-            //account_activity=5 =>purchase Payment Pending // DEBIT ENTRY TRANSACTION
-
-            $debitEntry = $this->getAccountSetting(1,5,3,5);
-
-            $setdebitEntry = new Transaction();
-            $setdebitEntry->financial_year_id=$financial_year->id;
-            $setdebitEntry->account_head_id= $debitEntry->account_head_id;   //these form Account Setting $debitEntry
-            $setdebitEntry->account_control_id= $debitEntry->account_control_id; //these form Account Setting $debitEntry
-            $setdebitEntry->account_sub_control_id=$debitEntry->account_sub_control_id; //these form Account Setting $debitEntry
-            $setdebitEntry->invoice_number=$invoice_number;
-            $setdebitEntry->transaction_date=$invoice_date;
-            $setdebitEntry->user_id=Auth::user()->getAuthIdentifier();
-            $setdebitEntry->branch_id=Auth::user()->branch_id;
-            $setdebitEntry->credit=0;
-            $setdebitEntry->debit=$request->total_amount;
-            $setdebitEntry->transaction_title_en=" Purchase Payment Transfer ( ".$supplier-> supplier_name_en." )";
-            $setdebitEntry->transaction_title_ar= isset($supplier-> supplier_name_ar)?" ( ".$supplier-> supplier_name_ar ."تم الترحيل ( ":" ( ". $supplier-> supplier_name_en ."تم الترحيل ( ";
-            $setdebitEntry->save();
-            //purchase Payment PAID
-            //account_activity=5 =>purchase Payment PAID // DEBIT ENTRY TRANSACTION
+    $purchaseAccount= $this->getAccountSetting(6,4,8,   29,3);
+    $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
+       $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_number,$invoice_date
+        ,Auth::user()->getAuthIdentifier(),Auth::user()->branch_id,
+         0,$request->total_amount," Purchase From ".$supplier-> supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."الشراء من ": $supplier-> supplier_name_en ."الشراء من ");
 
 
-            $creditEntry = $this->getAccountSetting(1,7,5,6);
+      ##2############################  credit   entry  ################################################
 
-            $setcreditEntry = new Transaction();
-            $setcreditEntry->financial_year_id=$financial_year->id;
-            $setcreditEntry->account_head_id= $creditEntry->account_head_id;   //these form Account Setting $debitEntry
-            $setcreditEntry->account_control_id= $creditEntry->account_control_id; //these form Account Setting $debitEntry
-            $setcreditEntry->account_sub_control_id=$creditEntry->account_sub_control_id; //these form Account Setting $debitEntry
-            $setcreditEntry->invoice_number=$invoice_number;
-            $setcreditEntry->transaction_date=$invoice_date;
-            $setcreditEntry->user_id=Auth::user()->getAuthIdentifier();
-            $setcreditEntry->branch_id=Auth::user()->branch_id;
-            $setcreditEntry->credit= $request->total_amount;
-            $setcreditEntry->debit=0 ;
-            $setcreditEntry->transaction_title_en=" Purchase Payment Paid ( ".$supplier-> supplier_name_en." )";
-            $setcreditEntry->transaction_title_ar= isset($supplier-> supplier_name_ar)?" ( ".$supplier-> supplier_name_ar ."تم الدفع ( ":" ( ". $supplier-> supplier_name_en ."تم الدفع ( ";
-            $setcreditEntry->save();
-        }
-        //delete table purchase data
+                          //purchase Payment Pending
+
+                                  //account_activity=5 =>purchase Payment Pending
+            $purchaseAccount = $this->getAccountSetting(8,2,4,18,8);
+
+            $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
+            $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_number,$invoice_date
+            ,Auth::user()->getAuthIdentifier(),Auth::user()->branch_id,
+            $request->total_amount,0," Purchase Payment Pending ".$supplier-> supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."في انتظار الدفع  ": $supplier-> supplier_name_en ."في انتظار الدفع  ");
+      ############################## is payment PAID ################################################
+
+                 if($request->sell_type_id==1){
+                     $d = new DateTime();
+                     $invoice_no ="Pay".$d->format("YmdHisv");
+
+                     $invoice_supplier_payment = new SupplierPayment();
+                     $invoice_supplier_payment->supplier_id =  $supplier_invoice->supplier_id;
+                     $invoice_supplier_payment->supplier_invoice_id = $supplier_invoice->id;
+                     $invoice_supplier_payment->branch_id =   $supplier_invoice->branch_id ;
+                     $invoice_supplier_payment-> invoice_no =   $invoice_no;
+                     $invoice_supplier_payment-> invoice_date =  $supplier_invoice->invoice_date;
+                     $invoice_supplier_payment-> total_amount =  $supplier_invoice->total_amount;
+                     $invoice_supplier_payment->payment_amount =  $supplier_invoice->total_amount;
+                     $invoice_supplier_payment->remaining_balance =  0 ;
+                     $invoice_supplier_payment->payment_id = $paymentId ;
+                     $invoice_supplier_payment->user_id = Auth::user()->getAuthIdentifier();
+                     $invoice_supplier_payment->save();
+      ##3############################  debit  entry  ################################################
+
+                         //purchase Payment Pending
+                           //account_activity= 8 =>purchase Payment Pending
+
+         $purchaseAccount = $this->getAccountSetting(8,2,4,18,8);
+
+         $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
+             $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_number,$invoice_date
+             ,Auth::user()->getAuthIdentifier(),Auth::user()->branch_id,
+             0,$request->total_amount,"  Purchase Payment Paid to".$supplier-> supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."تم الترحيل ": $supplier-> supplier_name_en ."تم الترحيل");
+         ##4############################  credit entry ################################################
+
+           //purchase Payment PAID
+          //account_activity=9 =>purchase Payment PAID // DEBIT ENTRY TRANSACTION
+
+         if($request->payment_type_id==1){
+             $purchaseAccount = $this->getAccountSetting(9,1,1,2,9);
+                }else{
+             $purchaseAccount = $this->getAccountSetting(9,1,1,1,9);
+                }
+       $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
+             $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_number,$invoice_date
+             ,Auth::user()->getAuthIdentifier(),Auth::user()->branch_id,
+             $request->total_amount,0," Purchase Payment Succeed".$supplier-> supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."تم الدفع ": $supplier-> supplier_name_en ."تم الدفع ");
+
+            }else{
+                     $d = new DateTime();
+                     $invoice_no ="Pay".$d->format("YmdHisv");
+
+                     $invoice_supplier_payment = new SupplierPayment();
+                     $invoice_supplier_payment->supplier_id =  $supplier_invoice->supplier_id;
+                     $invoice_supplier_payment->supplier_invoice_id = $supplier_invoice->id;
+                     $invoice_supplier_payment->branch_id =   $supplier_invoice->branch_id ;
+                     $invoice_supplier_payment-> invoice_no =   $invoice_no;
+                     $invoice_supplier_payment-> invoice_date =  $supplier_invoice->invoice_date;
+                     $invoice_supplier_payment-> total_amount =  $supplier_invoice->total_amount;
+                     $invoice_supplier_payment->payment_amount = 0 ;
+                     $invoice_supplier_payment->remaining_balance =   $supplier_invoice->total_amount ;
+                     $invoice_supplier_payment->payment_id = $paymentId ;
+                     $invoice_supplier_payment->user_id = Auth::user()->getAuthIdentifier();
+                     $invoice_supplier_payment->save();
+                 }
+      ##############################  delete table purchase data  ################################################
+
         PurchaseCartDetail::query()->truncate();
-     return   $this->purchaseSupplierInvoice($supplier_invoice->id);
+      ##############################  return purchase invoice  ################################################
+
+      return   $this->purchaseSupplierInvoice($supplier_invoice->id);
     }
 
+
+
+   private function  setEntries($financial_year_id,$account_head_id,$account_control_id,$account_sub_control_id,$invoice_number,$invoice_date,$user_id,$branch_id,$credit,$debit,$transaction_title_en,$transaction_title_ar){
+       $setdebitEntry = new Transaction();
+       $setdebitEntry->financial_year_id=$financial_year_id;
+       $setdebitEntry->account_head_id= $account_head_id;   //these form Account Setting $debitEntry
+       $setdebitEntry->account_control_id=$account_control_id; //these form Account Setting $debitEntry
+       $setdebitEntry->account_sub_control_id=$account_sub_control_id; //these form Account Setting $debitEntry
+       $setdebitEntry->invoice_number=$invoice_number;
+       $setdebitEntry->transaction_date=$invoice_date;
+       $setdebitEntry->user_id=$user_id;
+       $setdebitEntry->branch_id=$branch_id;
+       $setdebitEntry->credit=$credit;
+       $setdebitEntry->debit=$debit;
+       $setdebitEntry->transaction_title_en= $transaction_title_en;
+       $setdebitEntry->transaction_title_ar=  $transaction_title_ar ;
+       $setdebitEntry->save();
+   }
   public function purchaseSupplierInvoice($supplierInvoiceId){
         $supplier_name=$this->supplier_name;
-        $product_name=Stock::getProductNameLang();
+        $product_name= Stock::getProductNameLang();
         $address=$this->address;
         $supplier_invoice = SupplierInvoice::find($supplierInvoiceId);
         $supplier_invoice_details = SupplierInvoiceDetail::with('stock')->where('supplier_invoice_id',$supplierInvoiceId)->get();
@@ -466,7 +562,7 @@ class PurchaseInvoiceController extends Controller
         $purchaseCart->category_id =$request->category_id;
         $purchaseCart->stock_id =$request->stock_id;
         $purchaseCart->$description =$request->$description;
-//        $purchaseCart->$product_name =$request->$product_name;
+//      $purchaseCart->$product_name =$request->$product_name;
         $purchaseCart->purchase_qty = $request->quantity;
         $purchaseCart->purchase_unit_price = $request->current_purchase_unit_price;
         $purchaseCart->sale_unit_price = $request->sale_unit_price;

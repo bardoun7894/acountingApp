@@ -18,6 +18,7 @@ class CreatePurchaseCartDetailsTable extends Migration
             $table->unsignedInteger('stock_id');
             $table->integer('purchase_qty');
             $table->float('purchase_unit_price');
+            $table->float('sale_unit_price');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('category_id');
             $table->unsignedInteger('user_id');

@@ -70,15 +70,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-//        $full_name ="full_name_".LaravelLocalization::getCurrentLocale();
-//        echo $data['full_name_en'];die;
-        return User::create([
-            'user_type_id' => 1,
-            $this->full_name=>$data[$this->full_name],
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'contact_number' => $data['contact_number'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $full_name =$this->full_name;
+            $user=new User();
+
+            $user->$full_name = $data[$full_name];
+            $user->username = $data['username'];
+            $user->email= $data['email'];
+            $user->contact_number = $data['contact_number'];
+            $user->password = Hash::make($data['password']);
+            $user->Save();
     }
 }

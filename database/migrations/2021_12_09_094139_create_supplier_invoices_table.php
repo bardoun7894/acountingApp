@@ -27,6 +27,8 @@ class CreateSupplierInvoicesTable extends Migration
             $table->unsignedInteger('branch_id')->nullable();
             $table->double('sub_total_amount')->nullable();
             $table->double('tax')->nullable();
+            $table->double('total_tax_allow')->nullable();
+            $table->double('discount')->nullable();
             $table->unsignedInteger('store_id')->nullable();
 
 

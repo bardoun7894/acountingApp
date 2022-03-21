@@ -14,12 +14,10 @@ class UnitSeeder extends Seeder
      */
     public function run()
     {
-
      $data=[
-       ['id'=>0,'unit_code'=>'sr','name'=>'sr','name_ar'=>'رس','status'=>1],
-       ['id'=>1,'unit_code'=>'$','name'=>'Dollar','name_ar'=>'دولار','status'=>1],
-       ['id'=>2,'unit_code'=>'LE','name'=>'LE','name_ar'=>'جنيه','status'=>1],
-       ['id'=>3,'unit_code'=>'e','name'=>'euro','name_ar'=>'اورو','status'=>1],
+       [ 'unit_code'=>'kg','unit_name_en'=>'kilo','unit_name_ar'=>'كيلو','status'=>1],
+       [ 'unit_code'=>'m','unit_name_en'=>'Metre','unit_name_ar'=>'متر','status'=>1],
+       [ 'unit_code'=>'l','unit_name_en'=>'litre','unit_name_ar'=>'لتر','status'=>1],
        ];
      Unit::insert($data);
     }

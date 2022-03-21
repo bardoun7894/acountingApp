@@ -58,7 +58,7 @@ class BranchController extends Controller
         $branch =new Branch();
         $branch->$branch_name=$request->$branch_name;
         $branch->save();
-        $session =Session::flash('message','Branch added Successfully');
+        $session =Session::flash('message',__("messages.data_added"));
         return redirect('branches')->with(compact(['session','branch_name']));
 
         return redirect()->back();
@@ -105,22 +105,17 @@ class BranchController extends Controller
         $branch=Branch::find($id);
         $branch->$branch_name = $request->input($branch_name);
         $branch->update();
-        $session =Session::flash('message','Branch Updated Successfully');
+        $session =Session::flash('message',__("messages.data_updated"));
         return redirect('branches')->with(compact('session'));
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+
+    public function deleteBranch($id)
     {
         $branch=Branch::find($id);
         $branch->delete();
-        $session =Session::flash('message','Branch Deleted Successfully');
+        $session =Session::flash('message',__("messages.data_removed"));
         return redirect('branches')->with(compact('session'));
 
     }

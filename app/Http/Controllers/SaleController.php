@@ -88,7 +88,7 @@ class SaleController extends Controller
         }else{
             $sales=Sale::with('stock')->where('branch_id',\Illuminate\Support\Facades\Auth::user()->branch_id)->get();
         }
-        $branches=Branch::all();
+        $branches=Branch::where('status',1)->get();
 
         return view('admin.includes.sales.sales')->with(compact([ 'customers', 'currency','s_name','payment_types','sell_types','stores','store_name','branches','customer_name','payment_type_name','sell_type_name','sales','product_name','branch_name','description']));
         //
@@ -122,7 +122,7 @@ class SaleController extends Controller
     {
         $userType=  UserType::where('id',Auth::user()->user_type_id )->first();
         if( isset($userType) &&  $userType->user_type_en==='admin'){
-            $branches =Branch::with('categories')->get();
+            $branches =Branch::where('status',1)->with('categories')->get();
         }else{
             $branches=Branch::with('categories')->where('id',\Illuminate\Support\Facades\Auth::user()->branch_id)->get();
         }

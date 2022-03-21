@@ -57,7 +57,7 @@ class UserController extends Controller
         $lang=$this->lang;
         $full_name = $this->full_name;
         $branch_name=$this->branch_name;
-        $branches =Branch::all();
+        $branches =Branch::where('status',1)->get();
         $store_name=$this->store_name;
         $stores=Store::all();
          return view('admin.includes.users.create')->with(compact(['branches','lang','full_name','stores','branch_name','store_name']));

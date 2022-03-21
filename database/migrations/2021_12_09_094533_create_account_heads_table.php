@@ -19,7 +19,7 @@ class CreateAccountHeadsTable extends Migration
            $table->integer('user_id')->unsigned();
            $table->string('account_head_name_en')->nullable();
            $table->string('account_head_name_ar')->nullable();
-           $table->string('account_head')->nullable();
+           $table->string('account_code')->nullable();
            $table->timestamps();
 
            });

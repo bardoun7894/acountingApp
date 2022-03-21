@@ -25,6 +25,7 @@ $current_user =\Illuminate\Support\Facades\Auth::user();
                 <ul class="menu-content">
                     <li><a class="menu-item" href="{{url('allPurchases')}}"><i></i> <span data-i18n="purchases">{{__('messages.all_purchases')}}</span></a>
                     <li><a class="menu-item" href="{{url('purchases')}}"><i></i> <span data-i18n="purchases">{{__('messages.purchase_order')}}</span></a>
+                    <li><a class="menu-item" href="{{url('purchasePaymentPending')}}"><i></i> <span data-i18n="pending_payments">{{__('messages.pending_payments')}}</span></a>
 
                 </ul>
             </li>

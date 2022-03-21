@@ -10,7 +10,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{url('/redirect')}}">{{__("messages.home")}}</a>
                             </li>
-                            <li class="breadcrumb-item active"><a >{{__("messages.all_purchases")}}</a>
+                            <li class="breadcrumb-item active"><a >{{__("messages.purchases_invoice_payment")}}</a>
                             </li>
 
                         </ol>
@@ -60,7 +60,7 @@
             @endif
         <div id="allPurchase_table" class="card-content d-flex p-2 ">
 
-            @include('admin.includes.purchases.all_purchases_table')
+            @include('admin.includes.purchases.paid_purchases.purchases_invoice_payment_table')
         </div>
    </div>
 

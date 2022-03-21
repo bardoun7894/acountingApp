@@ -50,7 +50,8 @@ class CustomerController extends Controller
         $customer_name=$this->customer_name;
         $address=$this->address;
         $description=$this->description;
-        $accountSubControl=AccountSubControl::where('account_code','=','211')->latest()->first();
+        $accountSubControl=AccountSubControl::where('account_code','=','118')->latest()->first();
+
    return view('admin.includes.customers.create')->with(compact(['lang','customer_name','address','description']));
 
     }
@@ -78,12 +79,12 @@ class CustomerController extends Controller
         $customer->$description = $request->$description;
         $customer->contact_number = $request->contact_number;
         $customer->area = $request->area;
-        $customer->area = Auth::user()->branch_id;
+        $customer->branch_id = Auth::user()->branch_id;
 
         //make relation ship with accountcode
 
         $account_sub_control_name=AccountSubControl::getAccountSubControlNameLang();
-        $lastAccountSubControl = AccountSubControl::where('account_code','=','211')->latest()->first();
+        $lastAccountSubControl = AccountSubControl::where('account_code','=','118')->latest()->first();
         //create a sub control that have relation ship with supplier
 
          $lastCus=Customer::latest()->first();

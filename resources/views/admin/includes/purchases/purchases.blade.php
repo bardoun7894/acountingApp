@@ -59,7 +59,6 @@
                 </ul>
             </div>
         </div>
-
             @if(session()->has('message'))
                 @switch(session()->get('message'))
                     @case(__('messages.data_removed'))

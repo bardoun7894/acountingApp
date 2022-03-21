@@ -144,6 +144,8 @@ return [
     'tax'=>'الضريبة',
     'discount'=>'الخصم',
     'order_total'=>'المبلغ الكلي',
+    'total_amount'=>'المبلغ الكلي',
+    'remaining_payment'=>'المبلغ المتبقي',
 
     'purchase_invoice'=>'فاتورة مشتريات',
     'purchase_order'=>'أمر شراء',

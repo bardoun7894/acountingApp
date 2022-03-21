@@ -13,29 +13,29 @@
                     </ul>
                 </div>
             </div>
-
             @if(session()->has('message'))
-               @switch(session()->get('message'))
-                  @case('Branch Deleted Successfully')
-                  <div class="alert alert-danger">
-                    {{ session()->get('message') }}
-                </div>
+                @switch(session()->get('message'))
+                    @case(__('messages.data_removed'))
+                    <div class="alert alert-danger">
+                        {{ session()->get('message') }}
+                    </div>
                     @break
-                @case('Branch Updated Successfully')
-
-                <div class="alert alert-success">
-                    {{ session()->get('message') }}
-                </div>
-                    @break
-                @case('Branch added Successfully')
+                    @case(__('messages.data_updated'))
 
                     <div class="alert alert-success">
                         {{ session()->get('message') }}
                     </div>
-                        @break
-                @default
 
-            @endswitch
+                    @break
+                    @case (__('messages.data_added'))
+
+                    <div class="alert alert-success">
+                        {{ session()->get('message') }}
+                    </div>
+                    @break
+                    @default
+
+                @endswitch
 
             @endif
             <div class="card-content">

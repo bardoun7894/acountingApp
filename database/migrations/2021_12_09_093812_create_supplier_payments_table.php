@@ -24,6 +24,7 @@ class CreateSupplierPaymentsTable extends Migration
           $table->float('payment_amount');
           $table->float('total_amount');
           $table->float('remaining_balance');
+          $table->date('invoice_date');
           $table->timestamps();
         });
     }

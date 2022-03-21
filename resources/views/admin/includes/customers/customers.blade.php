@@ -40,36 +40,32 @@
                         </ul>
                     </div>
                 </div>
-
                 @if(session()->has('message'))
-                   @switch(session()->get('message'))
-                      @case('User Deleted Successfully')
-                      <div class="alert alert-danger">
-                        {{ session()->get('message') }}
-                    </div>
-                        @break
-                    @case('User Updated Successfully')
-
-                    <div class="alert alert-success">
-                        {{ session()->get('message') }}
-                    </div>
-                        @break
-                    @case('User added Successfully')
-
-                        <div class="alert alert-success">
-                            {{ session()->get('message') }}
-                        </div>
-                     @break
-                        @case('add customer account to Account Sub Control')
+                    @switch(session()->get('message'))
+                        @case(__('messages.data_removed'))
                         <div class="alert alert-danger">
                             {{ session()->get('message') }}
                         </div>
                         @break
-                    @default
-                @endswitch
-                @endif
+                        @case(__('messages.data_updated'))
 
-                    @include('admin.includes.customers.customer_table')
+                        <div class="alert alert-success">
+                            {{ session()->get('message') }}
+                        </div>
+
+                        @break
+                        @case (__('messages.data_added'))
+
+                        <div class="alert alert-success">
+                            {{ session()->get('message') }}
+                        </div>
+                        @break
+                        @default
+
+                    @endswitch
+
+                @endif
+              @include('admin.includes.customers.customer_table')
 
             </div>
 

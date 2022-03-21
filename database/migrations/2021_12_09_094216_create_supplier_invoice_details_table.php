@@ -16,10 +16,10 @@ class CreateSupplierInvoiceDetailsTable extends Migration
         Schema::create('supplier_invoice_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('supplier_invoice_id');
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('stock_id');
             $table->integer('purchase_quantity');
             $table->float('purchase_unit_price');
-
+            $table->date('invoice_date');
             $table->timestamps();
 
             // $table->foreign('supplier_invoice_id')->references('id')->on('supplier_invoices')->onDelete('cascade');

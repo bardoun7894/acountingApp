@@ -179,10 +179,10 @@ class AccountSettingController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function deleteAccountSetting($id){
+        $accountSetting=AccountSetting::find($id);
+        $accountSetting->delete();
+        $session =Session::flash('message',__('messages.data_removed'));
+        return redirect('accountSettings')->with(compact('session'));
+    }
 }

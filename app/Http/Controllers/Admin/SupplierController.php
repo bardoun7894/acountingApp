@@ -86,10 +86,10 @@ class SupplierController extends Controller
         $supplier->$description = $request->$description;
         $supplier->phone = $request->phone;
         $supplier->email = $request->email;
-
+        $supplier->branch_id =Auth::user()->branch_id;
 
         $account_sub_control_name=AccountSubControl::getAccountSubControlNameLang();
-        $lastAccountSubControl = AccountSubControl::where('account_sub_control_name_en','=','Suppliers')->latest()->first();
+        $lastAccountSubControl = AccountSubControl::where('account_code','=','215')->latest()->first();
            //create a sub control that have relation ship with supplier
         if(!isset($lastAccountSubControl->account_sub_control_name_en)){
             $accountSubControl = new AccountSubControl();
@@ -106,7 +106,7 @@ class SupplierController extends Controller
         if(isset($lastSup)){
             $supplier->account_code = $lastSup->account_code +1 ;
         }else{
-            $supplier->account_code =  $accountSubControl->account_code . "0001";
+            $supplier->account_code =  $lastAccountSubControl->account_code . "0001";
         }
         $supplier->save();
 

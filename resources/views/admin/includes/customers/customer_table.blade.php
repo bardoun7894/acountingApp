@@ -21,12 +21,11 @@
                 <td class="text-truncate"> {{$customer->$address}}</td>
                 <td class="text-truncate"> {{$customer->$description}}</td>
                 <td class="text-truncate"> {{$customer->area}}</td>
-                <td class="text-truncate">   <a href="{{url('customers/'.$customer->id.'/edit')}}"><i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>
-                <td>
-      <a class="confirmDelete"  record="Customer"  recordId="{{$customer->id}}">
-          <i class="la la-trash" style="color: red;font-size: 25px"></i></a></td>
-
-            </tr>
+                <td class="text-truncate  border-top-0">  <a href="{{url('customers/'.$customer->id.'/edit')}}"><i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>
+                <td class="text-truncate border-top-0">
+         <a class="confirmDelete"  record="Customer"  recordId="{{$customer->id}}">
+          <i class="la la-trash " style="color: red;font-size: 25px"></i></a></td>
+        </tr>
         @endforeach
         </tbody>
 

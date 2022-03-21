@@ -29,7 +29,7 @@ class CategoryController extends Controller
     {
           $category_name=$this->category_name;
 //        $categories =Category::all();
-          $branches =Branch::with('categories')->get();
+          $branches =Branch::where('status',1)->with('categories')->get();
           $purchases = PurchaseCartDetail::all();
           $branch_name=Branch::getBranchNameLang();
           $lang=$this->lang;
@@ -46,7 +46,7 @@ class CategoryController extends Controller
     public function create()
     {
         $lang=$this->lang;
-        $branches =Branch::with('categories')->get();
+        $branches =Branch::where('status',1)->with('categories')->get();
 //        return $branches;
         $category_name=$this->category_name;
         $branch_name=Branch::getBranchNameLang();
@@ -100,7 +100,7 @@ class CategoryController extends Controller
         $lang=$this->lang;
         $category_name=$this->category_name;
         $categoryData = Category::find($id);
-        $branch_list=Branch::all();
+        $branch_list=Branch::where('status',1)->get();
         $getCategory= Category::with('subCategories')->where(['parent_id'=>0,'branch_id'=>$categoryData->branch_id])->get();
         $branch_name=Branch::getBranchNameLang();
         return view('admin.includes.categories.update')->with(compact(['categoryData','getCategory','branch_list','lang','category_name','branch_name']));
@@ -130,13 +130,8 @@ class CategoryController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+
+    public function deleteCategory($id)
     {
         $category=Category::find($id);
         $category->delete();

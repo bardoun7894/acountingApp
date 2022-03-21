@@ -13,25 +13,29 @@
                     </ul>
                 </div>
             </div>
-      @if(session()->has('message'))
-      @switch($lang=='en'?explode(' ',session()->get('message'))[2]:explode(' ',session()->get('message'))[1])
-                  @case( 'deleted'||'حذف')
-                      <div class="alert alert-danger">
-                        {{ session()->get('message') }}
-                      </div>
-                    @break
-                @case('updated'||'تعديل')
-                <div class="alert alert-secondary">
-                    {{ session()->get('message') }}
-                </div>
-                    @break
-                @case('added'||'اضافة')
-                    <div class="alert alert-primary">
+            @if(session()->has('message'))
+                @switch(session()->get('message'))
+                    @case(__('messages.data_removed'))
+                    <div class="alert alert-danger">
                         {{ session()->get('message') }}
                     </div>
-                        @break
-                @default
-            @endswitch
+                    @break
+                    @case(__('messages.data_updated'))
+
+                    <div class="alert alert-success">
+                        {{ session()->get('message') }}
+                    </div>
+
+                    @break
+                    @case (__('messages.data_added'))
+
+                    <div class="alert alert-success">
+                        {{ session()->get('message') }}
+                    </div>
+                    @break
+                    @default
+
+                @endswitch
 
             @endif
             <div class="card-content">
@@ -49,7 +53,7 @@
                         </tr>
                         </thead>
 
-                        <tbody>
+              <tbody  id="stores-dynamicRow">
                 @foreach($stores as $store)
                     <tr>
 
@@ -66,11 +70,11 @@
                             <a  class="confirmDelete"  record="Store"  recordId="{{$store->id}}">  <i class="la la-trash" style="color: red;font-size: 25px"></i>
                             </a>
                         </td>
-                           </tbody>
+
 
                         </tr>
                      @endforeach
-
+                        </tbody>
                     </table>
                 </div>
             </div>

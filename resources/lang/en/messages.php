@@ -166,6 +166,8 @@ return [
     'invoice_date'=>'Invoice Date',
     'invoice_number'=>'Invoice Number',
     'paid_amount'=>'Paid Amount',
+    'total_amount'=>'Total Amount',
+    'remaining_payment'=>'Remaining Payment',
     'add_purchase' => 'Add New Purchase',
     'continue_to_checkout' => 'Continue to checkout',
 

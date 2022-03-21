@@ -64,16 +64,13 @@ class StoreController extends Controller
         $store_name=$this->store_name;
         $validated = $request->validate([
             'branch_id' => 'required',
-            'parent_id' => 'required',
             $store_name => 'required',
         ]);
         $store =new Store();
         $store->branch_id =$request->branch_id;
-        $store->parent_id =$request->parent_id;
         $store->$store_name=$request->$store_name;
         $store->save();
-        $session =Session::flash('message',__('messages.store_added'));
-
+        $session =Session::flash('message',__('messages.data_added'));
         return redirect('stores')->with(compact(['session']));
 
     }
@@ -99,10 +96,10 @@ class StoreController extends Controller
     {
         $lang=$this->lang;
         $store_name=$this->store_name;
-        $storeData = Store::find($id);
+        $store = Store::find($id);
         $branch_list=Branch::all();
         $branch_name=Branch::getBranchNameLang();
-        return view('admin.includes.stores.update')->with(compact(['storeData','getStore','branch_list','lang','store_name','branch_name']));
+        return view('admin.includes.stores.update')->with(compact(['store','branch_list','lang','store_name','branch_name']));
     }
 
     /**
@@ -123,22 +120,17 @@ class StoreController extends Controller
         $store->branch_id = $request->branch_id;
         $store->$store_name = $request->input($store_name);
         $store->update();
-        $session =Session::flash('message',__('messages.store_updated'));
+        $session =Session::flash('message',__('messages.data_updated'));
         return redirect('stores')->with(compact(['session']));
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+
+    public function deleteStore($id)
     {
         $store=Store::find($id);
         $store->delete();
-        $session =Session::flash('message',__('messages.store_deleted'));
+        $session =Session::flash('message',__('messages.data_removed'));
         return redirect('stores')->with(compact('session'));
 
     }

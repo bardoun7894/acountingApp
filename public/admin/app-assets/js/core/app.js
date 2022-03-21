@@ -579,6 +579,7 @@
       });
 
   // change language according to data-language of dropdown item
+
   $(".dropdown-language .dropdown-item").on("click", function () {
 
     var $this = $(this);
@@ -586,8 +587,8 @@
     $this.addClass("selected");
     var selectedLang = $this.text()
       //get the language path
-      var urlPath = window.location.href; // raw javascript
-      var lan ="";
+    var urlPath = window.location.href; // raw javascript
+    var lan ="";
 
     var selectedFlag = $this.find(".flag-icon").attr("class");
 

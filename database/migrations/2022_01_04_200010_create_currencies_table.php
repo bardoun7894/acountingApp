@@ -15,13 +15,10 @@ class CreateCurrenciesTable extends Migration
     {
         Schema::create('currencies', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('name_ar')->nullable();
-            $table->string('s_name')->nullable();
-            $table->string('s_name_ar')->nullable();
-            $table->string('unit_name')->nullable();
-            $table->string('unit_name_ar')->nullable();
-            $table->string('currency_value')->nullable();
+            $table->string('currency_name_en')->nullable();
+            $table->string('currency_name_ar')->nullable();
+            $table->string('currency_code')->nullable();
+            $table->string('currency_symbol')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });

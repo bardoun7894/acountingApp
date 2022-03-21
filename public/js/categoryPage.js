@@ -32,7 +32,7 @@ export default class CategoryPage{
         var branch_id= $("#branchId").val();
         getSelectorBasedInOther({ 'branch_id':branch_id,'tableid':tableid,'tableName':tableName},'get_selected_branch').then((data)=>{
             $('#appendCategoryLevel').html(data)
-            alert(data)
+
         });
     }
 

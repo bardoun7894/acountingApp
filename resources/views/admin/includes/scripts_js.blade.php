@@ -26,6 +26,8 @@
 
 {{--<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>--}}
 <!-- BEGIN: Theme JS-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 <script src="{{ url('admin/app-assets/js/core/app-menu.js')}}"></script>
 <script src="{{ url('admin/app-assets/js/core/app.js')}}"></script>
 <script type="module" src="{{ url('js/my_admin_js.js')}}"></script>

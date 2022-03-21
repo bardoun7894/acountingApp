@@ -25,6 +25,7 @@ class CreateCustomersTable extends Migration
             $table->string('description_en')->nullable();
             $table->string('description_ar')->nullable();
             $table->string('customer_type')->nullable();
+            $table->string('account_code')->nullable();
             $table->unsignedInteger('branch_id')->nullable();
             $table->timestamps();
 

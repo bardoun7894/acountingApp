@@ -13,35 +13,38 @@
                     </ul>
                 </div>
             </div>
-      @if(session()->has('message'))
-      @switch($lang=='en'?explode(' ',session()->get('message'))[2]:explode(' ',session()->get('message'))[1])
-                  @case( 'deleted'||'حذف')
-                      <div class="alert alert-danger">
-                        {{ session()->get('message') }}
-                      </div>
-                    @break
-                @case('updated'||'تعديل')
-                <div class="alert alert-secondary">
-                    {{ session()->get('message') }}
-                </div>
-                    @break
-                @case('added'||'اضافة')
-                    <div class="alert alert-primary">
+            @if(session()->has('message'))
+                @switch(session()->get('message'))
+                    @case(__('messages.data_removed'))
+                    <div class="alert alert-danger">
                         {{ session()->get('message') }}
                     </div>
-                        @break
-                @default
-            @endswitch
+                    @break
+                    @case(__('messages.data_updated'))
+
+                    <div class="alert alert-success">
+                        {{ session()->get('message') }}
+                    </div>
+
+                    @break
+                    @case (__('messages.data_added'))
+
+                    <div class="alert alert-success">
+                        {{ session()->get('message') }}
+                    </div>
+                    @break
+                    @default
+
+                @endswitch
 
             @endif
             <div class="card-content">
                 <div   class="card-content d-flex p-2">
                     <table id="datatableBootstrap"   class="table table-striped table-bordered table-sm " >
 
-                    <thead>
+                       <thead>
                         <tr>
                             <th class="border-top-0">#</th>
-
                             <th class="border-top-0">{{__('messages.category_name')}}</th>
                             <th class="border-top-0">{{__('messages.branch_name')}}</th>
                             <th class="border-top-0">{{__('messages.edit')}}</th>
@@ -49,24 +52,26 @@
                         </tr>
                         </thead>
                         @foreach($branches as $branch)
-                           <tbody>
-                @foreach($branch->categories as $category)
+                            <tbody id="categories-dynamicRow">
+
+                           @foreach($branch->categories as $category)
+                               <tr>
                             <td class="text-truncate"> {{$category->id}}</td>
 {{--                     <td class="text-truncate">  @if($category->user_type_id==1 ) admin @else Category  @endif       </td>--}}
                             <td class="text-truncate"> {{$category->$category_name}}</td>
 
                             <td class="text-truncate"> {{$branch->$branch_name}}</td>
 {{--                    <td class="text-truncate"> {{$category->full_name_ar}}</td>--}}
-
-
                             <td class="text-truncate">   <a href="{{url('categories/'.$category->id.'/edit')}}"><i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>
-                          <form action="{{url('categories/'.$category->id)}}" method="post">
-                              @csrf
-                              @method('delete')
-                              <td class="text-truncate"> <button type="submit" style="background: transparent;border: none;"><i class="la la-trash" style="color: red;font-size: 25px"></i></button> </td>
-                           </form>
+                            <td>
+                                <a  class="confirmDelete"  record="Category"  recordId="{{$category->id}}">  <i class="la la-trash" style="color: red;font-size: 25px"></i>
+                                </a>
+                            </td>
+                               </tr>
+                           @endforeach
                            </tbody>
-                     @endforeach
+
+
                         @endforeach
                     </table>
                 </div>

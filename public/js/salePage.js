@@ -149,7 +149,7 @@ function getTotalOrder() {
 }
 
 function totalPayment(){
-    getSelectorBasedInOther({},'getSumTotalItem').then((data)=>{
+    getSelectorBasedInOther({},'getSumTotalSaleItem').then((data)=>{
         document.getElementById("sub_total").value = data.sub_total  ;
     }).then(()=>{
         getTotalOrder()
