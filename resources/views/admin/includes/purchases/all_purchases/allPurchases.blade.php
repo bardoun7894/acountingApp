@@ -3,7 +3,7 @@
 
     <div class="content-wrapper">
         <div class="content-header row">
-            <div class="content-header-left col-md-6 col-12 mb-2">
+        <div class="content-header-left col-md-6 col-12 mb-2">
                 <h3 class="content-header-title">{{__("messages.all_purchases")}}</h3>
                 <div class="row breadcrumbs-top">
                     <div class="breadcrumb-wrapper col-12">
@@ -17,56 +17,56 @@
                     </div>
                 </div>
             </div>
-       <div class="content-body">
 
-           @if ($errors->any())
-               <div class="alert alert-danger">
-                   <ul>
-                       @foreach ($errors->all() as $error)
-                           <li>{{ $error }}</li>
-                       @endforeach
-                   </ul>
-               </div>
-           @endif
-        <div class="card" >
 
-            @if(session()->has('message'))
-                @switch(session()->get('message'))
-                    @case(__('messages.data_removed'))
-                    <div class="alert alert-danger">
-                        {{ session()->get('message') }}
-                    </div>
-                    @break
-                    @case(__('messages.data_updated'))
 
-                    <div class="alert alert-success">
-                        {{ session()->get('message') }}
-                    </div>
+        </div>
+        <div class="content-body">
 
-                    @break
-                    @case (__('messages.data_added'))
-
-                    <div class="alert alert-success">
-                        {{ session()->get('message') }}
-                    </div>
-                    @break
-                    @default
-
-                @endswitch
-
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
-        <div id="allPurchase_table" class="card-content d-flex p-2 ">
+            <div class="card" >
 
-            @include('admin.includes.purchases.all_purchases.all_purchases_table')
+                @if(session()->has('message'))
+                    @switch(session()->get('message'))
+                        @case(__('messages.data_removed'))
+                        <div class="alert alert-danger">
+                            {{ session()->get('message') }}
+                        </div>
+                        @break
+                        @case(__('messages.data_updated'))
+
+                        <div class="alert alert-success">
+                            {{ session()->get('message') }}
+                        </div>
+
+                        @break
+                        @case (__('messages.data_added'))
+
+                        <div class="alert alert-success">
+                            {{ session()->get('message') }}
+                        </div>
+                        @break
+                        @default
+
+                    @endswitch
+
+                @endif
+                <div id="allPurchase_table" class="card-content d-flex p-2 ">
+
+                    @include('admin.includes.purchases.all_purchases.all_purchases_table')
+                </div>
+            </div>
+
+
         </div>
-   </div>
-
-
-       </div>
-
-
-        </div>
-
 
 
     </div>

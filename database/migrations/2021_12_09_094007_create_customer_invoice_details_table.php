@@ -17,6 +17,7 @@ class CreateCustomerInvoiceDetailsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_invoice_id');
             $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('stock_id')->nullable();
             $table->integer('sale_quantity');
             $table->integer('sale_unit_price');
             $table->timestamps();

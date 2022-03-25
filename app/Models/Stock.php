@@ -15,6 +15,9 @@ class Stock extends Model
     public  function purchases(){
         return  $this->hasMany(PurchaseCartDetail::class);
       }
+      public  function sales(){
+        return  $this->hasMany(Sale::class);
+      }
     public function user(){
          return  $this->belongsTo(User::class);
        }

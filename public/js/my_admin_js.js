@@ -5,6 +5,7 @@ import SalePage  from "./salePage.js";
 import StorePage  from "./storePage.js";
 import UserPage  from "./userPage.js";
 import Accounts from "./accounts.js";
+import PaidAmount from "./paidAmountPage.js";
 
 
 //get the language path
@@ -20,6 +21,7 @@ import Accounts from "./accounts.js";
 
   //category function
     new CategoryPage();
+    new PaidAmount();
  //Purchase function
   new PurchasePage();
   //Purchase function

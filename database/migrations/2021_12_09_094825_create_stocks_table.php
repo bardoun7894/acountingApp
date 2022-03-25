@@ -25,7 +25,7 @@ class CreateStocksTable extends Migration
         $table->string('description_en')->nullable();
         $table->string('product_name_ar')->nullable();
         $table->string('description_ar')->nullable();
-        $table->float('sale_unit_price');
+        $table->float('current_sale_unit_price');
         $table->integer('unit_id')->unsigned()->nullable();
         $table->float('tax_ratio')->nullable();
         $table->tinyInteger('allowtax')->default(0);

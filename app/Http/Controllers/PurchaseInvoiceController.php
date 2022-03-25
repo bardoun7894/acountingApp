@@ -24,6 +24,7 @@ use App\Models\User;
 use App\Models\UserType;
 use App\Rules\AccountSettingYearRule;
 use App\Rules\FinanceYearRule;
+use App\Rules\PayAmountRule;
 use App\Rules\PurchaseCartRule;
 use Carbon\Traits\Date;
 use DateTime;
@@ -54,10 +55,12 @@ class PurchaseInvoiceController extends Controller
     private $sell_type_name;
     private $address;
     private $s_name;
+    private $full_name;
 
     function __construct()
     {
         $this->product_name=Stock::getProductNameLang();
+        $this->full_name=User::getFullnameLang();
         $this->s_name=Currency::getSNameLang();
         $this->sell_type_name=SellType::getSellTypeNameLang();
         $this->payment_type_name=PaymentType::getPaymentTypeNameLang();
@@ -197,7 +200,8 @@ class PurchaseInvoiceController extends Controller
         return $debitEntry;
     }
 
-    public  function   PurchasePayment($supplier_id,$supplier_invoice_id,$branch_id,$invoice_no,$invoice_date,$total_amount,$paymentId,$user_id,$remaining_balance){
+    public  function  purchasePayment($supplier_id,$supplier_invoice_id,$branch_id,$invoice_no,$invoice_date,$total_amount,$payment_amount,$user_id,$remaining_balance){
+
        $financial_year = FinanceYear::where('isActive',1)->first() ;
        $success_message="Purchase Success" ;
         $d = new DateTime();
@@ -211,9 +215,9 @@ class PurchaseInvoiceController extends Controller
             $invoice_supplier_payment-> invoice_no =   $invoice_no;
             $invoice_supplier_payment-> invoice_date =  $invoice_date;
             $invoice_supplier_payment-> total_amount =   $total_amount;
-            $invoice_supplier_payment->payment_amount =  $total_amount;
+            $invoice_supplier_payment->payment_amount =  $payment_amount;
             $invoice_supplier_payment->remaining_balance =  $remaining_balance ;
-            $invoice_supplier_payment->payment_id = $paymentId ;
+
             $invoice_supplier_payment->user_id =$user_id;
             $invoice_supplier_payment->save();
             ##3############################  debit  entry  ################################################
@@ -221,7 +225,6 @@ class PurchaseInvoiceController extends Controller
             //purchase Payment Pending
             //account_activity= 8 =>purchase Payment Pending
             $purchaseAccount = $this->getAccountSetting(8,2,4,18,8);
-
                 $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
                 $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_no,$invoice_date
                 ,Auth::user()->getAuthIdentifier(),$branch_id,
@@ -232,27 +235,63 @@ class PurchaseInvoiceController extends Controller
             //purchase Payment PAID
              //account_activity=9 =>purchase Payment PAID // DEBIT ENTRY TRANSACTION
 
-              $purchaseAccount = $this->getAccountSetting(9,1,1,2,9);
+           $purchaseAccount = $this->getAccountSetting(9,1,1,2,9);
 
             $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
-           $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_no,$invoice_date
+            $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_no,$invoice_date
                 ,Auth::user()->getAuthIdentifier(),$branch_id,
                 $total_amount,$remaining_balance," Purchase Payment Succeed".$supplier-> supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."تم الدفع ": $supplier-> supplier_name_en ."تم الدفع ");
+
+
 
     }
 
 
     public function paid_amount($id){
      $d = new DateTime();
-     $branch_id = Auth::user()->branch_id;
-     $user_id = Auth::user()->getAuthIdentifier();
      $invoice_no = "Pay".$d->format("YmdHisv");
      $purchase_invoice = SupplierInvoice::find($id) ;
+     $user =User::find($purchase_invoice->user_id);
+     $full_name =$this->full_name ;
      $supplier= Supplier::find($purchase_invoice->supplier_id);
      $purchase_payment_details = SupplierPayment::where('supplier_invoice_id',$id)->get();
 
-    return view('admin.includes.purchases.paid_purchases.paid_amount')->with(compact(['purchase_payment_details','supplier']));
+      $remaining_amount = 0;
+
+      $list =$this->purchasePaymentHistory($purchase_invoice->id);
+
+      foreach ( $list as $rem){
+          $remaining_amount =$rem->remaining_balance;
+      }
+
+    return view('admin.includes.purchases.paid_purchases.paid_amount')->with(compact(['purchase_payment_details','purchase_invoice','remaining_amount','supplier','user','full_name']));
     }
+//,$previous_remaining_amount,$payment_amount
+    public function pay_amount($id,Request $request){
+        $validated = $request->validate([
+            'payment_amount' =>  [new PayAmountRule($request->total_amount)],
+            'total_amount' =>  'required',
+        ]);
+      $d = new DateTime();
+      $pay_invoice_no = "Pay".$d->format("YmdHisv");
+      $invoice_date = $d->format("YmdHisv");
+      $purchase_invoice = SupplierInvoice::find($id) ;
+      $user =User::find(Auth::user()->id);
+      $full_name =$this->full_name ;
+      $supplier= Supplier::find($purchase_invoice->supplier_id);
+      $purchase_payment_details = SupplierPayment::where('supplier_invoice_id',$id)->get();
+      $this->purchasePayment($purchase_invoice->supplier_id,$purchase_invoice->id,$user->branch_id,$pay_invoice_no,$invoice_date,$request->total_amount,$request->payment_amount,$user->id,($request->total_amount-$request->payment_amount));
+        if($request->total_amount - $request->payment_amount == 0){
+            $session =Session::flash('message',__('invoice payment : '.$purchase_invoice->invoice_no.' has paid successfully'));
+            return redirect('purchasePaymentPending')->with('session');
+
+        }else{
+            $session =Session::flash('message',__('you have paid '.$request->payment_amount.'$'.'and  Remaining Amount is '.($request->total_amount - $request->payment_amount).' $'));
+            return redirect()->back()->with('session');
+        }
+
+
+     }
 
    public function purchasePaymentPending(){
             $supplier_name=Supplier::getSupplierNameLang();
@@ -272,12 +311,19 @@ class PurchaseInvoiceController extends Controller
         return view('admin.includes.purchases.pending_payments.pending_purchases')->with(compact([ 'purchasePaymentPendings','supplier_name','branch_name']));
 
         }
-  public function  purchasePaymentHistory($supplier_invoice_id){
-            $supplier_name=Supplier::getSupplierNameLang();
-            $branch_name=Branch::getBranchNameLang();
+   public function  purchasePaymentHistoryView($supplier_invoice_id){
+      $supplier_name=Supplier::getSupplierNameLang();
+      $branch_name=Branch::getBranchNameLang();
+      $supplier_id=SupplierInvoice::find($supplier_invoice_id)->supplier_id;
+      $supplier=Supplier::find($supplier_id);
 
-            $supplier_id=SupplierInvoice::find($supplier_invoice_id)->supplier_id;
-            $supplier=Supplier::find($supplier_id);
+      $purchasePaymentHistories =$this->purchasePaymentHistory($supplier_invoice_id);
+      return view('admin.includes.purchases.supplier_payments_history.history_payments')->with(compact([ 'purchasePaymentHistories','supplier','supplier_name','branch_name']));
+
+
+        }
+
+   public function  purchasePaymentHistory($supplier_invoice_id){
 
       $purchasePaymentHistories = DB::table('supplier_invoices')
              ->join('supplier_payments','supplier_invoices.id','=','supplier_payments.supplier_invoice_id')
@@ -286,9 +332,7 @@ class PurchaseInvoiceController extends Controller
                 'supplier_payments.payment_amount','supplier_payments.remaining_balance','supplier_payments.user_id',
             )->groupBy('supplier_payments.id')->where('supplier_invoices.total_amount','>','supplier_payments.payment')
                 ->where('supplier_invoices.id',$supplier_invoice_id)->get();
-
-            return view('admin.includes.purchases.supplier_payments_history.history_payments')->with(compact([ 'purchasePaymentHistories','supplier','supplier_name','branch_name']));
-
+ return $purchasePaymentHistories;
 
         }
 
@@ -319,7 +363,7 @@ class PurchaseInvoiceController extends Controller
       $supplier=Supplier::find($request->supplier_id);
       $invoice_date= date('Y-m-d H:i');
         //get total allow tax
-        $purchasesStocks =PurchaseCartDetail::where('branch_id', Auth::user()->branch_id)->get();
+     $purchasesStocks =PurchaseCartDetail::where('branch_id', Auth::user()->branch_id)->get();
         //get total allow tax
         $totalallowtax = DB::table('stocks')
             ->join('purchase_cart_details', 'stocks.id', '=', 'purchase_cart_details.stock_id')
@@ -457,8 +501,6 @@ class PurchaseInvoiceController extends Controller
 
       return   $this->purchaseSupplierInvoice($supplier_invoice->id);
     }
-
-
 
    private function  setEntries($financial_year_id,$account_head_id,$account_control_id,$account_sub_control_id,$invoice_number,$invoice_date,$user_id,$branch_id,$credit,$debit,$transaction_title_en,$transaction_title_ar){
        $setdebitEntry = new Transaction();
@@ -619,6 +661,7 @@ class PurchaseInvoiceController extends Controller
             return view('admin.includes.purchases.append_purchase_product_level')->with(compact(['productData','getProducts','product_name']));
         }
     }
+
     public function getProductItembyId(Request $request){
         if($request->ajax()){
             $data=$request->stock_id;

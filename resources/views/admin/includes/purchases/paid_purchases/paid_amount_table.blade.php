@@ -6,7 +6,7 @@
         <th class="border-top-0"> {{__("messages.invoice_number")}} </th>
         <th class="border-top-0">  {{__("messages.total_amount")}}   </th>
         <th class="border-top-0">{{__("messages.paid_amount")}}  </th>
-        <th class="border-top-0">{{__("messages.remaining_amount")}}</th>
+        <th class="border-top-0">{{__("messages.remaining_payment")}}</th>
         <th class="border-top-0">{{__("messages.invoice_date")}} </th>
         <th class="border-top-0">{{__("messages.user_name")}}  </th>
     </tr>
@@ -22,7 +22,7 @@
             <td class="text-truncate"> {{$purchase_payment_detail->remaining_balance}} </td>
 
             <td class="text-truncate"> {{$purchase_payment_detail->invoice_date}} </td>
-            <td class="text-truncate"> {{ $purchase_payment_detail->user_id}} </td>
+            <td class="text-truncate"> {{ $user->$full_name}} </td>
 
             {{--                                    <td class="text-truncate"> {{$purchase->$description}}</td>--}}
             {{--                                    <td class="text-truncate">no</td>--}}

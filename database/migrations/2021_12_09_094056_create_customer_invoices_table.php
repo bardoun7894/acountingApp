@@ -19,6 +19,7 @@ class CreateCustomerInvoicesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('payment_type_id')->unsigned();
             $table->integer('store_id')->unsigned();
+            $table->integer('branch_id')->unsigned()->nullable();
             $table->string('invoice_number');
             $table->date('invoice_date');
             $table->string('title_en');

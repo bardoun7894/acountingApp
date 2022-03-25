@@ -186,13 +186,11 @@ class SaleController extends Controller
 
 
     }
-
     public function addCustomerInvoiceFunction(Request $request)
     {
         $title=$this->title;
         $financial_year = FinanceYear::where('isActive',1)->first();
         //sale Product debit transaction
-
 
         //sale  id 3
 
@@ -214,26 +212,28 @@ class SaleController extends Controller
             'tax' => 'required',
         ]);
 
-
         $customer=Customer::find($request->customer_id);
 
         $invoice_date= date('Y-m-d H:i');
 
-        $stocks =Stock::with('sales')->where('store_id', Auth::user()->store_id)->get();
+        $salesStocks =Stock::with('sales')->where('store_id', Auth::user()->store_id)->get();
         //get total allow tax
 
         $totalallowtax = DB::table('stocks')
             ->join('sales', 'stocks.id', '=', 'sales.stock_id')
             ->where('allowtax',1)->where('store_id', Auth::user()->store_id)
             ->selectRaw('sum(sales.sale_qty * sales.sale_unit_price) as total')->first();
+
  //insert into customer invoice
         $customer_invoice =new CustomerInvoice();
         $customer_invoice->customer_id = $request->customer_id;
 
-        if(Auth::user()->getAuthIdentifier()==1){
+        if( Auth::user()->getAuthIdentifier() == 1 ){
             $customer_invoice->store_id =$request->store_id  ;
             $customer_invoice->branch_id =$request->branch_id;
+
         }else{
+
             $customer_invoice->store_id =Auth::user()->store_id;
             $customer_invoice->branch_id =Auth::user()->branch_id;
         }
@@ -249,7 +249,7 @@ class SaleController extends Controller
         $customer_invoice-> total_tax_allowed = $totalallowtax->total;
         $customer_invoice->save();
 
-        foreach ($stocks as $stock){
+        foreach ($salesStocks as $stock){
             foreach($stock->sales as $saleStock){
                 //make customer detail
                 $customer_invoice_detail = new CustomerInvoiceDetail();
@@ -258,13 +258,12 @@ class SaleController extends Controller
                 $customer_invoice_detail->sale_quantity = $saleStock->sale_qty;
                 $customer_invoice_detail->sale_unit_price = $saleStock->sale_unit_price;
                 $customer_invoice_detail->save() ;
-
                 //update stock
                 $stockProduct= Stock::find($saleStock->stock_id) ;
                 $stockProduct->expiry_date= $saleStock->expiry_date ;
                 $stockProduct->quantity  =  $stockProduct->quantity - $saleStock->sale_qty ;
                 $stockProduct->current_sale_unit_price= $saleStock->sale_unit_price ;
-                $stockProduct->sale_unit_price= $saleStock->sale_unit_price ;
+
                 $stockProduct->save();
             }
 
@@ -368,7 +367,6 @@ class SaleController extends Controller
         Sale::query()->truncate();
         return   $this->saleCustomerInvoice($customer_invoice->id);
     }
-
     public function getAccountSetting($account_head_id,$account_control_id,$account_sub_control_id,$account_activity_id){
         $debitEntry = AccountSetting::where('account_activity_id' , $account_activity_id)->first();
         if(!isset($debitEntry)){
@@ -391,9 +389,6 @@ class SaleController extends Controller
         $customer=Customer::where('id',$customer_invoice->customer_id)->first();
         return view('admin.includes.sales.sale_invoice')->with(compact(['customer_name','product_name','address','customer','customer_invoice','customer_invoice_details']));
     }
-
-
-
     /**
      * Display the specified resource.
      *
@@ -404,7 +399,6 @@ class SaleController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      *

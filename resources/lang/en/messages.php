@@ -167,7 +167,12 @@ return [
     'invoice_number'=>'Invoice Number',
     'paid_amount'=>'Paid Amount',
     'total_amount'=>'Total Amount',
-    'remaining_payment'=>'Remaining Payment',
+    'enter_payment_details' => 'Enter Payment Amount',
+    'payment_amount' => 'Payment Amount',
+    'purchase_payment' => 'Purchase Payment',
+    'remaining_payments' => 'Remaining Payments',
+    'previous_remaining_amount'=>'Previous Remaining Amount',
+    'current_remaining_amount'=>'Current Remaining Amount',
     'add_purchase' => 'Add New Purchase',
     'continue_to_checkout' => 'Continue to checkout',
 

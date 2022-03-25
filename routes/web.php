@@ -74,9 +74,10 @@ Route::group(
     Route::get('/delete-Purchase/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'deletePurchase'])->name('delete-Purchase');
     Route::get('/allPurchases',[\App\Http\Controllers\PurchaseInvoiceController::class,'allPurchases']);
     Route::get('/purchasePaymentPending',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchasePaymentPending']);
-    Route::get('/purchase_payment_history/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchasePaymentHistory']);
+    Route::get('/purchase_payment_history/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchasePaymentHistoryView']);
     Route::get('/purchase_invoice/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchaseSupplierInvoice']);
     Route::get('/paid_amount/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'paid_amount']);
+    Route::post('/pay_amount/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'pay_amount']);
 
 
     Route::get('/trm',function(){
@@ -129,8 +130,8 @@ Route::group(
         'stocks'=>Admin\StockController::class,
         'purchases'=>\App\Http\Controllers\PurchaseInvoiceController::class,
         'sales'=>\App\Http\Controllers\SaleController::class,
-         'accountHeads'=>Admin\AccountHeadController::class,
-         'accountActivities'=>\App\Http\Controllers\AccountActivityController::class,
+        'accountHeads'=>Admin\AccountHeadController::class,
+        'accountActivities'=>\App\Http\Controllers\AccountActivityController::class,
         'accountSettings'=>\App\Http\Controllers\AccountSettingController::class,
         'accountControls'=>Admin\AccountControlController::class,
         'accountSubControls'=>Admin\AccountSubControlController::class,

@@ -145,7 +145,12 @@ return [
     'discount'=>'الخصم',
     'order_total'=>'المبلغ الكلي',
     'total_amount'=>'المبلغ الكلي',
-    'remaining_payment'=>'المبلغ المتبقي',
+    'enter_payment_details' => 'ادخل تفاصيل الدفع',
+    'remaining_amount'=>'المبلغ المتبقي',
+    'payment_amount'=>'مبلغ الدفع',
+    'purchase_payment'=>'المدفوعات',
+    'previous_remaining_amount'=>'المبلغ المتبقي السابق',
+    'current_remaining_amount'=>'المبلغ المتبقي الحالي' ,
 
     'purchase_invoice'=>'فاتورة مشتريات',
     'purchase_order'=>'أمر شراء',

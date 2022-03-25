@@ -16,8 +16,6 @@ export default class  PurchasePage{
          $(document).on('change','#supplier_id', function() {
              getSupplierItem()
          });
-
-
      }
 
 }
