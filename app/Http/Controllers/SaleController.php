@@ -89,7 +89,7 @@ class SaleController extends Controller
             $sales=Sale::with('stock')->where('branch_id',\Illuminate\Support\Facades\Auth::user()->branch_id)->get();
         }
         $branches=Branch::where('status',1)->get();
-
+ 
         return view('admin.includes.sales.sales')->with(compact([ 'customers', 'currency','s_name','payment_types','sell_types','stores','store_name','branches','customer_name','payment_type_name','sell_type_name','sales','product_name','branch_name','description']));
         //
     }
@@ -224,7 +224,8 @@ class SaleController extends Controller
             ->where('allowtax',1)->where('store_id', Auth::user()->store_id)
             ->selectRaw('sum(sales.sale_qty * sales.sale_unit_price) as total')->first();
 
- //insert into customer invoice
+##############################  customer invoice  ################################################
+
         $customer_invoice =new CustomerInvoice();
         $customer_invoice->customer_id = $request->customer_id;
 
@@ -245,9 +246,10 @@ class SaleController extends Controller
         $customer_invoice->tax = $request->tax;
         $paymentId=$request->payment_type_id;
         $customer_invoice->sub_total_amount = $request->sub_total_amount;
-        $customer_invoice->total_amount = $request->total_amount;
-        $customer_invoice-> total_tax_allowed = $totalallowtax->total;
+        $customer_invoice->total_amount = $request->total_amount; 
+       $supplier_invoice-> total_tax_allowed = $totalallowtax==1?$totalallowtax:0;
         $customer_invoice->save();
+  ##############################  stock effect  ################################################
 
         foreach ($salesStocks as $stock){
             foreach($stock->sales as $saleStock){
@@ -268,10 +270,17 @@ class SaleController extends Controller
             }
 
         }
-        //sale Product debit transaction sale Activity
-        //account_activity=3 =>sale
+         ##1############################  debit  entry  ################################################
+      //purchase Product debit transaction purchase Activity
+      //account_activity=3 => purchase product
 
         $debitEntry = $this->getAccountSetting(3,6,4,3);
+
+        $this->setEntries($financial_year->id,$purchaseAccount->account_head_id,
+        $purchaseAccount->account_control_id,  $purchaseAccount->account_sub_control_id,$invoice_number,$invoice_date
+         ,Auth::user()->getAuthIdentifier(),Auth::user()->branch_id,
+          0,$request->total_amount," Sale To ".$supplier-> supplier_name_en,isset($supplier-> supplier_name_ar)? $supplier-> supplier_name_ar ."البيع الى ": $supplier-> supplier_name_en ."البيع الى ");
+ 
 
         $setdebitEntry=new Transaction();
         $setdebitEntry->financial_year_id=$financial_year->id;
@@ -381,17 +390,64 @@ class SaleController extends Controller
         return $debitEntry;
     }
     public function saleCustomerInvoice($customerInvoiceId){
+ 
         $customer_name=$this->customer_name;
         $product_name=Stock::getProductNameLang();
         $address=$this->address;
         $customer_invoice = CustomerInvoice::find($customerInvoiceId);
         $customer_invoice_details = CustomerInvoiceDetail::with('stock')->where('customer_invoice_id',$customerInvoiceId)->get();
+        // return $customer_invoice_details;
         $customer=Customer::where('id',$customer_invoice->customer_id)->first();
         return view('admin.includes.sales.sale_invoice')->with(compact(['customer_name','product_name','address','customer','customer_invoice','customer_invoice_details']));
     }
+
+    
+   private function  setEntries($financial_year_id,$account_head_id,$account_control_id,$account_sub_control_id,$invoice_number,$invoice_date,$user_id,$branch_id,$credit,$debit,$transaction_title_en,$transaction_title_ar){
+    $setdebitEntry = new Transaction();
+    $setdebitEntry->financial_year_id=$financial_year_id;
+    $setdebitEntry->account_head_id= $account_head_id;   //these form Account Setting $debitEntry
+    $setdebitEntry->account_control_id=$account_control_id; //these form Account Setting $debitEntry
+    $setdebitEntry->account_sub_control_id=$account_sub_control_id; //these form Account Setting $debitEntry
+    $setdebitEntry->invoice_number=$invoice_number;
+    $setdebitEntry->transaction_date=$invoice_date;
+    $setdebitEntry->user_id=$user_id;
+    $setdebitEntry->branch_id=$branch_id;
+    $setdebitEntry->credit=$credit;
+    $setdebitEntry->debit=$debit;
+    $setdebitEntry->transaction_title_en= $transaction_title_en;
+    $setdebitEntry->transaction_title_ar=  $transaction_title_ar ;
+    $setdebitEntry->save();
+
+
+
+    // $setdebitEntry=new Transaction();
+    // $setdebitEntry->financial_year_id=$financial_year->id;
+    // $setdebitEntry->account_head_id= $debitEntry->account_head_id;   //these form Account Setting $debitEntry
+    // $setdebitEntry->account_control_id= $debitEntry->account_control_id; //these form Account Setting $debitEntry
+    // $setdebitEntry->account_sub_control_id=$debitEntry->account_sub_control_id; //these form Account Setting $debitEntry
+    // $setdebitEntry->invoice_number=$invoice_number;
+    // $setdebitEntry->transaction_date=$invoice_date;
+    // $setdebitEntry->user_id=Auth::user()->getAuthIdentifier();
+    // $setdebitEntry->branch_id=Auth::user()->branch_id;
+    // $setdebitEntry->credit=0;
+    // $setdebitEntry->debit=$request->total_amount;
+    // $setdebitEntry->transaction_title_en=" Purchase From ".$customer-> customer_name_en;
+    // $setdebitEntry->transaction_title_ar= isset($customer-> customer_name_ar)? $customer-> customer_name_ar ."الشراء من ": $customer-> customer_name_en ."الشراء من ";
+    // $setdebitEntry->save();
+
+
+
+}
+
+    public function allSales()
+    { 
+        $customerInvoices = CustomerInvoice::with( ['customer','customer_payments'] )->where('store_id',Auth::user()->store_id)->get();
+  //      $paidAmount = DB::table('customer_payments')->join('customer_invoices','customer_payments.customer_invoice_id','=','customer_invoices.id')->sum('customer_payments.payment_amount');
+
+        return view('admin.includes.sales.allSales')->with(compact([ 'customerInvoices']));
+    }
     /**
-     * Display the specified resource.
-     *
+     * Display the specified resource. 
      * @param  \App\Models\Sale  $sale
      * @return \Illuminate\Http\Response
      */
@@ -466,8 +522,7 @@ class SaleController extends Controller
             } else{
                 $productData =  "";
                 $getProducts = Stock::where(['category_id' => $data['category_id']])->get();
-            }
-
+            } 
             return view('admin.includes.sales.append_sale_product_level')->with(compact(['productData','getProducts','product_name']));
         }
     }

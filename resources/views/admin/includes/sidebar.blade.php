@@ -30,8 +30,15 @@ $current_user =\Illuminate\Support\Facades\Auth::user();
                 </ul>
             </li>
 
-            <li class=" nav-item"><a href="ecommerce-product-detail.html"><i class="la la-buysellads"></i><span class="menu-title" data-i18n="Product Detail">{{__('messages.sales')}}</span></a>
+            <li class=" nav-item" ><a href="#"><i class="la la-shopping-cart" ></i><span class="menu-title" data-i18n="Stock">{{__('messages.sales')}}</span></a>
+                <ul class="menu-content">
+                    <li><a class="menu-item" href="{{url('allSales')}}"><i></i> <span data-i18n="purchases">{{__('messages.all_sales')}}</span></a>
+                    <li><a class="menu-item" href="{{url('sales')}}"><i></i> <span data-i18n="sales">{{__('messages.sale_order')}}</span></a>
+                    <li><a class="menu-item" href="{{url('salePaymentPending')}}"><i></i> <span data-i18n="pending_payments">{{__('messages.pending_payments')}}</span></a>
+
+                </ul>
             </li>
+
        <li class=" nav-item" ><a href="#"><i class="la la-clipboard" ></i><span class="menu-title" data-i18n="Stock">{{__('messages.stocks')}}</span></a>
                 <ul class="menu-content">
                     <li><a class="menu-item" href="{{url('categories')}}"><i></i><span data-i18n="categories">{{__('messages.categories')}}</span></a>

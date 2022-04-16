@@ -32,7 +32,7 @@ class AccountControlController extends Controller
 
     public function index()
     {
-        $account_head_name=AccountHead::getAccounHeadNameLang();
+        $account_head_name=AccountHead::getAccountHeadNameLang();
 
         $account_control_name=$this->account_control_name;
 //        $accountHeads= AccountHead::with('accountControls')->get();
@@ -53,7 +53,7 @@ class AccountControlController extends Controller
     {
         $lang=Translation::getLang();
         $account_control_name=$this->account_control_name;
-        $account_head_name=AccountHead::getAccounHeadNameLang();
+        $account_head_name=AccountHead::getAccountHeadNameLang();
         $accountHeads=AccountHead::with('accountControls')->get();
 //        return $accountHead->get();
         return view('admin.includes.accountControls.create')->with(compact(['accountHeads','lang','account_control_name','account_head_name']));
@@ -115,7 +115,7 @@ class AccountControlController extends Controller
      */
     public function edit($id)
     {
-        $account_head_name=AccountHead::getAccounHeadNameLang();
+        $account_head_name=AccountHead::getAccountHeadNameLang();
 
         $lang=Translation::getLang();
         $account_control_name=$this->account_control_name;

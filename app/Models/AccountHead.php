@@ -12,12 +12,12 @@ class AccountHead extends Model
         return $this->belongsTo(User::class);
     }
     public function accountControls(){
-        return $this->hasMany(AccountControl::class);
+        return $this->hasMany(    AccountControl::class);
     }
     public function accountSubControls(){
         return $this->hasMany(AccountSubControl::class);
     }
-   static public function getAccounHeadNameLang(){
+   static public function getAccountHeadNameLang(){
         return 'account_head_name_'.Translation::getLang();
 }
 

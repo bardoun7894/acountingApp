@@ -14,7 +14,6 @@ class BoxController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**

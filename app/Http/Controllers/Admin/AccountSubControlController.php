@@ -35,13 +35,13 @@ class AccountSubControlController extends Controller
         $this->account_sub_control_name =AccountSubControl::getAccountSubControlNameLang();
         $this->account_control_name =AccountControl::getAccountControlNameLang();
         $this->account_activity_name =AccountActivity::getAccountActivityNameLang();
-        $this->account_head_name =AccountHead::getAccounHeadNameLang();
+        $this->account_head_name =AccountHead::getAccountHeadNameLang();
     }
 
     public function index()
     {
         $lang=Translation::getLang();
-        $account_head_name=AccountHead::getAccounHeadNameLang();
+        $account_head_name=AccountHead::getAccountHeadNameLang();
         $account_control_name=$this->account_control_name;
         $account_sub_control_name=$this->account_sub_control_name ;
 //      $accountHeads= AccountHead::with('accountSubControls')->get();

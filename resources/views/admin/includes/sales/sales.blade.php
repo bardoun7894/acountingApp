@@ -45,7 +45,12 @@
                @csrf
 
                <div class="row">
-                   @include('admin.includes.sales.info_customer_section')
+
+
+            @if(count($sales)!=0) 
+                @include('admin.includes.sales.info_customer_section')
+            @endif
+             
 
 
         <div class="card" >
@@ -85,8 +90,7 @@
                 @endswitch
 
             @endif
-        <div id="sale_table" class="card-content d-flex p-2">
-
+        <div id="sale_table" class="card-content d-flex p-2"> 
             @include('admin.includes.sales.sales_table')
         </div>
         <div class="card-content">
@@ -152,11 +156,14 @@
     @include('admin.includes.payment_types.select_payment_type')
 
     @include('admin.includes.sell_types.select_sell_type')
-</div>
+        </div>
 
             </ul>
         </div>
-        <button class="btn btn-info btn-lg btn-block" type="submit"> {{__("messages.continue_to_checkout")}}</button>
+        @if(count($sales)!=0)  
+           <button class="btn btn-info btn-lg btn-block" type="submit"> {{__("messages.continue_to_checkout")}}</button>
+        @endif
+
     </div>
 
 

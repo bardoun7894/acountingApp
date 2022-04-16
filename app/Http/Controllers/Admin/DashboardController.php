@@ -9,6 +9,6 @@ class DashboardController extends Controller
 {
  public function index(){
 //     $d="admin";
-//     return view('layouts.dashboard')->with(compact('d'));
+//     return view('layouts.dashboard')->with(compact('d')); 
  }
 }

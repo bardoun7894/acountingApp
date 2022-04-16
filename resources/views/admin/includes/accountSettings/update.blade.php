@@ -1,5 +1,6 @@
-@extends('admin.dashboard')
-@section('content')
+@extends('admin.dashboard') 
+ 
+@section(   'content')
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -34,8 +35,7 @@
                         <div id="appendAccountActivityLevel">
                             @include('admin.includes.accountActivities.accountActivity_table')
                         </div>
-
-
+ 
                         <div class="form-actions clearfix">
                             <div class="buttons-group float-right mb-1">
                                 <button type="submit"  class="btn btn-primary mr-1">

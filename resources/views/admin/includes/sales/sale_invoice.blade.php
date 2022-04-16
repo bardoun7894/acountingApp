@@ -9,10 +9,9 @@
                 <div class="row breadcrumbs-top">
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Purchases</a>
+                            <li class="breadcrumb-item"><a href="index.html">Sales</a>
                             </li>
-                            <li class="breadcrumb-item active">Purchase Invoice
-                            </li>
+                            <li class="breadcrumb-item active">Sale Invoice </li>
                         </ol>
                     </div>
                 </div>
@@ -22,8 +21,7 @@
 {{--                    <button class="btn btn-info round dropdown-toggle dropdown-menu-right box-shadow-2 px-2 mb-1" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ft-settings icon-left"></i> Settings</button>--}}
 {{--                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"><a class="dropdown-item" href="card-bootstrap.html">Cards</a><a class="dropdown-item" href="component-buttons-extended.html">Buttons</a></div>--}}
 {{--                </div>--}}
-{{--            </div>--}}
-        </div>
+{{--            </div>--}} 
         <div class="content-body">
             <section class="card">
                 <div id="invoice-template" class="card-body p-4">
@@ -50,7 +48,7 @@
                         </div>
                         <div class="col-sm-6 col-12 text-center text-sm-right">
                             <h2>INVOICE</h2>
-                            <p class="pb-sm-3">#{{$supplier_invoice->invoice_no}}</p>
+                            <p class="pb-sm-3">#{{$customer_invoice->invoice_no}}</p>
                             {{--                                <ul class="px-0 list-unstyled">--}}
                             {{--                                    <li>Balance Due</li>--}}
                             {{--                                    <li class="lead text-bold-800">$12,000.00</li>--}}
@@ -66,17 +64,17 @@
                                                 </div>
                                                 <div class="col-sm-6 col-12 text-center text-sm-left">
                                                     <ul class="px-0 list-unstyled">
-                                                        <li class="text-bold-800">M.{{$supplier->$supplier_name}}</li>
-                                                        <li>{{$supplier->$address}}</li>
-                                                        <li>{{$supplier->email}}</li>
-                                                        <li>{{$supplier->phone}}</li>
+                                                        <li class="text-bold-800">M.{{$customer->$customer_name}}</li>
+                                                        <li>{{$customer->$address}}</li>
+                                                        <li>{{$customer->email}}</li>
+                                                        <li>{{$customer->phone}}</li>
                                                     </ul>
                                                 </div>
 
                     <div class="col-sm-6 col-12 text-center text-sm-right">
                         <p><span class="text-muted">Invoice Date :</span> {{now()}}</p>
                                                         <p><span class="text-muted">Terms :</span> Due on Receipt</p>
-                                                        <p><span class="text-muted">Due Date :</span> {{$supplier_invoice->invoice_date}}</p>
+                                                        <p><span class="text-muted">Due Date :</span> {{$customer_invoice->invoice_date}}</p>
                     </div>
                 </div>
                 <!-- Invoice Customer Details -->
@@ -100,15 +98,15 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($supplier_invoice_details as $supplier_invoice_detail)
+                                @foreach($customer_invoice_details as $customer_invoice_detail)
                                     <tr>
                                         <td class="text-left"> </td>
 
-                                        <td class="text-truncate"> {{$supplier_invoice_detail->id }}</td>
-                                        <td class="text-truncate">{{$supplier_invoice_detail->stock->$product_name }}  </td>
-                                        <td class="text-truncate"> {{$supplier_invoice_detail->purchase_quantity}}</td>
-                                        <td class="text-truncate"> {{$supplier_invoice_detail->purchase_unit_price}}</td>
-                                        <td class="text-truncate"> {{$supplier_invoice_detail->purchase_unit_price * $supplier_invoice_detail->purchase_quantity }}</td>
+                                        <td class="text-truncate"> {{$customer_invoice_detail->id }}</td>
+                                        <td class="text-truncate">{{$customer_invoice_detail->stock->$product_name }}  </td>
+                                        <td class="text-truncate"> {{$customer_invoice_detail->sale_quantity}}</td>
+                                        <td class="text-truncate"> {{$customer_invoice_detail->sale_unit_price}}</td>
+                                        <td class="text-truncate"> {{$customer_invoice_detail->sale_unit_price * $customer_invoice_detail->sale_quantity }}</td>
                                         <td class="text-left"> </td>
                                         <td class="text-left"> </td>
 
@@ -128,19 +126,19 @@
                                                                         <tbody>
                                                                         <tr>
                                                                             <td>Sub Total</td>
-                                                                            <td class="text-right">${{$supplier_invoice->sub_total_amount}}</td>
+                                                                            <td class="text-right">${{$customer_invoice->sub_total_amount}}</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td>TAX ({{$supplier_invoice->tax}}%)</td>
-                                                                            <td class="text-right">{{$supplier_invoice->tax * $supplier_invoice->sub_total_amount/100}}</td>
+                                                                            <td>TAX ({{$customer_invoice->tax}}%)</td>
+                                                                            <td class="text-right">{{$customer_invoice->tax * $customer_invoice->sub_total_amount/100}}</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td>Discount ({{$supplier_invoice->discount}}%)</td>
-                                                                            <td class="text-right"> {{$supplier_invoice->discount*$supplier_invoice->sub_total_amount/100}}</td>
+                                                                            <td>Discount ({{$customer_invoice->discount}}%)</td>
+                                                                            <td class="text-right"> {{$customer_invoice->discount*$customer_invoice->sub_total_amount/100}}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="text-bold-800">Total</td>
-                                                                            <td class="text-bold-800 text-right"> ${{$supplier_invoice->total_amount}}</td>
+                                                                            <td class="text-bold-800 text-right"> ${{$customer_invoice->total_amount}}</td>
                                                                         </tr>
 
                                                                         </tbody>

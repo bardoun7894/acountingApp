@@ -46,7 +46,110 @@
 
                <div class="row">
                    @include('admin.includes.purchases.info_supplier_section')
+                </div>
 
+
+                <div>
+
+                    <form class="form" method="POST" action="{{url('purchases')}}">
+                        @csrf
+                    
+                        <div class="row">
+
+                            <div class="col-md-6">
+  
+                                   @include('admin.includes.branches.select_branch')
+
+                                <div id="appendPurchaseCategoryLevel">
+                                    @include("admin.includes.purchases.append_purchase_category_level")
+                                </div>
+
+                                <div id="appendPurchaseProductLevel">
+                                    @include("admin.includes.purchases.append_purchase_product_level")
+                                </div>
+
+                                <div class="row justify-content-md-center form-group">
+                                    <div class="col-md-6">
+                                        <label for="eventRegInput2">Unit Name</label>
+                                        <select name="unit_id" class="select2 form-control"  >
+                                            <optgroup label="Unit name">
+                                                @foreach($units as $unit)
+                                                    <option   value="{{$unit->id}} " > {{$unit->$unit_name}} </option>
+                                                @endforeach
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div> 
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-12 mb-2">
+                                                <label for="eventRegInput2">{{__("messages.quantity")}}</label>
+                                                <input type="number"  id="eventRegInput2" class="form-control" placeholder="Quantity" name="quantity" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-12 mb-2">
+                                                <label for="eventRegInput2">{{__("messages.purchase_unit_price")}}</label>
+
+                                                <input type="number" id="purchaseUnitPrice" class="form-control" placeholder="Purchase Unit Price" name=" current_purchase_unit_price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-12 mb-2">
+                                                <label for="eventRegInput2">{{__("messages.sale_unit_price")}}</label>
+
+                                                <input type="number" id="saleUnitPrice" class="form-control" placeholder="Sale Unit Price" name="sale_unit_price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-12 mb-2">
+                                                <label for="eventRegInput2">{{__("messages.expiry_date")}}</label>
+
+                                                <input type="date" id="eventRegInput2" class="form-control" placeholder="Expiry Date" name="expiry_date">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row justify-content-md-center">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="form-group col-12 mb-2">
+                                        <label for="eventRegInput2">{{__("messages.description")}}</label>
+                                        <input type="text" id="eventRegInput2" class="form-control" placeholder="Description" name="{{$description}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions clearfix">
+                            <div class="buttons-group float-right mb-1">
+                                <button type="submit"  class="btn btn-primary mr-1">
+                                    <i class="la la-check-square-o"></i> {{__('save')}}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
 
         <div class="card" >
 

@@ -18,7 +18,7 @@ class AccountHeadController extends Controller
     private $account_head_name;
 private $user_type;
     function __construct(){
-        $this->account_head_name=AccountHead::getAccounHeadNameLang();
+        $this->account_head_name=AccountHead::getAccountHeadNameLang();
         $this->user_type=UserType::getUserTypeLang();
     }
 

@@ -90,7 +90,7 @@ class StockController extends Controller
         $stock->$product_name =$request->$product_name;
         $stock->$description =$request->$description;
         $stock->quantity = $request->quantity;
-        $stock->sale_unit_price = $request->sale_unit_price;
+        $stock->current_sale_unit_price = $request->sale_unit_price;
         $stock->current_purchase_unit_price = $request->current_purchase_unit_price;
         $stock->expiry_date = $request->expiry_date;
         $stock->user_id =Auth::user()->id;

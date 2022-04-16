@@ -29,7 +29,7 @@
             <td class="text-truncate"> {{$stock->user->full_name_en}}</td>
             <td class="text-truncate"> {{$stock->quantity}}</td>
             <td class="text-truncate"> {{$stock->current_purchase_unit_price}}</td>
-            <td class="text-truncate"> {{$stock->sale_unit_price}}</td>
+            <td class="text-truncate"> {{$stock->current_sale_unit_price}}</td>
             <td class="text-truncate"> {{$stock->expiry_date}}</td>
             <td class="text-truncate"> {{$stock->$description}}</td>
            <td class="text-truncate">   <a href="{{url('stocks/'.$stock->id.'/edit')}}">  <i class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>

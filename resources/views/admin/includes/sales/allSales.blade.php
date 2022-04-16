@@ -4,13 +4,13 @@
     <div class="content-wrapper">
         <div class="content-header row">
             <div class="content-header-left col-md-6 col-12 mb-2">
-                <h3 class="content-header-title">{{__("messages.all_purchases")}}</h3>
+                <h3 class="content-header-title">{{__("messages.all_sales")}}</h3>
                 <div class="row breadcrumbs-top">
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{url('/redirect')}}">{{__("messages.home")}}</a>
                             </li>
-                            <li class="breadcrumb-item active"><a >{{__("messages.all_purchases")}}</a>
+                            <li class="breadcrumb-item active"><a >{{__("messages.all_sales")}}</a>
                             </li>
 
                         </ol>
@@ -40,15 +40,12 @@
                         {{ session()->get('message') }}
                     </div>
                     @break
-                    @case(__('messages.data_updated'))
-
+                    @case(__('messages.data_updated')) 
                     <div class="alert alert-success">
                         {{ session()->get('message') }}
-                    </div>
-
+                    </div> 
                     @break
-                    @case (__('messages.data_added'))
-
+                    @case (__('messages.data_added')) 
                     <div class="alert alert-success">
                         {{ session()->get('message') }}
                     </div>
@@ -58,9 +55,9 @@
                 @endswitch
 
             @endif
-        <div id="allPurchase_table" class="card-content d-flex p-2 ">
+        <div id="allSale_table" class="card-content d-flex p-2 ">
 
-            @include('admin.includes.purchases.all_purchases_table')
+            @include('admin.includes.sales.all_sales_table')
         </div>
    </div>
 

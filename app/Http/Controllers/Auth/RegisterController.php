@@ -71,7 +71,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $full_name =$this->full_name;
-            $user=new User();
+            $user= new User();
 
             $user->$full_name = $data[$full_name];
             $user->username = $data['username'];
@@ -79,5 +79,7 @@ class RegisterController extends Controller
             $user->contact_number = $data['contact_number'];
             $user->password = Hash::make($data['password']);
             $user->Save();
+
+            return $user;
     }
 }

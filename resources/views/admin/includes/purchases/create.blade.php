@@ -30,8 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-
+        <div class="card"> 
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -55,8 +54,7 @@
                         <div class="row">
 
                             <div class="col-md-6">
-
-
+  
                                    @include('admin.includes.branches.select_branch')
 
                                 <div id="appendPurchaseCategoryLevel">
@@ -78,10 +76,7 @@
                                             </optgroup>
                                         </select>
                                     </div>
-                                </div>
-
-
-
+                                </div> 
                             </div>
                             <div class="col-md-6">
                                 <div class="row justify-content-md-center">

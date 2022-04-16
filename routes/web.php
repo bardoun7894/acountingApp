@@ -72,12 +72,20 @@ Route::group(
     Route::get('/delete-Category/{id}',[Admin\CategoryController::class,'deleteCategory']) ;
     Route::get('/delete-Customer/{id}',[Admin\CustomerController::class,'deleteCustomer'])->name('delete-Customer');
     Route::get('/delete-Purchase/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'deletePurchase'])->name('delete-Purchase');
+  
+  
+  
+  
     Route::get('/allPurchases',[\App\Http\Controllers\PurchaseInvoiceController::class,'allPurchases']);
+  
     Route::get('/purchasePaymentPending',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchasePaymentPending']);
     Route::get('/purchase_payment_history/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchasePaymentHistoryView']);
     Route::get('/purchase_invoice/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'purchaseSupplierInvoice']);
     Route::get('/paid_amount/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'paid_amount']);
     Route::post('/pay_amount/{id}',[\App\Http\Controllers\PurchaseInvoiceController::class,'pay_amount']);
+    Route::get('/allSales',[\App\Http\Controllers\SaleController::class,'allSales']); 
+   
+
 
 
     Route::get('/trm',function(){
