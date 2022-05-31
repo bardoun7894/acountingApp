@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\Currency;
 use App\Models\FinanceYear;
 use App\Models\PaymentType;
-use App\Models\Product;
 use App\Models\PurchaseCartDetail;
 use App\Models\SellType;
 use App\Models\Stock;
@@ -21,19 +20,15 @@ use App\Models\Transaction;
 use App\Models\Translation;
 use App\Models\User;
 use App\Models\UserType;
-use App\Rules\AccountSettingYearRule;
 use App\Rules\FinanceYearRule;
 use App\Rules\PayAmountRule;
 use App\Rules\PurchaseCartRule;
-use Carbon\Traits\Date;
 use App\Models\Unit;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
-use function PHPUnit\Framework\returnArgument;
 
 class PurchaseInvoiceController extends Controller
 {
@@ -43,8 +38,8 @@ class PurchaseInvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    private $product_name;
     private $description;
+    private $product_name;
     private $category_name;
     private $unit_name;
     private $supplier_name;
@@ -56,10 +51,13 @@ class PurchaseInvoiceController extends Controller
     private $address;
     private $s_name;
     private $full_name;
+    private $purchasePaymentAr = "تم الدفع ";
+    private $entries;
 
     function __construct()
     {
         $this->product_name = Stock::getProductNameLang();
+        $this->entries = new Entries();
         $this->full_name = User::getFullnameLang();
         $this->s_name = Currency::getSNameLang();
         $this->sell_type_name = SellType::getSellTypeNameLang();
@@ -81,30 +79,36 @@ class PurchaseInvoiceController extends Controller
         $payment_type_name = $this->payment_type_name;
         $sell_type_name = $this->sell_type_name;
 
-        $branch_name = $this->branch_name;
+        // $branch_name = $this->branch_name;
         $store_name = $this->store_name;
         $unit_name = $this->unit_name;
         $description = $this->description;
         //      $stocks = Stock::with(['category','user'])->get();
         $supplier_name = $this->supplier_name;
         $units = Unit::all();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where(
+            "branch_id",
+            Auth::user()->branch_id
+        )->get();
         $payment_types = PaymentType::where("status", 1)->get();
         $currency = Currency::where("status", 1)->first();
         $s_name = $this->s_name;
         $sell_types = SellType::where("status", 1)->get();
-        $stores = Store::all();
+        $stores = Store::where([
+            "branch_id" => Auth::user()->branch_id,
+            "company_id" => Auth::user()->company_id,
+            "status" => 1,
+        ])->get();
         if (\Illuminate\Support\Facades\Auth::user()->user_type_id == 1) {
             $purchases = PurchaseCartDetail::with("stock")->get();
         } else {
             $purchases = PurchaseCartDetail::with("stock")
-                ->where(
-                    "branch_id",
-                    \Illuminate\Support\Facades\Auth::user()->branch_id
-                )
+                ->where([
+                    "branch_id" => Auth::user()->branch_id,
+                    "company_id" => Auth::user()->company_id,
+                ])
                 ->get();
         }
-        $branches = Branch::all();
 
         return view("admin.includes.purchases.purchases")->with(
             compact([
@@ -117,13 +121,11 @@ class PurchaseInvoiceController extends Controller
                 "stores",
                 "store_name",
                 "unit_name",
-                "branches",
                 "supplier_name",
                 "payment_type_name",
                 "sell_type_name",
                 "purchases",
                 "product_name",
-                "branch_name",
                 "description",
             ])
         );
@@ -131,18 +133,21 @@ class PurchaseInvoiceController extends Controller
 
     public function allPurchases()
     {
+        $supplier_name = $this->supplier_name;
         $supplierInvoices = SupplierInvoice::with([
             "supplier",
             "supplier_payments",
         ])
-            ->where("store_id", Auth::user()->store_id)
+            ->where([
+                "store_id" => Auth::user()->store_id,
+                "branch_id" => Auth::user()->branch_id,
+                "company_id" => Auth::user()->company_id,
+            ])
             ->get();
-
-        // $paidAmount =DB::table('supplier_payments')->join('supplier_invoice s', 'supplier_payments.supplier_invoice_id', '=', 'supplier_invoices.id')->sum('supplier_payments.payment_amount');
 
         return view(
             "admin.includes.purchases.all_purchases.allPurchases"
-        )->with(compact(["supplierInvoices"]));
+        )->with(compact(["supplierInvoices", "supplier_name"]));
     }
     /**
      * Show the form for creating a new resource.
@@ -224,7 +229,7 @@ class PurchaseInvoiceController extends Controller
             $request->current_purchase_unit_price;
         $purchaseCart->sale_unit_price = $request->sale_unit_price;
         $purchaseCart->user_id = Auth::user()->id;
-        $purchaseCart->expiry_date = $request->expiry_date;
+        // $purchaseCart->expiry_date = $request->expiry_date;
 
         $purchaseCart->save();
 
@@ -234,30 +239,40 @@ class PurchaseInvoiceController extends Controller
         );
     }
 
-    public function getAccountSetting(
-        $id,
-        $account_head_id,
-        $account_control_id,
-        $account_sub_control_id,
-        $account_activity_id
-    ) {
-        $debitEntry = AccountSetting::where(
-            "account_activity_id",
-            $account_activity_id
-        )->first();
-        if (!isset($debitEntry)) {
-            $debitEntry = new AccountSetting(); // create new account setting
-            $debitEntry->id = $id;
-            $debitEntry->account_head_id = $account_head_id;
-            $debitEntry->account_control_id = $account_control_id;
-            $debitEntry->account_sub_control_id = $account_sub_control_id;
-            $debitEntry->account_activity_id = $account_activity_id;
-            $debitEntry->branch_id = Auth::user()->branch_id;
-            $debitEntry->save();
-        }
-        return $debitEntry;
-    }
+    public function addDataToPurchaseCart(Request $request)
+    {
+        if ($request->ajax()) {
+            $product_name = $this->product_name;
+            $description = $this->description;
+            $validated = $request->validate([
+                "branch_id" => "required",
+                "category_id" => "required",
+                "stock_id" => [new PurchaseCartRule($request->stock_id)],
+                "unit_id" => "required",
+                //           $product_name=>'required',
+                $description => "required",
+                "quantity" => "required",
+                "sale_unit_price" => "required",
+                "current_purchase_unit_price" => "required",
+                "expiry_date" => "required",
+            ]);
 
+            $purchaseCart = new PurchaseCartDetail();
+            $purchaseCart->branch_id = $request->branch_id;
+            $purchaseCart->unit_id = $request->unit_id;
+            $purchaseCart->category_id = $request->category_id;
+            $purchaseCart->stock_id = $request->stock_id;
+            $purchaseCart->$description = $request->$description;
+            $purchaseCart->purchase_qty = $request->quantity;
+            $purchaseCart->purchase_unit_price =
+                $request->current_purchase_unit_price;
+            $purchaseCart->sale_unit_price = $request->sale_unit_price;
+            $purchaseCart->user_id = Auth::user()->id;
+            // $purchaseCart->expiry_date = $request->expiry_date;
+
+            $purchaseCart->save();
+        }
+    }
     public function purchasePayment(
         $supplier_id,
         $supplier_invoice_id,
@@ -289,9 +304,14 @@ class PurchaseInvoiceController extends Controller
         ##3############################  debit  entry  ################################################
 
         //purchase Payment Pending
+
         //account_activity= 8 =>purchase Payment Pending
-        $purchaseAccount = $this->getAccountSetting(8, 2, 4, 18, 8);
-        $this->setEntries(
+        //account_head =2 liabilities
+        //  $account_control_id=4 Current Liabilities
+        // $account_sub_control_id= 18 ; Notes Payable
+
+        $purchaseAccount = $this->entries->getAccountSetting(8, 2, 4, 18, 8);
+        $this->entries->setEntries(
             // set debit entry
             $financial_year->id,
             $purchaseAccount->account_head_id,
@@ -314,9 +334,15 @@ class PurchaseInvoiceController extends Controller
         //purchase Payment PAID
         //account_activity=9 =>purchase Payment PAID // DEBIT ENTRY TRANSACTION
 
-        $purchaseAccount = $this->getAccountSetting(9, 1, 1, 2, 9);
+        //account_head =1 Assets
+        // $account_control_id=1 Current Assets
+        // $account_sub_control_id=2; Cash and Cash Equivalent "Cash On Bank", "Cash in Hand"
 
-        $this->setEntries(
+        // if atm payment cash on bank
+        //else cash in hand
+        $purchaseAccount = $this->entries->getAccountSetting(9, 1, 1, 2, 9);
+
+        $this->entries->setEntries(
             // set credit entry
             $financial_year->id,
             $purchaseAccount->account_head_id,
@@ -330,8 +356,8 @@ class PurchaseInvoiceController extends Controller
             $remaining_balance,
             " Purchase Payment Succeed" . $supplier->supplier_name_en,
             isset($supplier->supplier_name_ar)
-                ? $supplier->supplier_name_ar . "تم الدفع "
-                : $supplier->supplier_name_en . "تم الدفع "
+                ? $supplier->supplier_name_ar . $this->purchasePaymentAr
+                : $supplier->supplier_name_en . $this->purchasePaymentAr
         );
     }
 
@@ -380,7 +406,7 @@ class PurchaseInvoiceController extends Controller
         $pay_invoice_no = "Pay" . $d->format("YmdHisv");
         $invoice_date = $d->format("YmdHisv");
         $purchase_invoice = SupplierInvoice::find($id);
-        $user = User::find(Auth::user()->id);
+
         $full_name = $this->full_name;
         $supplier = Supplier::find($purchase_invoice->supplier_id);
         $purchase_payment_details = SupplierPayment::where(
@@ -390,12 +416,12 @@ class PurchaseInvoiceController extends Controller
         $this->purchasePayment(
             $purchase_invoice->supplier_id,
             $purchase_invoice->id,
-            $user->branch_id,
+            Auth::user()->branch_id,
             $pay_invoice_no,
             $invoice_date,
             $request->total_amount,
             $request->payment_amount,
-            $user->id,
+            Auth::user()->getAuthIdentifier(),
             $request->total_amount - $request->payment_amount
         );
         if ($request->total_amount - $request->payment_amount == 0) {
@@ -512,7 +538,10 @@ class PurchaseInvoiceController extends Controller
                 ">",
                 "supplier_payments.payment"
             )
-            ->where("supplier_invoices.id", $supplier_invoice_id)
+            ->where([
+                "supplier_invoices.id" => $supplier_invoice_id,
+                "supplier_invoices.company_id" => Auth::user()->company_id,
+            ])
             ->get();
         return $purchasePaymentHistories;
     }
@@ -529,7 +558,6 @@ class PurchaseInvoiceController extends Controller
         $validated = $request->merge($data);
         $validated = $request->validate([
             "financial_year" => new FinanceYearRule(),
-            "branch_id" => Auth::user()->user_type_id == 1 ? "required" : "",
             "store_id" => Auth::user()->user_type_id == 1 ? "required" : "",
             "supplier_id" => "required",
             "payment_type_id" => "required",
@@ -542,10 +570,10 @@ class PurchaseInvoiceController extends Controller
         $supplier = Supplier::find($request->supplier_id);
         $invoice_date = date("Y-m-d H:i");
         //get total allow tax
-        $purchasesStocks = PurchaseCartDetail::where(
-            "branch_id",
-            Auth::user()->branch_id
-        )->get();
+        $purchasesStocks = PurchaseCartDetail::where([
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
         //get total allow tax
         $totalallowtax = DB::table("stocks")
             ->join(
@@ -555,22 +583,25 @@ class PurchaseInvoiceController extends Controller
                 "purchase_cart_details.stock_id"
             )
             ->where("allowtax", 1)
-            ->where("store_id", Auth::user()->store_id)
+            ->where([
+                "purchase_cart_details.company_id" => Auth::user()->company_id,
+                "purchase_cart_details.branch_id" => Auth::user()->branch_id,
+                "store_id" => Auth::user()->store_id,
+            ])
             ->selectRaw(
                 "sum( purchase_cart_details.purchase_qty * purchase_cart_details.purchase_unit_price ) as sum"
             )
             ->first()->sum;
+        return $totalallowtax;
+
         ##############################  supplier invoice  ################################################
 
         $supplier_invoice = new SupplierInvoice();
         $supplier_invoice->supplier_id = $request->supplier_id;
-        if (Auth::user()->getAuthIdentifier() == 1) {
-            $supplier_invoice->store_id = $request->store_id;
-            $supplier_invoice->branch_id = $request->branch_id;
-        } else {
-            $supplier_invoice->store_id = Auth::user()->store_id;
-            $supplier_invoice->branch_id = Auth::user()->branch_id;
-        }
+
+        $supplier_invoice->store_id = Auth::user()->store_id;
+        $supplier_invoice->branch_id = Auth::user()->branch_id;
+        $supplier_invoice->company_id = Auth::user()->company_id;
         $supplier_invoice->user_id = Auth::user()->getAuthIdentifier();
         $invoice_number = "PUR" . date("YmdHis") . $supplier_invoice->user_id;
         $supplier_invoice->invoice_no = $invoice_number;
@@ -580,8 +611,10 @@ class PurchaseInvoiceController extends Controller
         $paymentId = $request->payment_type_id;
         $supplier_invoice->sub_total_amount = $request->sub_total_amount;
         $supplier_invoice->total_amount = $request->total_amount;
+        // return $totalallowtax;
         $supplier_invoice->total_tax_allowed =
-            $totalallowtax == 1 ? $totalallowtax : 0;
+            $totalallowtax == "" ? $totalallowtax : 0;
+
         $supplier_invoice->save();
         ##############################  stock effect  ################################################
 
@@ -611,8 +644,12 @@ class PurchaseInvoiceController extends Controller
         //purchase Product debit transaction purchase Activity
         //account_activity=3 => purchase product
 
-        $purchaseAccount = $this->getAccountSetting(6, 4, 8, 29, 3);
-        $this->setEntries(
+        //account_head =4   Expenses
+        // $account_control_id=8   Cost Of Good Sold
+        // $account_sub_control_id=29  411 Purchases
+
+        $purchaseAccount = $this->entries->getAccountSetting(6, 4, 8, 29, 3);
+        $this->entries->setEntries(
             $financial_year->id,
             $purchaseAccount->account_head_id,
             $purchaseAccount->account_control_id,
@@ -633,10 +670,15 @@ class PurchaseInvoiceController extends Controller
 
         //purchase Payment Pending
 
-        //account_activity=5 =>purchase Payment Pending
-        $purchaseAccount = $this->getAccountSetting(8, 2, 4, 18, 8);
+        //account_activity= 8  => purchase Payment Pending
 
-        $this->setEntries(
+        //account_head =2   liabilities
+        // $account_control_id=4  Current Liabilities
+        // $account_sub_control_id=18 Notes Payable
+
+        $purchaseAccount = $this->entries->getAccountSetting(8, 2, 4, 18, 8);
+
+        $this->entries->setEntries(
             $financial_year->id,
             $purchaseAccount->account_head_id,
             $purchaseAccount->account_control_id,
@@ -679,9 +721,18 @@ class PurchaseInvoiceController extends Controller
 
             //purchase Payment Pending
             //account_activity= 8 =>purchase Payment Pending
+            //account_head =2   liabilities
+            // $account_control_id=4  Current Liabilities
+            // $account_sub_control_id=18 Notes Payable
 
-            $purchaseAccount = $this->getAccountSetting(8, 2, 4, 18, 8);
-            $this->setEntries(
+            $purchaseAccount = $this->entries->getAccountSetting(
+                8,
+                2,
+                4,
+                18,
+                8
+            );
+            $this->entries->setEntries(
                 $financial_year->id,
                 $purchaseAccount->account_head_id,
                 $purchaseAccount->account_control_id,
@@ -702,12 +753,32 @@ class PurchaseInvoiceController extends Controller
             //purchase Payment PAID
             //account_activity=9 =>purchase Payment PAID // DEBIT ENTRY TRANSACTION
 
-            if ($request->payment_type_id == 1) {
-                $purchaseAccount = $this->getAccountSetting(9, 1, 1, 2, 9);
+            if ($request->payment_type_id == 2) {
+                //account_head =1   assets
+                // $account_control_id=1   Current Assets
+                // $account_sub_control_id=2   Cash on bank
+
+                $purchaseAccount = $this->entries->getAccountSetting(
+                    9,
+                    1,
+                    1,
+                    2,
+                    9
+                );
             } else {
-                $purchaseAccount = $this->getAccountSetting(9, 1, 1, 1, 9);
+                //account_head =1   assets
+                // $account_control_id=1   Current Assets
+                // $account_sub_control_id=1  cash on hands
+
+                $purchaseAccount = $this->entries->getAccountSetting(
+                    9,
+                    1,
+                    1,
+                    1,
+                    9
+                );
             }
-            $this->setEntries(
+            $this->entries->setEntries(
                 $financial_year->id,
                 $purchaseAccount->account_head_id,
                 $purchaseAccount->account_control_id,
@@ -720,8 +791,8 @@ class PurchaseInvoiceController extends Controller
                 0,
                 " Purchase Payment Succeed" . $supplier->supplier_name_en,
                 isset($supplier->supplier_name_ar)
-                    ? $supplier->supplier_name_ar . "تم الدفع "
-                    : $supplier->supplier_name_en . "تم الدفع "
+                    ? $supplier->supplier_name_ar . $this->purchasePaymentAr
+                    : $supplier->supplier_name_en . $this->purchasePaymentAr
             );
         } else {
             $d = new DateTime();
@@ -733,6 +804,7 @@ class PurchaseInvoiceController extends Controller
             $invoice_supplier_payment->supplier_invoice_id =
                 $supplier_invoice->id;
             $invoice_supplier_payment->branch_id = $supplier_invoice->branch_id;
+            $invoice_supplier_payment->company_id = Auth::user()->company_id;
             $invoice_supplier_payment->invoice_no = $invoice_no;
             $invoice_supplier_payment->invoice_date =
                 $supplier_invoice->invoice_date;
@@ -743,6 +815,7 @@ class PurchaseInvoiceController extends Controller
                 $supplier_invoice->total_amount;
             $invoice_supplier_payment->payment_id = $paymentId;
             $invoice_supplier_payment->user_id = Auth::user()->getAuthIdentifier();
+
             $invoice_supplier_payment->save();
         }
         ##############################  delete table purchase data  ################################################
@@ -753,35 +826,6 @@ class PurchaseInvoiceController extends Controller
         return $this->purchaseSupplierInvoice($supplier_invoice->id);
     }
 
-    private function setEntries(
-        $financial_year_id,
-        $account_head_id,
-        $account_control_id,
-        $account_sub_control_id,
-        $invoice_number,
-        $invoice_date,
-        $user_id,
-        $branch_id,
-        $credit,
-        $debit,
-        $transaction_title_en,
-        $transaction_title_ar
-    ) {
-        $setdebitEntry = new Transaction();
-        $setdebitEntry->financial_year_id = $financial_year_id;
-        $setdebitEntry->account_head_id = $account_head_id; //these form Account Setting $debitEntry
-        $setdebitEntry->account_control_id = $account_control_id; //these form Account Setting $debitEntry
-        $setdebitEntry->account_sub_control_id = $account_sub_control_id; //these form Account Setting $debitEntry
-        $setdebitEntry->invoice_number = $invoice_number;
-        $setdebitEntry->transaction_date = $invoice_date;
-        $setdebitEntry->user_id = $user_id;
-        $setdebitEntry->branch_id = $branch_id;
-        $setdebitEntry->credit = $credit;
-        $setdebitEntry->debit = $debit;
-        $setdebitEntry->transaction_title_en = $transaction_title_en;
-        $setdebitEntry->transaction_title_ar = $transaction_title_ar;
-        $setdebitEntry->save();
-    }
     public function purchaseSupplierInvoice($supplierInvoiceId)
     {
         $supplier_name = $this->supplier_name;
@@ -789,7 +833,9 @@ class PurchaseInvoiceController extends Controller
         $address = $this->address;
         $supplier_invoice = SupplierInvoice::find($supplierInvoiceId);
         $supplier_invoice_details = SupplierInvoiceDetail::with("stock")
-            ->where("supplier_invoice_id", $supplierInvoiceId)
+            ->where([
+                "supplier_invoice_id" => $supplierInvoiceId,
+            ])
             ->get();
         $supplier = Supplier::where(
             "id",
@@ -808,17 +854,6 @@ class PurchaseInvoiceController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -828,13 +863,15 @@ class PurchaseInvoiceController extends Controller
     {
         $userType = UserType::where("id", Auth::user()->user_type_id)->first();
         if (isset($userType) && $userType->user_type_en === "admin") {
-            $branches = Branch::with("categories")->get();
+            $branches = Branch::with("categories")
+                ->where("company_id", Auth::user()->company_id)
+                ->get();
         } else {
             $branches = Branch::with("categories")
-                ->where(
-                    "id",
-                    \Illuminate\Support\Facades\Auth::user()->branch_id
-                )
+                ->where([
+                    "id" => Auth::user()->branch_id,
+                    "company_id" => Auth::user()->company_id,
+                ])
                 ->get();
         }
 
@@ -867,7 +904,16 @@ class PurchaseInvoiceController extends Controller
             ])
         );
     }
-
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -892,7 +938,6 @@ class PurchaseInvoiceController extends Controller
             "expiry_date" => "required",
         ]);
         $purchaseCart = PurchaseCartDetail::find($id);
-
         $purchaseCart->branch_id = $request->branch_id;
         $purchaseCart->unit_id = $request->unit_id;
         $purchaseCart->category_id = $request->category_id;
@@ -998,7 +1043,7 @@ class PurchaseInvoiceController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->all();
-            $stores = Store::where("branch_id", $data["branch_id"])->get();
+            $stores = Store::where("branch_id", Auth::user()->branch_id)->get();
             $store_name = $this->store_name;
             return view("admin.includes.stores.select_store")->with(
                 compact(["stores", "store_name"])
@@ -1027,5 +1072,62 @@ class PurchaseInvoiceController extends Controller
 
         $session = Session::flash("message", __("messages.data_removed"));
         return redirect("purchases")->with(compact("session"));
+    }
+}
+
+class Entries
+{
+    public static function setEntries(
+        $financial_year_id,
+        $account_head_id,
+        $account_control_id,
+        $account_sub_control_id,
+        $invoice_number,
+        $invoice_date,
+        $user_id,
+        $branch_id,
+        $credit,
+        $debit,
+        $transaction_title_en,
+        $transaction_title_ar
+    ) {
+        $setdebitEntry = new Transaction();
+        $setdebitEntry->financial_year_id = $financial_year_id;
+        $setdebitEntry->account_head_id = $account_head_id; //these form Account Setting $debitEntry
+        $setdebitEntry->account_control_id = $account_control_id; //these form Account Setting $debitEntry
+        $setdebitEntry->account_sub_control_id = $account_sub_control_id; //these form Account Setting $debitEntry
+        $setdebitEntry->invoice_number = $invoice_number;
+        $setdebitEntry->transaction_date = $invoice_date;
+        $setdebitEntry->user_id = $user_id;
+        $setdebitEntry->branch_id = $branch_id;
+        $setdebitEntry->credit = $credit;
+        $setdebitEntry->debit = $debit;
+        $setdebitEntry->transaction_title_en = $transaction_title_en;
+        $setdebitEntry->transaction_title_ar = $transaction_title_ar;
+        $setdebitEntry->save();
+    }
+
+    public static function getAccountSetting(
+        $id,
+        $account_head_id,
+        $account_control_id,
+        $account_sub_control_id,
+        $account_activity_id
+    ) {
+        $entry = AccountSetting::where(
+            "account_activity_id",
+            $account_activity_id
+        )->first();
+        if (!isset($entry)) {
+            $entry = new AccountSetting(); // create new account setting
+            $entry->id = $id;
+            $entry->account_head_id = $account_head_id;
+            $entry->account_control_id = $account_control_id;
+            $entry->account_sub_control_id = $account_sub_control_id;
+            $entry->account_activity_id = $account_activity_id;
+            $entry->branch_id = Auth::user()->branch_id;
+            $entry->save();
+        }
+        return $entry;
     }
 }

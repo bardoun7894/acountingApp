@@ -13,15 +13,17 @@ class CreateAccountControlsTable extends Migration
      */
     public function up()
     {
-        Schema::create('account_controls', function (Blueprint $table) {
+        Schema::create("account_controls", function (Blueprint $table) {
             $table->id();
-            $table->string('account_code')->nullable();
-            $table->string('account_control_name_en')->nullable();
-            $table->string('account_control_name_ar')->nullable();
-            $table->integer('account_head_id');
-            $table->integer('user_id')->unsigned();;
+            $table->string("account_code")->nullable();
+            $table->string("account_control_name_en")->nullable();
+            $table->string("account_control_name_ar")->nullable();
+            $table->integer("account_head_id");
+            $table->integer("user_id")->unsigned();
+            $table->integer("company_id")->unsigned();
+            $table->integer("branch_id")->unsigned();
             $table->timestamps();
-      });
+        });
     }
 
     /**
@@ -31,6 +33,6 @@ class CreateAccountControlsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('account_controls');
+        Schema::dropIfExists("account_controls");
     }
 }

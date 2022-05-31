@@ -22,12 +22,12 @@ class DatabaseSeeder extends Seeder
         // $this->call(CurrencySeeder::class);
 
         // $this->call(AccountHeadSeeder::class);
-        $this->call(UnitSeeder::class);
+        // $this->call(UnitSeeder::class);
         // $this->call(AccountControlSeeder::class);
         // $this->call(AccountSubControlSeeder::class);
         // $this->call(PaymentTypeSeeder::class);
-        // $this->call(SellTypeSeeder::class);
-        // $this->call(AccountSettingSeeder::class);
+        $this->call(SellTypeSeeder::class);
+        // $this->call(FinanceSeeder::class);
         //     $this->call(UserTableSeeder::class );
     }
 }

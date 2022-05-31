@@ -13,23 +13,23 @@ class CreateCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
-
+        Schema::create("customers", function (Blueprint $table) {
             $table->id();
-            $table->string('customer_name_en')->nullable();
-            $table->string('customer_name_ar')->nullable();
-            $table->string('contact_number');
-            $table->string('area');
-            $table->string('address_en');
-            $table->string('address_ar')->nullable();
-            $table->string('description_en')->nullable();
-            $table->string('description_ar')->nullable();
-            $table->string('customer_type')->nullable();
-            $table->string('account_code')->nullable();
-            $table->unsignedInteger('branch_id')->nullable();
+            $table->string("customer_name_en")->nullable();
+            $table->string("customer_name_ar")->nullable();
+            $table->string("contact_number");
+            $table->string("area");
+            $table->string("address_en");
+            $table->string("address_ar")->nullable();
+            $table->string("description_en")->nullable();
+            $table->string("description_ar")->nullable();
+            $table->string("customer_type")->nullable();
+            $table->string("account_code")->nullable();
+            $table->unsignedInteger("branch_id")->nullable();
+            $table->unsignedInteger("company_id")->nullable();
+            $table->unsignedInteger("user_id")->nullable();
             $table->timestamps();
-
-      });
+        });
     }
 
     /**
@@ -39,6 +39,6 @@ class CreateCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists("customers");
     }
 }

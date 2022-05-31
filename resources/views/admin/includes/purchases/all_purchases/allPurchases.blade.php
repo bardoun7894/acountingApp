@@ -59,7 +59,7 @@
                         @default
                     @endswitch
                 @endif
-                <div id="allPurchase_table" class="card-content d-flex p-2">
+                <div id="allPurchase_table" class="table-responsive card-content d-flex p-2">
                     @include(
                         'admin.includes.purchases.all_purchases.all_purchases_table'
                     )

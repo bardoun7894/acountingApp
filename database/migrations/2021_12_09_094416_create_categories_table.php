@@ -13,13 +13,21 @@ class CreateCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create("categories", function (Blueprint $table) {
             $table->id();
-            $table->integer('branch_id')->unsigned();
-            $table->integer('parent_id')->unsigned()->nullable();
-            $table->integer('store_id')->unsigned()->nullable();
-            $table->string('category_name_en')->nullable();
-            $table->string('category_name_ar')->nullable();
+            $table->integer("branch_id")->unsigned();
+            $table
+                ->integer("parent_id")
+                ->unsigned()
+                ->nullable();
+            $table
+                ->integer("store_id")
+                ->unsigned()
+                ->nullable();
+            $table->unsignedInteger("user_id");
+            $table->string("category_name_en")->nullable();
+            $table->string("category_name_ar")->nullable();
+            $table->unsignedBigInteger("company_id");
             $table->timestamps();
         });
     }
@@ -31,6 +39,6 @@ class CreateCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists("categories");
     }
 }

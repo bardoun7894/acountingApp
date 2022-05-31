@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -20,29 +19,30 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    private $full_name ;
+    private $full_name;
     private $branch_name;
     private $store_name;
     private $lang;
 
     function __construct()
     {
-        $this->full_name=User::getFullnameLang();
-        $this->branch_name=Branch::getBranchNameLang();
-        $this->store_name=Store::getStoreNameLang();
-        $this->lang=Translation::getLang();
+        $this->full_name = User::getFullnameLang();
+        $this->branch_name = Branch::getBranchNameLang();
+        $this->store_name = Store::getStoreNameLang();
+        $this->lang = Translation::getLang();
     }
 
     public function index()
     {
+        $users = User::with(["branch"])
+            ->where("id", "!=", Auth::user()->getAuthIdentifier())
+            ->get();
+        // $store_name = $this->store_name;
+        $branch_name = $this->branch_name;
 
-
-
-        $users = User::with(['store','branch'])->where('id','!=',Auth::user()->getAuthIdentifier())->get();
-        $store_name=$this->store_name;
-        $branch_name=$this->branch_name;
-
-        return view('admin.includes.users.users')->with(compact(['users','store_name','branch_name']));
+        return view("admin.includes.users.users")->with(
+            compact(["users", "branch_name"])
+        );
 
         //
     }
@@ -54,20 +54,32 @@ class UserController extends Controller
      */
     public function create()
     {
-        $lang=$this->lang;
+        $lang = $this->lang;
         $full_name = $this->full_name;
-        $branch_name=$this->branch_name;
-        $branches =Branch::where('status',1)->get();
-        $store_name=$this->store_name;
-        $stores=Store::all();
-         return view('admin.includes.users.create')->with(compact(['branches','lang','full_name','stores','branch_name','store_name']));
+        $branch_name = $this->branch_name;
+        $branches = Branch::where("status", 1)->get();
+        $store_name = $this->store_name;
+        $stores = Store::all();
+        return view("admin.includes.users.create")->with(
+            compact([
+                "branches",
+                "lang",
+                "full_name",
+                "stores",
+                "branch_name",
+                "store_name",
+            ])
+        );
     }
-    public function getSelectedBranchStore(Request $request){
-        if($request->ajax()){
-            $data=$request->all();
-            $stores=Store::where('branch_id',$data['branch_id'])->get();
-            $store_name=$this->store_name;
-            return view('admin.includes.stores.select_store')->with(compact(['stores','store_name',]));
+    public function getSelectedBranchStore(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            $stores = Store::where("branch_id", $data["branch_id"])->get();
+            $store_name = $this->store_name;
+            return view("admin.includes.stores.select_store")->with(
+                compact(["stores", "store_name"])
+            );
         }
     }
     /**
@@ -78,32 +90,31 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $full_name =$this->full_name;
+        $full_name = $this->full_name;
 
         $validated = $request->validate([
-
-            'username' => ['required', 'string', 'max:255', 'unique:users'],
-            $full_name => 'required',
-            'store_id' => 'required',
-            'branch_id' => 'required',
-            'contact_number' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => ['required','min:6'],
-            'user_type_id' => ['required']
+            "username" => ["required", "string", "max:255", "unique:users"],
+            $full_name => "required",
+            "store_id" => "required",
+            "branch_id" => "required",
+            "contact_number" => "required",
+            "email" => "required|email|unique:users,email",
+            "password" => ["required", "min:6"],
+            "user_type_id" => ["required"],
         ]);
-          $user =new User();
-          $user->user_type_id =(int) $request->user_type_id;
-          $user->store_id = $request->store_id;
-          $user->branch_id = $request->branch_id;
-          $user->$full_name = $request->$full_name;
-          $user->username = $request->username;
-          $user->contact_number = $request->contact_number;
-          $user->email = $request->email;
-          $user->password = Hash::make($request->password);
-          $user->save();
+        $user = new User();
+        $user->user_type_id = (int) $request->user_type_id;
+        $user->store_id = $request->store_id;
+        $user->branch_id = $request->branch_id;
+        $user->$full_name = $request->$full_name;
+        $user->username = $request->username;
+        $user->contact_number = $request->contact_number;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-          $session =Session::flash('message','User added Successfully');
-          return redirect('users')->with(compact('session'));
+        $session = Session::flash("message", "User added Successfully");
+        return redirect("users")->with(compact("session"));
 
         return redirect()->back();
     }
@@ -127,13 +138,15 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $lang=$this->lang;
+        $lang = $this->lang;
 
-        $full_name=$this->full_name;
+        $full_name = $this->full_name;
         $user = User::find($id);
-        $lang=$this->lang;
-        return view('admin.includes.users.update')->with(compact(['user','lang','full_name']));
-          }
+        $lang = $this->lang;
+        return view("admin.includes.users.update")->with(
+            compact(["user", "lang", "full_name"])
+        );
+    }
 
     /**
      * Update the specified resource in storage.
@@ -144,48 +157,48 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $full_name=$this->full_name;
+        $full_name = $this->full_name;
         $validated = $request->validate([
-            'user_type_id' => 'required',
-            'store_id' => 'required',
-            'branch_id' => 'required',
-             $full_name => 'required',
-            'username' => 'required',
-            'contact_number' => 'required',
-            'email' => 'required|email|',
-//        'password' => 'required|min:6',
+            "user_type_id" => "required",
+            "store_id" => "required",
+            "branch_id" => "required",
+            $full_name => "required",
+            "username" => "required",
+            "contact_number" => "required",
+            "email" => "required|email|",
+            //        'password' => 'required|min:6',
         ]);
-        $user=User::find($id);
-        $user->user_type_id =(int) $request->user_type_id;
+        $user = User::find($id);
+        $user->user_type_id = (int) $request->user_type_id;
         $user->store_id = $request->store_id;
         $user->branch_id = $request->branch_id;
         $user->$full_name = $request->$full_name;
         $user->username = $request->username;
         $user->contact_number = $request->contact_number;
         $user->email = $request->email;
-        if($request->password !=""){
+        if ($request->password != "") {
             $user->password = bcrypt($request->password);
-         }
+        }
         $user->save();
 
-      $session =Session::flash('message','User Updated Successfully');
-        return redirect('users')->with(compact(['session','full_name']));
+        $session = Session::flash("message", "User Updated Successfully");
+        return redirect("users")->with(compact(["session", "full_name"]));
     }
 
     public function deleteUser($id)
     {
-        $user=User::find($id);
+        $user = User::find($id);
         $user->delete();
-        $session =Session::flash('message','User Deleted Successfully');
-        return redirect('users')->with(compact('session'));
-
+        $session = Session::flash("message", "User Deleted Successfully");
+        return redirect("users")->with(compact("session"));
     }
 
-
-    public function getUserInvoice(){
-        $full_name=$this->full_name;
+    public function getUserInvoice()
+    {
+        $full_name = $this->full_name;
         $users = User::all();
-        return view('admin.includes.users.user_invoice')->with(compact(['users','full_name']));
-
+        return view("admin.includes.users.user_invoice")->with(
+            compact(["users", "full_name"])
+        );
     }
 }

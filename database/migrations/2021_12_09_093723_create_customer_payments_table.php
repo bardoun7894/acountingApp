@@ -13,16 +13,17 @@ class CreateCustomerPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('customer_payments', function (Blueprint $table) {
+        Schema::create("customer_payments", function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('customer_id')->unsigned();
-            $table->bigInteger('customer_invoice_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
-            $table->integer('invoice_number');
-            $table->float('paid_amount');
-            $table->float('total_amount');
-            $table->float('remaining_balance'); 
-        
+            $table->bigInteger("customer_id")->unsigned();
+            $table->bigInteger("customer_invoice_id")->unsigned();
+            $table->bigInteger("user_id")->unsigned();
+            $table->integer("invoice_number");
+            $table->float("paid_amount");
+            $table->float("total_amount");
+            $table->float("remaining_balance");
+            $table->unsignedBigInteger("company_id")->nullable();
+            $table->unsignedBigInteger("branch_id")->nullable();
             $table->timestamps();
         });
     }
@@ -34,6 +35,6 @@ class CreateCustomerPaymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customer_payments');
+        Schema::dropIfExists("customer_payments");
     }
 }

@@ -7,21 +7,20 @@ use App\Models\AccountHead;
 use App\Models\Translation;
 use App\Models\User;
 use App\Models\UserType;
+use App\Rules\NameIsExistRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class AccountHeadController extends Controller
 {
-
-
     private $account_head_name;
-private $user_type;
-    function __construct(){
-        $this->account_head_name=AccountHead::getAccountHeadNameLang();
-        $this->user_type=UserType::getUserTypeLang();
+    private $user_type;
+    function __construct()
+    {
+        $this->account_head_name = AccountHead::getAccountHeadNameLang();
+        $this->user_type = UserType::getUserTypeLang();
     }
-
 
     /**
      * Display a listing of the resource.
@@ -30,12 +29,18 @@ private $user_type;
      */
     public function index()
     {
-        $account_head_name=$this->account_head_name;
-        $user_type=$this->user_type;
+        $account_head_name = $this->account_head_name;
+        $user_type = $this->user_type;
+        $accountHeads = AccountHead::with("user")
+            ->where([
+                "company_id" => Auth::user()->company_id,
+                "branch_id" => Auth::user()->branch_id,
+            ])
+            ->get();
 
-        $users= User::with('accountHeads','user_type')->get();
-
-        return view('admin.includes.accountHeads.accountHeads')->with(compact(['users','account_head_name','user_type']));
+        return view("admin.includes.accountHeads.accountHeads")->with(
+            compact(["accountHeads", "account_head_name", "user_type"])
+        );
 
         //
     }
@@ -49,8 +54,10 @@ private $user_type;
     {
         $account_head_name = $this->account_head_name;
 
-        $lang=Translation::getLang();
-        return view('admin.includes.accountHeads.create')->with(compact(['lang','account_head_name']));
+        $lang = Translation::getLang();
+        return view("admin.includes.accountHeads.create")->with(
+            compact(["lang", "account_head_name"])
+        );
     }
 
     /**
@@ -61,24 +68,30 @@ private $user_type;
      */
     public function store(Request $request)
     {
-
-        $account_head_name=$this->account_head_name;
+        $account_head_name = $this->account_head_name;
         $validated = $request->validate([
-            $account_head_name => 'required',
+            $account_head_name => [
+                new NameIsExistRule(
+                    $request->$account_head_name,
+                    $account_head_name
+                ),
+                "required",
+            ],
         ]);
-        $accountHead =new AccountHead();
+        $accountHead = new AccountHead();
+        $accountHead->$account_head_name = $request->$account_head_name;
         $accountHead->user_id = Auth::user()->getAuthIdentifier();
-        $accountHead->$account_head_name =$request->$account_head_name;
-
-        $last =AccountHead::latest()->first();
-
-        $accountHead->id =  $last->id +1;
+        $accountHead->company_id = Auth::user()->company_id;
+        $accountHead->branch_id = Auth::user()->branch_id;
+        $last = AccountHead::latest("id", "desc")->first();
+        $accountHead->id = $last->id + 1;
+        $accountHead->account_code = $last->account_code + 1;
 
         $accountHead->save();
-
-        $session =Session::flash('message',__('messages.data_added'));
-        return redirect('accountHeads')->with(compact(['session','account_head_name']));
-
+        $session = Session::flash("message", __("messages.data_added"));
+        return redirect("accountHeads")->with(
+            compact(["session", "account_head_name"])
+        );
     }
 
     /**
@@ -99,13 +112,13 @@ private $user_type;
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-
     {
-
         $accountHead = AccountHead::find($id);
-        $account_head_name =$this->account_head_name;
-        $lang=Translation::getLang();
-        return view('admin.includes.accountHeads.update')->with(compact(['accountHead','account_head_name','lang']));
+        $account_head_name = $this->account_head_name;
+        $lang = Translation::getLang();
+        return view("admin.includes.accountHeads.update")->with(
+            compact(["accountHead", "account_head_name", "lang"])
+        );
     }
 
     /**
@@ -117,24 +130,27 @@ private $user_type;
      */
     public function update(Request $request, $id)
     {
-        $account_head_name =$this->account_head_name;
+        $account_head_name = $this->account_head_name;
 
         $validated = $request->validate([
-            $account_head_name => 'required',
+            $account_head_name => "required",
         ]);
-        $accountHead=AccountHead::find($id);
+        $accountHead = AccountHead::find($id);
         $accountHead->$account_head_name = $request->input($account_head_name);
         $accountHead->update();
 
-        $session =Session::flash('message',__('messages.data_updated'));
-        return redirect('accountHeads')->with(compact(['session','account_head_name']));
+        $session = Session::flash("message", __("messages.data_updated"));
+        return redirect("accountHeads")->with(
+            compact(["session", "account_head_name"])
+        );
         //
     }
 
-    public function deleteAccountActivity($id){
-        $accountHead=AccountHead::find($id);
+    public function deleteAccountHead($id)
+    {
+        $accountHead = AccountHead::find($id);
         $accountHead->delete();
-        $session =Session::flash('message',__('messages.data_removed'));
-        return redirect('accountHeads')->with(compact('session'));
+        $session = Session::flash("message", __("messages.data_removed"));
+        return redirect("accountHeads")->with(compact("session"));
     }
 }

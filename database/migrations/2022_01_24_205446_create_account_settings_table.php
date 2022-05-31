@@ -13,16 +13,15 @@ class CreateAccountSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('account_settings', function (Blueprint $table) {
-
+        Schema::create("account_settings", function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('account_head_id');
-            $table->unsignedBigInteger('account_control_id');
-            $table->unsignedBigInteger('account_sub_control_id');
-            $table->unsignedBigInteger('account_activity_id');
-            $table->unsignedBigInteger('branch_id');
+            $table->unsignedBigInteger("account_head_id");
+            $table->unsignedBigInteger("account_control_id");
+            $table->unsignedBigInteger("account_sub_control_id");
+            $table->unsignedBigInteger("account_activity_id");
+            $table->unsignedBigInteger("company_id");
+            $table->unsignedBigInteger("branch_id");
             $table->timestamps();
-
         });
     }
 
@@ -33,6 +32,6 @@ class CreateAccountSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('account_settings');
+        Schema::dropIfExists("account_settings");
     }
 }

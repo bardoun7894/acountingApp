@@ -48,7 +48,6 @@ class AccountSettingController extends Controller
             "accountSubControl",
             "accountActivity"
         )->get();
-
         return view("admin.includes.accountSettings.accountSettings")->with(
             compact([
                 "accountSettings",

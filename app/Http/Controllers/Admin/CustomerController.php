@@ -3,40 +3,40 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AccountControl;
 use App\Models\AccountSubControl;
 use App\Models\Customer;
-use App\Models\Supplier;
 use App\Models\Translation;
-use App\Rules\ValidSubAccountExist;
+use App\Rules\NameIsExistRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Session;
-use mysql_xdevapi\Table;
-use function PHPUnit\Framework\isEmpty;
 
 class CustomerController extends Controller
 {
-   private $description;
-   private $address;
-   private $customer_name;
+    private $description;
+    private $address;
+    private $customer_name;
 
-   function __construct(){
-       $this->description=Customer::getDescriptionLang();
-       $this->address=Customer::getAddressLang();
-       $this->customer_name=Customer::getCustomerNameLang();
-
-   }
+    function __construct()
+    {
+        $this->description = Customer::getDescriptionLang();
+        $this->address = Customer::getAddressLang();
+        $this->customer_name = Customer::getCustomerNameLang();
+    }
 
     public function index()
     {
-        $customer_name=$this->customer_name;
-        $address=$this->address;
-        $description=$this->description;
-        $customers = Customer::all();
-        return view('admin.includes.customers.customers')->with(compact(['customers','customer_name','address','description']));
-
+        $customer_name = $this->customer_name;
+        $address = $this->address;
+        $description = $this->description;
+        $customers = Customer::where([
+            "user_id" => Auth::user()->id,
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
+        return view("admin.includes.customers.customers")->with(
+            compact(["customers", "customer_name", "address", "description"])
+        );
     }
 
     /**
@@ -46,14 +46,21 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        $lang=Translation::getLang();
-        $customer_name=$this->customer_name;
-        $address=$this->address;
-        $description=$this->description;
-        $accountSubControl=AccountSubControl::where('account_code','=','118')->latest()->first();
+        $lang = Translation::getLang();
+        $customer_name = $this->customer_name;
+        $address = $this->address;
+        $description = $this->description;
+        $accountSubControl = AccountSubControl::where(
+            "account_code",
+            "=",
+            "118"
+        )
+            ->latest()
+            ->first();
 
-   return view('admin.includes.customers.create')->with(compact(['lang','customer_name','address','description']));
-
+        return view("admin.includes.customers.create")->with(
+            compact(["lang", "customer_name", "address", "description"])
+        );
     }
     /**
      * Store a newly created resource in storage.
@@ -63,17 +70,23 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $customer_name=$this->customer_name;
-        $address=$this->address;
-        $description=$this->description;
+        $customer_name = $this->customer_name;
+        $address = $this->address;
+        $description = $this->description;
         $validated = $request->validate([
-            $customer_name => 'required',
-            $address => 'required',
-            $description => 'required',
-            'contact_number' => 'required',
-            'area' => 'required',
+            $customer_name => [
+                new NameIsExistRule($request->$customer_name, $customer_name),
+                "required",
+            ],
+            $address => "required",
+            $description => "required",
+            "contact_number" => "required",
+            "area" => "required",
         ]);
-        $customer =new Customer();
+        $customer = new Customer();
+        $customer->company_id = Auth::user()->company_id;
+        $customer->branch_id = Auth::user()->branch_id;
+        $customer->user_id = Auth::user()->id;
         $customer->$customer_name = $request->$customer_name;
         $customer->$address = $request->$address;
         $customer->$description = $request->$description;
@@ -82,22 +95,27 @@ class CustomerController extends Controller
         $customer->branch_id = Auth::user()->branch_id;
 
         //make relation ship with accountcode
-
-        $account_sub_control_name=AccountSubControl::getAccountSubControlNameLang();
-        $lastAccountSubControl = AccountSubControl::where('account_code','=','118')->latest()->first();
+        $account_sub_control_name = AccountSubControl::getAccountSubControlNameLang();
+        $lastAccountSubControl = AccountSubControl::where(
+            "account_code",
+            "=",
+            "118"
+        )
+            ->latest()
+            ->first();
         //create a sub control that have relation ship with supplier
 
-         $lastCus=Customer::latest()->first();
-        if(isset($lastCus)){
-            $customer->account_code = $lastCus->account_code +1 ;
-        }else{
-                $customer->account_code =  $lastAccountSubControl->account_code . "0001";
+        $lastCus = Customer::latest()->first();
+        if (isset($lastCus)) {
+            $customer->account_code = $lastCus->account_code + 1;
+        } else {
+            $customer->account_code =
+                $lastAccountSubControl->account_code . "0001";
         }
 
         $customer->save();
-        $session =Session::flash('message','Customer added Successfully');
-        return redirect('customers')->with(compact('session'));
-
+        $session = Session::flash("message", "Customer added Successfully");
+        return redirect("customers")->with(compact("session"));
     }
 
     /**
@@ -119,13 +137,21 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $lang=Translation::getLang();
-        $customer_name=$this->customer_name;
-        $address=$this->address;
-        $description=$this->description;
+        $lang = Translation::getLang();
+        $customer_name = $this->customer_name;
+        $address = $this->address;
+        $description = $this->description;
         $customer = Customer::find($id);
 
-        return view('admin.includes.customers.update')->with(compact(['customer','customer_name','lang','address','description']));
+        return view("admin.includes.customers.update")->with(
+            compact([
+                "customer",
+                "customer_name",
+                "lang",
+                "address",
+                "description",
+            ])
+        );
     }
 
     /**
@@ -137,23 +163,27 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $customer_name=$this->customer_name;
-        $address=$this->address;
-        $description=$this->description;
+        $customer_name = $this->customer_name;
+        $address = $this->address;
+        $description = $this->description;
         $validated = $request->validate([
-            $customer_name => 'required',
-            $address => 'required',
-            $description => 'required',
-            'contact_number' => 'required',
+            $customer_name => "required",
+
+            $address => "required",
+            $description => "required",
+            "contact_number" => "required",
         ]);
-        $customer=Customer::find($id);
+        $customer = Customer::find($id);
+        $customer->company_id = Auth::user()->company_id;
+        $customer->branch_id = Auth::user()->branch_id;
+        $customer->user_id = Auth::user()->id;
         $customer->$customer_name = $request->$customer_name;
         $customer->$address = $request->$address;
         $customer->$description = $request->$description;
         $customer->contact_number = $request->contact_number;
         $customer->update();
-        $session =Session::flash('message','Customer Updated Successfully');
-        return redirect('customers')->with(compact('session'));
+        $session = Session::flash("message", "Customer Updated Successfully");
+        return redirect("customers")->with(compact("session"));
         //
     }
 
@@ -164,28 +194,27 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $customer=Customer::find($id);
+        $customer = Customer::find($id);
         $customer->delete();
-        $session =Session::flash('message','Customer Deleted Successfully');
-        return redirect('customers')->with(compact('session'));
-
+        $session = Session::flash("message", "Customer Deleted Successfully");
+        return redirect("customers")->with(compact("session"));
     }
     public function deleteCustomer($id)
     {
-        $customer=Customer::find($id);
+        $customer = Customer::find($id);
         $customer->delete();
-        $session =Session::flash('message','Customer Deleted Successfully');
-        return redirect('customers')->with(compact('session'));
+        $session = Session::flash("message", "Customer Deleted Successfully");
+        return redirect("customers")->with(compact("session"));
     }
 
-
-    public function getCustomerInvoice(){
-        $customer_name=$this->customer_name;
-        $address=$this->address;
-        $description=$this->description;
+    public function getCustomerInvoice()
+    {
+        $customer_name = $this->customer_name;
+        $address = $this->address;
+        $description = $this->description;
         $customers = Customer::all();
-        return view('admin.includes.customers.customer_invoice')->with(compact(['customers','customer_name','address','description']));
-
+        return view("admin.includes.customers.customer_invoice")->with(
+            compact(["customers", "customer_name", "address", "description"])
+        );
     }
-
 }

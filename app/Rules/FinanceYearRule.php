@@ -25,7 +25,7 @@ class FinanceYearRule implements Rule
      */
     public function passes($attribute, $value)
     {
-     return isset($value);
+        return isset($value);
     }
 
     /**
@@ -35,8 +35,6 @@ class FinanceYearRule implements Rule
      */
     public function message()
     {
-
-        return 'you are not entered Finance Year go to Settings ';
-
+        return "you are not entered Finance Year go to Settings ";
     }
 }

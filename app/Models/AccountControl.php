@@ -15,7 +15,11 @@ class AccountControl extends Model
 
     public function accountSubControls()
     {
-        return $this->hasMany(AccountSubControl::class);
+        return $this->hasMany(
+            AccountSubControl::class,
+            "account_code",
+            "account_control_id"
+        );
     }
 
     public static function getAccountControlNameLang()

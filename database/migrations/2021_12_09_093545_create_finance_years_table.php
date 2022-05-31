@@ -13,14 +13,14 @@ class CreateFinanceYearsTable extends Migration
      */
     public function up()
     {
-        Schema::create('finance_years', function (Blueprint $table) {
+        Schema::create("finance_years", function (Blueprint $table) {
             $table->id();
-            $table->string('financial_year');
-            $table->tinyInteger('isActive')->default(1);
-            $table->date('startDate');
-            $table->date('endDate');
+            $table->string("financial_year");
+            $table->unsignedInteger("user_id")->nullable();
+            $table->tinyInteger("isActive")->default(1);
+            $table->date("startDate");
+            $table->date("endDate");
             $table->timestamps();
-
         });
     }
 
@@ -31,6 +31,6 @@ class CreateFinanceYearsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('finance_years');
+        Schema::dropIfExists("finance_years");
     }
 }

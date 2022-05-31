@@ -13,18 +13,23 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users' , function(Blueprint $table) {
+        Schema::create("users", function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_type_id')->default(1);
-            $table->string('full_name_en')->nullable();;
-            $table->string('full_name_ar')->nullable();
-            $table->string('username')->unique();
-            $table->string('email')->unique();
-            $table->string('contact_number')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('image')->nullable();
-            $table->unsignedInteger('branch_id')->nullable();
+            $table->unsignedBigInteger("user_type_id")->default(1);
+            $table->string("full_name_en")->nullable();
+            $table->string("full_name_ar")->nullable();
+            $table->string("username")->unique();
+            $table->string("email")->unique();
+            $table->string("address_en")->nullable();
+            $table->string("address_ar")->nullable();
+            $table->string("contact_number")->nullable();
+            $table->timestamp("email_verified_at")->nullable();
+            $table->string("password");
+            $table->string("image")->nullable();
+            $table->unsignedInteger("branch_id")->nullable();
+            $table->unsignedInteger("store_id")->nullable();
+            $table->unsignedInteger("company_id")->nullable();
+            $table->tinyInteger("isActive")->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -37,6 +42,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists("users");
     }
 }

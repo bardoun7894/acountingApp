@@ -8,17 +8,28 @@ use Illuminate\Database\Eloquent\Model;
 class AccountHead extends Model
 {
     use HasFactory;
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function accountControls(){
-        return $this->hasMany(    AccountControl::class);
+    public function accountControls()
+    {
+        return $this->hasMany(
+            AccountControl::class,
+            "account_head_id",
+            "account_code"
+        );
     }
-    public function accountSubControls(){
-        return $this->hasMany(AccountSubControl::class);
+    public function accountSubControls()
+    {
+        return $this->hasMany(
+            AccountSubControl::class,
+            "account_head_id",
+            "account_code"
+        );
     }
-   static public function getAccountHeadNameLang(){
-        return 'account_head_name_'.Translation::getLang();
-}
-
+    public static function getAccountHeadNameLang()
+    {
+        return "account_head_name_" . Translation::getLang();
+    }
 }

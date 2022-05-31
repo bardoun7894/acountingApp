@@ -13,17 +13,18 @@ class CreateSalesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sales', function (Blueprint $table) {
+        Schema::create("sales", function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('stock_id');
-            $table->integer('sale_qty');
-            $table->float('sale_unit_price');
-            $table->unsignedInteger('branch_id');
-            $table->unsignedInteger('category_id');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('unit_id');
-            $table->string('description_ar')->nullable();
-            $table->string('description_en')->nullable();
+            $table->unsignedInteger("stock_id");
+            $table->integer("sale_qty");
+            $table->float("sale_unit_price");
+            $table->unsignedInteger("branch_id");
+            $table->unsignedInteger("company_id")->nullable();
+            $table->unsignedInteger("category_id");
+            $table->unsignedInteger("user_id");
+            $table->unsignedInteger("unit_id");
+            $table->string("description_ar")->nullable();
+            $table->string("description_en")->nullable();
             $table->timestamps();
         });
     }
@@ -35,6 +36,6 @@ class CreateSalesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales');
+        Schema::dropIfExists("sales");
     }
 }

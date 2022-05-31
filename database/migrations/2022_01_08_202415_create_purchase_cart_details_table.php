@@ -13,19 +13,20 @@ class CreatePurchaseCartDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_cart_details', function (Blueprint $table) {
+        Schema::create("purchase_cart_details", function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('stock_id');
-            $table->integer('purchase_qty');
-            $table->float('purchase_unit_price');
-            $table->float('sale_unit_price');
-            $table->unsignedInteger('branch_id');
-            $table->unsignedInteger('category_id');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('unit_id');
-            $table->string('description_ar')->nullable();
-            $table->string('description_en')->nullable();
-            $table->date('expiry_date');
+            $table->unsignedInteger("stock_id");
+            $table->integer("purchase_qty");
+            $table->float("purchase_unit_price");
+            $table->float("sale_unit_price");
+            $table->unsignedInteger("branch_id");
+            $table->unsignedInteger("company_id")->nullable();
+            $table->unsignedInteger("category_id");
+            $table->unsignedInteger("user_id");
+            $table->unsignedInteger("unit_id");
+            $table->string("description_ar")->nullable();
+            $table->string("description_en")->nullable();
+            $table->date("expiry_date");
             $table->timestamps();
         });
     }
@@ -37,6 +38,6 @@ class CreatePurchaseCartDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_cart_details');
+        Schema::dropIfExists("purchase_cart_details");
     }
 }

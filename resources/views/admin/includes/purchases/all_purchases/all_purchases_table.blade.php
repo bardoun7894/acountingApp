@@ -24,7 +24,7 @@
                 <td class="text-truncate">{{ $supplierInvoice->invoice_no }}</td>
                 <td class="text-truncate">{{ $supplierInvoice->invoice_date }}</td>
                 <td class="text-truncate">
-                    {{ $supplierInvoice->supplier->supplier_name_en }}
+                    {{ $supplierInvoice->supplier->$supplier_name }}
                 </td>
                 <td class="text-truncate">
                     {{ $supplierInvoice->sub_total_amount }}
@@ -36,15 +36,16 @@
                 <td class="align-middle">
                     @if ($paidAmount == $supplierInvoice->total_amount)
                         <div class="ac-status badge badge-success badge-pill badge-sm">
-                            clear
+                            {{ __('messages.paid') }}
                         </div>
                     @elseif($paidAmount == 0)
                         <div class="ac-status badge badge-danger badge-pill badge-sm">
-                            payment Pending
+                            {{ __('messages.due') }}
+
                         </div>
                     @elseif($paidAmount < $supplierInvoice->total_amount)
                         <div class="ac-status badge badge-danger badge-pill badge-sm">
-                            in Progress
+                            {{ __('messages.partial_payment') }}
                         </div>
                     @endif
                 </td>
