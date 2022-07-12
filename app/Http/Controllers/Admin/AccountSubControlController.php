@@ -186,8 +186,14 @@ class AccountSubControlController extends Controller
         )->first();
         ######################## using this for get all the Head Account and Control Account ########################
 
-        $accountHeads = AccountHead::all();
-        $accountControls = AccountControl::all();
+        $accountHeads = AccountHead::where([
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
+        $accountControls = AccountControl::where([
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
 
         return view("admin.includes.accountSubControls.update")->with(
             compact([
@@ -255,20 +261,26 @@ class AccountSubControlController extends Controller
             #################this for update page ################
             if ($data["table_id"] != "create") {
                 $accountSubControl = AccountSubControl::find($data["table_id"]);
-                $accountControle = AccountControl::where(
-                    "id",
-                    $accountSubControl->account_control_id
-                )->first();
-                $accountHeade = AccountHead::where(
-                    "id",
-                    $accountSubControl->account_control_id
-                )->first();
-                $accountHeads = AccountHead::all();
-                $accountControls = AccountControl::where(
-                    "account_head_id",
-                    $data["account_head_id"]
-                )->get();
+                $accountControle = AccountControl::where([
+                    "id" => $accountSubControl->account_control_id,
+                    "company_id" => Auth::user()->company_id,
+                    "branch_id" => Auth::user()->branch_id,
+                ])->first();
+                $accountHeade = AccountHead::where([
+                    "id" => $accountSubControl->account_head_id,
+                    "company_id" => Auth::user()->company_id,
+                    "branch_id" => Auth::user()->branch_id,
+                ])->first();
+                $accountHeads = AccountHead::where([
+                    "company_id" => Auth::user()->company_id,
+                    "branch_id" => Auth::user()->branch_id,
+                ])->get();
 
+                $accountControls = AccountControl::where([
+                    "account_head_id" => $data["account_head_id"],
+                    "company_id" => Auth::user()->company_id,
+                    "branch_id" => Auth::user()->branch_id,
+                ])->get();
                 return view(
                     "admin.includes.accountControls.accountControl_table"
                 )->with(
@@ -282,10 +294,11 @@ class AccountSubControlController extends Controller
                 );
             } else {
                 #################this for create page ################
-                $accountControls = AccountControl::where(
-                    "account_head_id",
-                    $data["account_head_id"]
-                )->get();
+                $accountControls = AccountControl::where([
+                    "account_head_id" => $data["account_head_id"],
+                    "company_id" => Auth::user()->company_id,
+                    "branch_id" => Auth::user()->branch_id,
+                ])->get();
 
                 return view(
                     "admin.includes.accountControls.accountControl_table"
@@ -305,29 +318,42 @@ class AccountSubControlController extends Controller
                 #################this for update page ################
                 if ($data["table_id"] != "create") {
                     $accountSetting = AccountSetting::find($data["table_id"]);
-                    $accountControle = AccountControl::where(
-                        "id",
-                        $accountSetting->account_control_id
-                    )->first();
-                    $accountSubControle = AccountSubControl::where(
-                        "id",
-                        $accountSetting->account_sub_control_id
-                    )->first();
-                    $accountHeade = AccountHead::where(
-                        "id",
-                        $accountSetting->account_head_id
-                    )->get();
-                    $accountActivite = AccountActivity::where(
-                        "id",
-                        $accountSetting->account_activity_id
-                    )->get();
-
-                    $accountHeads = AccountHead::all();
+                    $accountControle = AccountControl::where([
+                        "account_code" => $accountSetting->account_control_id,
+                        "company_id" => Auth::user()->company_id,
+                        "branch_id" => Auth::user()->branch_id,
+                    ])->first();
+                    $accountSubControle = AccountSubControl::where([
+                        "account_code" =>
+                            $accountSetting->account_sub_control_id,
+                        "company_id" => Auth::user()->company_id,
+                        "branch_id" => Auth::user()->branch_id,
+                    ])->first();
+                    $accountHeade = AccountHead::where([
+                        "account_code" => $accountSubControle->account_head_id,
+                        "company_id" => Auth::user()->company_id,
+                        "branch_id" => Auth::user()->branch_id,
+                    ])->get();
+                    $accountActivite = AccountActivity::where([
+                        "id" => $accountSetting->account_activity_id,
+                    ])->get();
+                    $accountHeads = AccountHead::where([
+                        "company_id" => Auth::user()->company_id,
+                        "branch_id" => Auth::user()->branch_id,
+                    ])->get();
                     $accountControls = AccountControl::where([
                         "account_head_id" => $data["account_head_id"],
+                        "company_id" => Auth::user()->company_id,
+                        "branch_id" => Auth::user()->branch_id,
                     ])->get();
                     $accountSubControls = AccountSubControl::where([
-                        "account_control_id" => $data["account_control_id"],
+                        "account_control_id" => AccountControl::where([
+                            "id" => $data["account_control_id"],
+                            "company_id" => Auth::user()->company_id,
+                            "branch_id" => Auth::user()->branch_id,
+                        ])->first()->account_code,
+                        "company_id" => Auth::user()->company_id,
+                        "branch_id" => Auth::user()->branch_id,
                     ])->get();
                     $accountActivities = AccountActivity::all();
 
@@ -348,10 +374,15 @@ class AccountSubControlController extends Controller
                     );
                 } else {
                     #################this for create page ################
-                    $accountSubControls = AccountSubControl::where(
-                        "account_control_id",
-                        $data["account_control_id"]
-                    )->get();
+                    $accountSubControls = AccountSubControl::where([
+                        "account_control_id" => AccountControl::where(
+                            "id",
+                            $data["account_control_id"]
+                        )->first()->account_code,
+                        "company_id" => Auth::user()->company_id,
+                        "branch_id" => Auth::user()->branch_id,
+                    ])->get();
+
                     return view(
                         "admin.includes.accountSubControls.accountSubControl_table"
                     )->with(

@@ -88,9 +88,7 @@
                             @default
                         @endswitch
                     @endif
-                    @include(
-                        'admin.includes.purchases.info_supplier_section'
-                    )
+                    @include('admin.includes.purchases.info_supplier_section')
                     <div class="row m-1">
                         <div class="col-md-9 mt-3">
                             <label>{{ __('messages.select_product') }}</label>
@@ -104,9 +102,11 @@
                         </div>
 
                     </div>
-                    <div id="purchase_table" class="table-responsive d-flex p-2">
 
-                        @include('admin.includes.purchases.purchases_table')
+                    <div id="purchase_table" class="table-responsive  ">
+                        <div class="d-flex justify-content-center">
+                            @include('admin.includes.purchases.purchases_table')
+                        </div>
                     </div>
                     <div class="card-content">
                         <ul class="list-group mb-3">
@@ -175,13 +175,9 @@
                             </li>
                             <div class="row justify-content-around  m-2">
 
-                                @include(
-                                    'admin.includes.payment_types.select_payment_type'
-                                )
+                                @include('admin.includes.payment_types.select_payment_type')
 
-                                @include(
-                                    'admin.includes.sell_types.select_sell_type'
-                                )
+                                @include('admin.includes.sell_types.select_sell_type')
                             </div>
 
                         </ul>

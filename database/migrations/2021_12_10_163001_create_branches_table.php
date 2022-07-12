@@ -17,6 +17,9 @@ class CreateBranchesTable extends Migration
             $table->id();
             $table->string("branch_name_en")->nullable();
             $table->string("branch_name_ar")->nullable();
+            $table->string("address_en")->nullable();
+            $table->string("address_ar")->nullable();
+            $table->string("phone")->nullable();
             $table
                 ->tinyInteger("status")
                 ->default(1)

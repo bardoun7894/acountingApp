@@ -49,10 +49,12 @@
                     <div class="card-content collpase show">
                         <div class="card-body">
 
-                            <form class="form" method="POST" action="{{ url('/' . $lang . '/stocks') }}">
+                            <form class="form" method="POST" action="{{ url('/' . $lang . '/stocks') }}"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-actions top clearfix">
-                                    Add New Stock
+                                    {{ __('messages.add_product') }}
+
                                 </div>
                                 <div class="row justify-content-md-center form-group">
                                     <div class="col-md-6">
@@ -133,18 +135,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="row justify-content-md-center">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="form-group col-12 mb-2">
-                                                <input type="date" id="eventRegInput2" class="form-control"
-                                                    placeholder="Expiry Date" name="expiry_date">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="row justify-content-md-center">
                                     <div class="col-md-6">
                                         <div class="row">
@@ -155,6 +145,57 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="input-group mb-3 ">
+                                                <input type="file" name="product_image" id="product_image">
+                                                <label for="product_image"
+                                                    class="custom_choose_file_btn">{{ __('messages.choose_image') }}
+                                                </label>
+                                            </div>
+                                            <div class="image_preview" id="image_preview"
+                                                style="width: 300px; height: 400px; border: 2px; ">
+                                                <span class="image_preview_default_text" style="display: none">
+                                                    {{ __('messages.image_preview') }}
+                                                </span>
+                                                <div style=" height:80px;">
+                                                    <img style="width: 150px;"
+                                                        class="image_preview_image justify-content-md-center">
+
+                                                    {{-- @if (!empty($productData['main_image']))
+                                                    <a href="javascript:void(0)" class="confirmDeleteImage" record="image"
+                                                        recordName="product" recordid="{{ $productData['id'] }}"
+                                                        style="color: red">Delete image</a>
+                                                    endif --}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <h5>
+                                    <input name="is_batch" type="checkbox" id="is-batch" value="1">
+                                    &nbsp; {{ __('messages.this_product_has_expiry_date') }}
+                                </h5>
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-12 mb-2">
+                                                <input type="date" style="display:none" class="form-control"
+                                                    placeholder="Expiry Date" name="expiry_date" id="expiry-date">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5>
+                                    <input name="allowtax" type="checkbox" id="allowtax" value="1">
+                                    &nbsp; {{ __('messages.has_tax') }}
+                                </h5>
 
                                 <div class="form-actions clearfix">
                                     <div class="buttons-group float-right mb-1">

@@ -19,6 +19,11 @@ return [
     "user" => "User",
     "user_type" => "User Type",
     "user_name" => "User Name",
+    "sign_up_for_a_new_account" => "Sign Up for a New Account",
+    "fill_all_form_field_to_go_to_next_step" =>
+        "Fill all form field to go to next step",
+    "login" => "Login",
+    "account_information" => "Account Information",
     ####################### Store ################################
     "store_name" => "Store Name",
     "add_store" => "add Store",
@@ -56,6 +61,8 @@ return [
     ####################### Account Heads ################################
 
     "accountHeads" => "Account Heads",
+    "account_settings" => "Account Settings",
+    "add_account_setting" => "Add Account Setting",
     "account" => "Account",
     "accounts" => "Accounts",
     "personal" => "Personal",
@@ -68,6 +75,8 @@ return [
     "account_head_name" => "Account Head Name",
     "update_account_head" => "Update Account Head ",
     "add_account_head" => " Add Account Head",
+    "account_control_has_account_sub_control" =>
+        "Account Control has Account Sub Control",
     ####################### Account Controls ################################
 
     "accountControls" => "Account Controls",
@@ -93,6 +102,7 @@ return [
     "unit_name" => "Unit Name",
     "units" => "Units",
     "add_unit" => "Add Unit",
+    "unit_price" => "Unit Price",
 
     ####################### Session messages ################################
     ############## added messages #########  ###
@@ -200,11 +210,22 @@ return [
     "monthly_salary" => "Monthly Salary",
     "barcode" => "Barcode",
 
+    "this_product_has_expiry_date" => "This product has expiry date",
+    "expiry_date" => "Expiry Date",
+    "has_tax" => "Has Tax",
+    "image_preview" => "Image Preview",
+    "image_upload" => "Image Upload",
+    "image_upload_note" => "You Have to upload image with size less than 2MB",
+    "image" => "Image",
+    "choose_image" => "Choose Image",
     ####################### purchases ################################
-    "sub_total",
+    "sub_total" => "Sub Total",
+    "total" => "Total",
     "tax" => "Tax",
     "discount" => "Discount",
     "order_total" => "Order Total",
+    "total_due" => "Total Due",
+    "total_paid" => " Total Paid",
 
     "purchase_price" => "Purchase Price",
     "sale_price" => "Sale Price",
@@ -257,4 +278,6 @@ return [
     "status" => "Status",
     "address" => "Address",
     "description" => "Description",
+    "start_date" => "Start Date",
+    "end_date" => "End Date",
 ];

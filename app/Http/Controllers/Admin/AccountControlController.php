@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AccountControl;
 use App\Models\AccountHead;
+use App\Models\AccountSubControl;
 use App\Models\Translation;
 use App\Rules\NameIsExistRule;
 use Illuminate\Http\Request;
@@ -89,9 +90,12 @@ class AccountControlController extends Controller
         ]);
         $accountControl = new AccountControl();
         $accountControl->user_id = Auth::user()->getAuthIdentifier();
+        $accountControl->company_id = Auth::user()->company_id;
+        $accountControl->branch_id = Auth::user()->branch_id;
         $accountControl->$account_control_name =
             $request->$account_control_name;
         $accountControl->account_head_id = $request->account_head_id;
+
         $lastAccountControl = AccountControl::where(
             "account_head_id",
             "=",
@@ -216,10 +220,33 @@ class AccountControlController extends Controller
     {
         $accountControl = AccountControl::find($id);
         $accountControl->delete();
-        $session = Session::flash(
-            "message",
-            "AccountControl Deleted Successfully"
-        );
+        $session = Session::flash("message", __("messages.data_removed"));
+
         return redirect("accountControls")->with(compact("session"));
+    }
+
+    public function delete_account_if_has_account(Request $request)
+    {
+        if ($request->record == "AccountControl") {
+            $accountSubControl = AccountSubControl::where(
+                "account_control_id",
+                $request->recordId
+            )->first();
+            if ($accountSubControl->count() > 0) {
+                return response()->json(["delete" => "false"]);
+            } else {
+                return response()->json(["delete" => "true"]);
+            }
+        } elseif ($request->record == "AccountHead") {
+            $accountControl = AccountControl::where(
+                "account_head_id",
+                $request->recordId
+            )->first();
+            if ($accountControl->count() > 0) {
+                return response()->json(["delete" => "false"]);
+            } else {
+                return response()->json(["delete" => "true"]);
+            }
+        }
     }
 }

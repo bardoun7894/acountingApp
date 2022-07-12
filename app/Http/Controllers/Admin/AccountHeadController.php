@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountControl;
 use App\Models\AccountHead;
 use App\Models\Translation;
 use App\Models\User;
@@ -149,8 +150,19 @@ class AccountHeadController extends Controller
     public function deleteAccountHead($id)
     {
         $accountHead = AccountHead::find($id);
-        $accountHead->delete();
-        $session = Session::flash("message", __("messages.data_removed"));
-        return redirect("accountHeads")->with(compact("session"));
+        $accountControl = AccountControl::where(
+            "account_head_id",
+            $accountHead->account_code
+        )->first();
+        if (isset($accountControl) && $accountControl->count() > 0) {
+            $session = Session::flash(
+                "message",
+                __("messages.account_head_has_account_control")
+            );
+        } else {
+            $accountHead->delete();
+            $session = Session::flash("message", __("messages.data_removed"));
+        }
+        return redirect("accountHeads")->with(compact(["session"]));
     }
 }

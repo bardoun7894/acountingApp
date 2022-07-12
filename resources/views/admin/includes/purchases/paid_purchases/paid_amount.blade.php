@@ -4,13 +4,13 @@
     <div class="content-wrapper">
         <div class="content-header row">
             <div class="content-header-left col-md-6 col-12 mb-2">
-                <h3 class="content-header-title">{{__("messages.purchase_payment")}}</h3>
+                <h3 class="content-header-title">{{ __('messages.purchase_payment') }}</h3>
                 <div class="row breadcrumbs-top">
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{url('/redirect')}}">{{__("messages.home")}}</a>
+                            <li class="breadcrumb-item"><a href="{{ url('/redirect') }}">{{ __('messages.home') }}</a>
                             </li>
-                            <li class="breadcrumb-item active"><a >{{__("messages.purchases_invoice_payment")}}</a>
+                            <li class="breadcrumb-item active"><a>{{ __('messages.purchases_invoice_payment') }}</a>
                             </li>
 
                         </ol>
@@ -33,21 +33,24 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h6 class="breadcrumb-item">{{__("messages.enter_payment_details")}}</h6>
-                    <form method="POST"  action="{{url(\App\Models\Translation::getLang().'/'.'pay_amount/'.$purchase_invoice->id)}}">
+                    <h6 class="breadcrumb-item">{{ __('messages.enter_payment_details') }}</h6>
+                    <form method="POST"
+                        action="{{ url(\App\Models\Translation::getLang() . '/' . 'pay_purchase_amount/' . $purchase_invoice->id) }}">
                         @csrf
                         <div class="row p-1">
                             <div class="col-md-4">
-                                <label for="total_amount">{{__("messages.previous_remaining_amount")}}</label>
-                                <input type="text" id="total_amount" name="total_amount" value="{{$remaining_amount}}" readonly required  class="form-control">
+                                <label for="total_amount">{{ __('messages.previous_remaining_amount') }}</label>
+                                <input type="text" id="total_amount" name="total_amount" value="{{ $remaining_amount }}"
+                                    readonly required class="form-control">
                             </div>
                             <div class="col-md-4">
-                                <label for="total_amount">{{__("messages.payment_amount")}}</label>
-                                <input type="text" id="payment_amount"  name="payment_amount"    class="form-control" required>
+                                <label for="total_amount">{{ __('messages.payment_amount') }}</label>
+                                <input type="text" id="payment_amount" name="payment_amount" class="form-control"
+                                    required>
                             </div>
                             <div class="col-md-4">
-                                <label for="total_amount">{{__("messages.current_remaining_amount")}}</label>
-                                <input type="text" id="remaining_amount"   readonly class="form-control" required>
+                                <label for="total_amount">{{ __('messages.current_remaining_amount') }}</label>
+                                <input type="text" id="remaining_amount" readonly class="form-control" required>
                             </div>
 
                         </div>
@@ -58,14 +61,14 @@
                 </div>
             </div>
 
-            <div class="card" >
+            <div class="card">
 
 
 
-                @if(session()->has('message'))
-                        <div class="alert alert-success">
-                            {{ session()->get('message') }}
-                        </div>
+                @if (session()->has('message'))
+                    <div class="alert alert-success">
+                        {{ session()->get('message') }}
+                    </div>
                 @endif
 
 

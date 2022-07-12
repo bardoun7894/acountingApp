@@ -58,18 +58,11 @@
 
                                     <div class="col-md-6">
 
-                                        @include(
+                                        {{-- @include(
                                             'admin.includes.branches.select_branch'
-                                        )
-
-                                        <div id="appendPurchaseCategoryLevel">
-                                            @include(
-                                                'admin.includes.purchases.append_purchase_category_level'
-                                            )
-                                        </div>
-
+                                        ) --}}
                                         <div id="appendPurchaseProductLevel">
-                                            <h1>lslls</h1>
+
                                             @include(
                                                 'admin.includes.purchases.append_purchase_product_level'
                                             )
@@ -88,8 +81,6 @@
                                                 </select>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
                                         <div class="row justify-content-md-center">
                                             <div class="col-md-6">
                                                 <div class="row">
@@ -101,6 +92,9 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
+
                                         <div class="row justify-content-md-center">
                                             <div class="col-md-6">
                                                 <div class="row">

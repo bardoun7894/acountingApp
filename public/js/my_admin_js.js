@@ -4,6 +4,7 @@ import SalePage from "./salePage.js";
 import UserPage from "./userPage.js";
 import Accounts from "./accounts.js";
 import PaidAmount from "./paidAmountPage.js";
+import getSelectorBasedInOther from "./selectBasedInOtherSelect.js";
 
 //get the language path
 let urlPath = window.location.href; // raw javascript
@@ -20,9 +21,81 @@ let dynamicRowId = "#" + tableName + "-dynamicRow";
 // const categoryPage = new CategoryPage();r
 var paid_amount = new PaidAmount();
 //Purchase function
-var purchasePage = new PurchasePage();
+
+if (tableName == "purchases") {
+    var purchasePage = new PurchasePage();
+}
 //Purchase function
-var salepage = new SalePage();
+
+if (tableName === "sales") {
+    var salepage = new SalePage();
+}
+if (tableName === "sale_payment_history") {
+    $("#search_btn_date").on("click", function (e) {
+        var start_date = $("#start_date").val().toString();
+        var end_date = $("#end_date").val().toString();
+        getSelectorBasedInOther(
+            { start_date: start_date, end_date: end_date, id: tableid },
+            "get_history_payments_by_date"
+        ).then((data) => {
+            console.log(start_date);
+            $("#history_payments_table").html(data);
+        });
+    });
+
+    $("#start_date").pickadate({
+        monthsFull: [
+            "يناير",
+            "فبراير",
+            "	مارس",
+            "	أبريل/إبريل",
+            "أيار",
+            "حزيران",
+            "تموز",
+            "	آب",
+            "أيلول",
+            "تشرين الأول",
+            "تشرين الثاني",
+            "كانون الأول",
+        ],
+        monthsShort: [
+            "يناير",
+            "فبراير",
+            "	مارس",
+            "	أبريل/إبريل",
+            "أيار",
+            "حزيران",
+            "تموز",
+            "	آب",
+            "أيلول",
+            "تشرين الأول",
+            "تشرين الثاني",
+            "كانون الأول",
+        ],
+        weekdaysFull: [
+            "الأحد",
+            "السبت",
+            "الجمعه",
+            "الخميس",
+            "الأربعاء",
+            "الثلاثاء",
+            "الأثنين",
+        ],
+        weekdaysShort: [
+            "الأحد",
+            "السبت",
+            "الجمعه",
+            "الخميس",
+            "الأربعاء",
+            "الثلاثاء",
+            "الأثنين",
+        ],
+        today: "اليوم",
+        clear: "اختيار واضح",
+        close: "إلغاء",
+        formatSubmit: "yyyy/mm/dd",
+    });
+}
 
 //user page
 var user__page = new UserPage();
@@ -57,6 +130,43 @@ function supplierbasedBranchSelect() {
                                 lang == "en"
                                     ? item.supplier_name_en
                                     : item.supplier_name_ar,
+                            id: item.id,
+                        };
+                    }),
+                };
+            },
+        },
+    });
+}
+
+function customerbasedBranchSelect() {
+    $(".customerselect2").select2({
+        placeholder: lang == "en" ? "Search a customer..." : "... ابحث عن زبون",
+        language: {
+            noResults: function () {
+                return $(
+                    "<a href='/stocks/create'> no result found please Add a customer <i class='la la-plus'></i></a>"
+                );
+            },
+        },
+        ajax: {
+            type: "Get",
+            url: "/" + lang + "/" + "get_customer_select2",
+            delay: 250,
+            cache: true,
+            allowClear: true,
+
+            data: function (data) {
+                return { search: data.term };
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text:
+                                lang == "en"
+                                    ? item.customer_name_en
+                                    : item.customer_name_ar,
                             id: item.id,
                         };
                     }),
@@ -109,23 +219,39 @@ function searchproductSelect2() {
         },
     });
 }
+
 $(document).on("ready", function () {
     loginRegisterForm();
     toggleStatus();
-    var branch_id = $("#branchId").val();
-    supplierbasedBranchSelect(branch_id);
+    if (
+        editUrl === "/stocks/" + tableid + "/edit" ||
+        editUrl === "/stocks/create"
+    ) {
+        displayImage();
+    }
+
+    // var checkBox = document.getElementById("is-batch");
+
+    // var expiry_date = document.getElementById("expiry-date");
+
+    // if (checkBox.checked === true) {
+    //     expiry_date.style.display = "block";
+    //     alert("checked");
+    // } else {
+    //     expiry_date.style.display = "none";
+    //     alert("not checked");
+    // }
+
+    supplierbasedBranchSelect();
+    customerbasedBranchSelect();
     searchproductSelect2();
 
-    $("#branchId").on("change", function () {
-        $(".exampleSample").val(null).trigger("change");
-        branch_id = $("#branchId").val();
-        supplierbasedBranchSelect(branch_id);
-    });
-    // $("#stock_id").on("change", function () {
-    //     // branch_id = $("#branchId").val();
-    //     // supplierbasedBranchSelect(branch_id);
-    //     // searchproductSelect2();
+    // $("#branchId").on("change", function () {
+    //     $(".exampleSample").val(null).trigger("change");
+    //     branch_id = $("#branchId").val();
+    //     supplierbasedBranchSelect(branch_id);
     // });
+
     if (urlPath.split("/").length === 5) {
         $("#datatableBootstrap").DataTable({
             responsive: true,
@@ -289,7 +415,31 @@ function toggleStatus() {
 }
 $(dynamicRowId).on("click", ".confirmDelete", function (p) {
     var record = $(this).attr("record");
+
     var recordId = $(this).attr("recordId");
+
+    if (tableName.split(/(?=[A-Z])/)[0] == "account") {
+        getSelectorBasedInOther(
+            { record: record, recordId: recordId },
+            "delete_account_if_has_account"
+        ).then((data) => {
+            if (data.delete === "true") {
+                alert("تم حذف الحساب بنجاح");
+                warningDeleteAlert(record, recordId);
+            } else {
+                alert(
+                    lang == "en"
+                        ? "You can't delete this account because it has a child account"
+                        : "لا يمكنك حذف هذا الحساب لأنه يحتوي على حساب فرعي"
+                );
+            }
+        });
+    } else {
+        warningDeleteAlert(record, recordId);
+    }
+});
+
+function warningDeleteAlert(record, recordId) {
     Swal.fire({
         title: lang === "ar" ? "هل تريد الاستمرار؟" : "Are you sure?",
         text:
@@ -304,15 +454,41 @@ $(dynamicRowId).on("click", ".confirmDelete", function (p) {
         cancelButtonText: lang === "ar" ? "لا" : "no",
     }).then((result) => {
         if (result.isConfirmed) {
-            swal.fire(
-                lang === "ar" ? "تم الحذف" : "Deleted!",
-                lang === "ar"
-                    ? "تم حذف البيانات"
-                    : "Your data has been deleted.",
-                lang === "ar" ? "نجاح" : "success"
-            );
-            window.location.href =
-                "/" + lang + "/delete-" + record + "/" + recordId;
+            confirmDelete(record, recordId);
         }
     });
-});
+}
+function confirmDelete(record, recordId) {
+    swal.fire(
+        lang === "ar" ? "تم الحذف" : "Deleted!",
+        lang === "ar" ? "تم حذف البيانات" : "Your data has been deleted.",
+        lang === "ar" ? "نجاح" : "success"
+    );
+    window.location.href = "/" + lang + "/delete-" + record + "/" + recordId;
+}
+
+function displayImage() {
+    // (2) display current image in products
+    const inpfile = document.getElementById("product_image");
+    const previewContainer = document.getElementById("image_preview");
+    const previewImage = previewContainer.querySelector(".image_preview_image");
+    const previewtext = previewContainer.querySelector(
+        ".image_preview_default_text"
+    );
+    if (inpfile) {
+        inpfile.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                console.log(file);
+                previewtext.style.display = "none";
+                previewImage.style.display = "block";
+                reader.addEventListener("load", function () {
+                    console.log("SSS" + this.result);
+                    previewImage.setAttribute("src", this.result);
+                });
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+}

@@ -9,10 +9,8 @@ class AccountActivity extends Model
 {
     use HasFactory;
 
-
-
-    static public  function getAccountActivityNameLang()
+    public static function getAccountActivityNameLang()
     {
-        return "account_activity_name_".Translation::getLang();
+        return "account_activity_name_" . Translation::getLang();
     }
 }

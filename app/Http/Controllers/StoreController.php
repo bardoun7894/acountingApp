@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\Store;
 use App\Models\Translation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class StoreController extends Controller
@@ -22,21 +23,27 @@ class StoreController extends Controller
      * @var string
      */
 
-    function __construct(){
-        $this->lang=Translation::getLang();
-        $this->store_name=Store::getStoreNameLang();
+    function __construct()
+    {
+        $this->lang = Translation::getLang();
+        $this->store_name = Store::getStoreNameLang();
     }
     public function index()
     {
+        $store_name = $this->store_name;
 
-        $store_name=$this->store_name;
+        $stores = Store::with("branch")
+            ->where([
+                "company_id" => Auth::user()->company_id,
+                "branch_id" => Auth::user()->branch_id,
+            ])
+            ->get();
 
-        $stores =Store::with('branch')->get();
-
-        $branch_name=Branch::getBranchNameLang();
+        $branch_name = Branch::getBranchNameLang();
         $lang = $this->lang;
-        return view('admin.includes.stores.stores')->with(compact([   'stores','store_name','branch_name','lang']));
-
+        return view("admin.includes.stores.stores")->with(
+            compact(["stores", "store_name", "branch_name", "lang"])
+        );
     }
 
     /**
@@ -46,11 +53,17 @@ class StoreController extends Controller
      */
     public function create()
     {
-        $lang=$this->lang;
-        $branches =Branch::with('stores')->get();
-        $store_name=$this->store_name;
-        $branch_name=Branch::getBranchNameLang();
-        return view('admin.includes.stores.create')->with(compact(['branches','store_name','lang','branch_name']));
+        $lang = $this->lang;
+        $branches = Branch::with("stores")
+            ->where([
+                "company_id" => Auth::user()->company_id,
+            ])
+            ->get();
+        $store_name = $this->store_name;
+        $branch_name = Branch::getBranchNameLang();
+        return view("admin.includes.stores.create")->with(
+            compact(["branches", "store_name", "lang", "branch_name"])
+        );
     }
 
     /**
@@ -61,18 +74,18 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        $store_name=$this->store_name;
+        $store_name = $this->store_name;
         $validated = $request->validate([
-            'branch_id' => 'required',
-            $store_name => 'required',
+            "branch_id" => "required",
+            $store_name => "required",
         ]);
-        $store =new Store();
-        $store->branch_id =$request->branch_id;
-        $store->$store_name=$request->$store_name;
+        $store = new Store();
+        $store->branch_id = $request->branch_id;
+        $store->company_id = Auth::user()->company_id;
+        $store->$store_name = $request->$store_name;
         $store->save();
-        $session =Session::flash('message',__('messages.data_added'));
-        return redirect('stores')->with(compact(['session']));
-
+        $session = Session::flash("message", __("messages.data_added"));
+        return redirect("stores")->with(compact(["session"]));
     }
 
     /**
@@ -94,12 +107,20 @@ class StoreController extends Controller
      */
     public function edit($id)
     {
-        $lang=$this->lang;
-        $store_name=$this->store_name;
+        $lang = $this->lang;
+        $store_name = $this->store_name;
         $store = Store::find($id);
-        $branch_list=Branch::all();
-        $branch_name=Branch::getBranchNameLang();
-        return view('admin.includes.stores.update')->with(compact(['store','branch_list','lang','store_name','branch_name']));
+        $branch_list = Branch::all();
+        $branch_name = Branch::getBranchNameLang();
+        return view("admin.includes.stores.update")->with(
+            compact([
+                "store",
+                "branch_list",
+                "lang",
+                "store_name",
+                "branch_name",
+            ])
+        );
     }
 
     /**
@@ -111,50 +132,46 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $store_name=$this->store_name;
+        $store_name = $this->store_name;
         $validated = $request->validate([
-            'branch_id' => 'required',
-            $store_name => 'required',
+            "branch_id" => "required",
+            $store_name => "required",
         ]);
-        $store=Store::find($id);
+        $store = Store::find($id);
         $store->branch_id = $request->branch_id;
         $store->$store_name = $request->input($store_name);
         $store->update();
-        $session =Session::flash('message',__('messages.data_updated'));
-        return redirect('stores')->with(compact(['session']));
-
+        $session = Session::flash("message", __("messages.data_updated"));
+        return redirect("stores")->with(compact(["session"]));
     }
-
 
     public function deleteStore($id)
     {
-        $store=Store::find($id);
+        $store = Store::find($id);
         $store->delete();
-        $session =Session::flash('message',__('messages.data_removed'));
-        return redirect('stores')->with(compact('session'));
-
+        $session = Session::flash("message", __("messages.data_removed"));
+        return redirect("stores")->with(compact("session"));
     }
-//    public function getSelectedBranch(Request $request)
-//    {
-//        $store_name = $this->store_name;
-//        if ($request->ajax()) {
-//            $data = $request->all();
-//
-//            if (is_numeric($data['tableid'])) {
-//
-//                $storeData = Store::find($data['tableid']);
-//            }
-//            else
-//            {
-//                $storeData = "";
-//            }
-//
-//            $getstores = Store::with('substores')->where(['branch_id' => $data['branch_id'], 'parent_id' => 0])->get();
-//            return view('admin.includes.stores.append_parent_level')->with(compact(['storeData', 'getstores', 'store_name']));
-//
-//
-//        }
-//
-//    }
-
+    //    public function getSelectedBranch(Request $request)
+    //    {
+    //        $store_name = $this->store_name;
+    //        if ($request->ajax()) {
+    //            $data = $request->all();
+    //
+    //            if (is_numeric($data['tableid'])) {
+    //
+    //                $storeData = Store::find($data['tableid']);
+    //            }
+    //            else
+    //            {
+    //                $storeData = "";
+    //            }
+    //
+    //            $getstores = Store::with('substores')->where(['branch_id' => $data['branch_id'], 'parent_id' => 0])->get();
+    //            return view('admin.includes.stores.append_parent_level')->with(compact(['storeData', 'getstores', 'store_name']));
+    //
+    //
+    //        }
+    //
+    //    }
 }

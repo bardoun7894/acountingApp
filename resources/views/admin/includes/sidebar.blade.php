@@ -68,7 +68,7 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
             <li class=" nav-item"><a href="ecommerce-checkout.html"><i class="la la-credit-card"></i><span
                         class="menu-title" data-i18n="Checkout">Reports</span></a>
             </li>
-            @if ($current_user->user_type_id == 1)
+            @if ($current_user->user_type_id == 1 || $current_user->user_type_id == 3)
                 <li class=" nav-item"><a href="#"><i class="la la-clipboard"></i><span class="menu-title"
                             data-i18n="Settings">{{ __('messages.settings') }}</span></a>
                     <ul class="menu-content">
@@ -76,9 +76,12 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                                 href="{{ url($lang . '/users') }}"><i></i><span
                                     data-i18n="Users">{{ __('messages.users') }}</span></a>
                         </li>
-                        <li><a class="menu-item" href="{{ url($lang . '/companies') }}"><i></i><span
-                                    data-i18n="Companies">{{ __('messages.companies') }}</span></a>
-                        </li>
+                        @if (Auth::user()->user_type_id == 3)
+                            <li><a class="menu-item" href="{{ url($lang . '/companies') }}"><i></i><span
+                                        data-i18n="Companies">{{ __('messages.companies') }}</span></a>
+                            </li>
+                        @endif
+
                         <li><a class="menu-item" href="{{ url($lang . '/employees') }}"><i></i><span
                                     data-i18n="Employees">{{ __('messages.employees') }}</span></a>
                         </li>

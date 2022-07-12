@@ -20,9 +20,10 @@ use App\Models\User;
             </tr>
         </thead>
         <tbody id="companies-dynamicRow">
+            {{ $i = 1 }}
             @foreach ($companies as $company)
                 <tr>
-                    <td class="text-truncate"> {{ $company->id }}</td>
+                    <td class="text-truncate"> {{ $i++ }}</td>
                     <td class="text-truncate">{{ $company->$company_name }} </td>
 
                     <td class="text-truncate" style="text-align: center">

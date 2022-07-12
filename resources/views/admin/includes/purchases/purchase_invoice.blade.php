@@ -4,13 +4,16 @@
     <div class="content-wrapper">
         <div class="content-header row">
             <div class="content-header-left col-md-6 col-12 mb-2">
-                <h3 class="content-header-title">Invoice</h3>
+                <h3 class="content-header-title">{{ __('messages.invoice') }}</h3>
+
                 <div class="row breadcrumbs-top">
                     <div class="breadcrumb-wrapper col-12">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Purchases</a>
+                            <li class="breadcrumb-item"><a href="index.html">{{ __('messages.purchases') }}</a>
+
                             </li>
-                            <li class="breadcrumb-item active">Purchase Invoice
+                            <li class="breadcrumb-item active">{{ __('messages.purchase_invoice') }}
+
                             </li>
                         </ol>
                     </div>
@@ -38,18 +41,17 @@
                                     <div class="media-body">
                                         {{-- facture --}}
                                         <ul class="ml-2 px-0 list-unstyled">
-                                            <li class="text-bold-800">Company Name</li>
-                                            <li>4025 Oak Avenue,</li>
-                                            <li>Melbourne,</li>
-                                            <li>Florida 32940,</li>
-                                            <li>USA</li>
+                                            <li class="text-bold-800">{{ __('messages.company_name') }}</li>
+
+                                            <li>{{ $company->branches[0]->$address }}</li>
+
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6 col-12 text-center text-sm-right">
-                            <h2>INVOICE</h2>
+                            <h2>{{ __('messages.invoice') }}</h2>
                             <p class="pb-sm-3">#{{ $supplier_invoice->invoice_no }}</p>
                             {{-- <ul class="px-0 list-unstyled"> --}}
                             {{-- <li>Balance Due</li> --}}
@@ -128,31 +130,38 @@
                         <div class="row">
                             <div class="col-sm-7 col-12 "></div>
                             <div class="col-sm-5 col-12">
-                                <p class="lead">Total due</p>
+                                <p class="lead">{{ __('messages.total_due') }}</p>
+
                                 <div class="table-responsive">
                                     <table class="table">
                                         <tbody>
                                             <tr>
-                                                <td>Sub Total</td>
+                                                <td>{{ __('messages.sub_total') }}</td>
+
                                                 <td class="text-right">${{ $supplier_invoice->sub_total_amount }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>TAX ({{ $supplier_invoice->tax }}%)</td>
+                                                <td>{{ __('messages.tax') . ' ' }}
+                                                    ({{ $supplier_invoice->tax }}%)</td>
                                                 <td class="text-right">
                                                     {{ ($supplier_invoice->tax * $supplier_invoice->sub_total_amount) / 100 }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>Discount ({{ $supplier_invoice->discount }}%)</td>
+                                                <td>{{ __('messages.discount') }}
+                                                    ({{ $supplier_invoice->discount }}%)</td>
                                                 <td class="text-right">
                                                     {{ ($supplier_invoice->discount * $supplier_invoice->sub_total_amount) / 100 }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="text-bold-800">Total</td>
+                                                <td class="text-bold-800">
+                                                    {{ __('messages.total') }}
+                                                </td>
                                                 <td class="text-bold-800 text-right">
-                                                    ${{ $supplier_invoice->total_amount }}</td>
+                                                    {{ $supplier_invoice->total_amount . ' ' }}{{ $currency->$currency_name }}
+                                                </td>
                                             </tr>
 
                                         </tbody>

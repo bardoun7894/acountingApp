@@ -37,6 +37,9 @@
                         @break
 
                         @default
+                            <div class="alert alert-danger">
+                                {{ session()->get('message') }}
+                            </div>
                     @endswitch
                 @endif
                 <div class="card-content">
@@ -53,9 +56,9 @@
                                 </tr>
                             </thead>
                             <tbody id="accountHeads-dynamicRow">
-                                @foreach ($accountHeads as $accountHead)
+                                @foreach ($accountHeads as $key => $accountHead)
                                     <tr>
-                                        <td class="text-truncate"> {{ $accountHead->id }}</td>
+                                        <td class="text-truncate"> {{ $key + 1 }}</td>
                                         {{-- <td class="text-truncate">  @if ($accountHead->user_type_id == 1) admin @else AccountHead  @endif       </td> --}}
                                         <td class="text-truncate"> {{ $accountHead->$account_head_name }}</td>
                                         <td class="text-truncate"> {{ $accountHead->user->user_type->$user_type }}

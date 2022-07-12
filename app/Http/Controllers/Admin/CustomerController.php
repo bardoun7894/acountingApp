@@ -217,4 +217,19 @@ class CustomerController extends Controller
             compact(["customers", "customer_name", "address", "description"])
         );
     }
+
+    public function getCustomerSelect2(Request $request)
+    {
+        $search = $request->search;
+        $customers = Customer::where([
+            "branch_id" => Auth::user()->branch_id,
+        ])
+            ->where(
+                Customer::getCustomerNameLang(),
+                "like",
+                "%" . $search . "%"
+            )
+            ->get();
+        return $customers;
+    }
 }

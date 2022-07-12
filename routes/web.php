@@ -5,13 +5,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
-use App\Models\AccountControl;
-use App\Models\AccountHead;
-use App\Models\AccountSubControl;
-use App\Models\Product;
+use App\Http\Controllers\PurchaseInvoiceController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\StoreController;
+use App\Models\Category;
+use App\Models\Customer;
 use App\Models\PurchaseCartDetail;
+use App\Models\Sale;
 use App\Models\Stock;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -31,18 +36,6 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 Route::get("/", function () {
     return view("welcome");
 });
-
-//
-//Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-//    return view('home');
-//})->name('dashboard');
-
-//Route::get('/users',[HomeController::class,'showUsers'])->name('users');
-//Route::get('/update/{id?}',[Admin\UserController::class,'updateUser']);
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-//Route::get('/user', [ User\DashboardController::class, 'index'])->name('user');
-//Route::get('/admin', [ Admin\DashboardController::class, 'index'])->name('admin');
 
 Route::group(
     [
@@ -65,6 +58,7 @@ Route::group(
             "localizationRedirect",
             "localeViewPath",
             "auth",
+            "isActive",
         ],
     ],
     function () {
@@ -159,38 +153,115 @@ Route::group(
             \App\Http\Controllers\PurchaseInvoiceController::class,
             "deletePurchase",
         ])->name("delete-Purchase");
+        Route::get("/delete-Sale/{id}", [
+            \App\Http\Controllers\SaleController::class,
+            "deleteSale",
+        ])->name("delete-Sale");
 
         Route::get("/allPurchases", [
             \App\Http\Controllers\PurchaseInvoiceController::class,
             "allPurchases",
-        ]);
-
-        Route::get("/purchasePaymentPending", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
-            "purchasePaymentPending",
-        ]);
-        Route::get("/purchase_payment_history/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
-            "purchasePaymentHistoryView",
-        ]);
-        Route::get("/purchase_invoice/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
-            "purchaseSupplierInvoice",
-        ]);
-        Route::get("/paid_amount/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
-            "paid_amount",
-        ]);
-        Route::post("/pay_amount/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
-            "pay_amount",
         ]);
         Route::get("/allSales", [
             \App\Http\Controllers\SaleController::class,
             "allSales",
         ]);
 
-        Route::get("/trm", function () {
+        Route::get("/purchasePaymentPending", [
+            \App\Http\Controllers\PurchaseInvoiceController::class,
+            "purchasePaymentPending",
+        ]);
+        Route::get("/salePaymentPending", [
+            \App\Http\Controllers\SaleController::class,
+            "salePaymentPending",
+        ]);
+        Route::get("/purchase_payment_history/{id}", [
+            \App\Http\Controllers\PurchaseInvoiceController::class,
+            "purchasePaymentHistoryView",
+        ]);
+        Route::get("/sale_payment_history/{id}", [
+            \App\Http\Controllers\SaleController::class,
+            "salePaymentHistoryView",
+        ]);
+
+        Route::post("/get_history_payments_by_date", [
+            \App\Http\Controllers\SaleController::class,
+            "salePaymentHistoryViewByDate",
+        ]);
+
+        Route::get("/purchase_invoice/{id}", [
+            \App\Http\Controllers\PurchaseInvoiceController::class,
+            "purchaseSupplierInvoice",
+        ]);
+        Route::get("/sale_invoice/{id}", [
+            \App\Http\Controllers\SaleController::class,
+            "saleCustomerInvoice",
+        ]);
+        Route::get("/paid_supplier_amount/{id}", [
+            \App\Http\Controllers\PurchaseInvoiceController::class,
+            "paid_amount",
+        ]);
+        Route::get("/paid_customer_amount/{id}", [
+            \App\Http\Controllers\SaleController::class,
+            "paid_amount",
+        ]);
+        Route::post("/pay_purchase_amount/{id}", [
+            \App\Http\Controllers\PurchaseInvoiceController::class,
+            "pay_amount",
+        ]);
+
+        Route::get("get_supplier_select2", [
+            SupplierController::class,
+            "getSupplierSelect2",
+        ]);
+        Route::get("get_customer_select2", [
+            CustomerController::class,
+            "getCustomerSelect2",
+        ]);
+
+        Route::get("product_select2", [
+            StockController::class,
+            "getProductSelect2",
+        ]);
+
+        Route::get("fetch_data", function (Request $request) {
+            if ($request->ajax()) {
+                if (
+                    \Illuminate\Support\Facades\Auth::user()->user_type_id == 1
+                ) {
+                    $purchases = PurchaseCartDetail::with("stock")->get();
+                } else {
+                    $purchases = PurchaseCartDetail::with("stock")
+                        ->where(
+                            "branch_id",
+                            \Illuminate\Support\Facades\Auth::user()->branch_id
+                        )
+                        ->get();
+                }
+
+                return json_encode($purchases);
+            }
+        });
+        ####################################  PurchaseCartDetail Cart   ####################################
+
+        Route::post("fetch_products_to_purchase_cart", [
+            PurchaseInvoiceController::class,
+            "fetchProductsToPurchaseCart",
+        ]);
+
+        Route::post("post_products_on_qty_change_to_purchaseCart", [
+            PurchaseInvoiceController::class,
+            "postProductOnQtyChangeToProductCart",
+        ]);
+
+        ####################################  Sale Cart   ####################################
+        Route::post("/pay_sale_amount/{id}", [
+            \App\Http\Controllers\SaleController::class,
+            "pay_sale_amount",
+        ]);
+        Route::get("/allSales", [SaleController::class, "allSales"]);
+
+        Route::get("/test", function () {
             return DB::table("supplier_invoices")
                 ->join(
                     "supplier_payments",
@@ -218,100 +289,28 @@ Route::group(
                 )
                 ->get();
         });
+        Route::get("fetch_sale_data", [SaleController::class, "fetchSaleData"]);
 
-        Route::get("get_supplier_select2", function (Request $request) {
-            $search = $request->search;
-            $suppliers = Supplier::where([
-                "branch_id" => Auth::user()->branch_id,
-            ])
-                ->where(
-                    Supplier::getSupplierNameLang(),
-                    "like",
-                    "%" . $search . "%"
-                )
-                ->get();
-            return $suppliers;
-        });
-        Route::get("product_select2", function (Request $request) {
-            $search = $request->search;
-
-            $product = Stock::where(
-                Stock::getProductNameLang(),
-                "like",
-                "%" . $search . "%"
-            )
-                ->orwhere("barcode", "like", "%" . $search . "%")
-
-                ->get();
-            return $product;
-        });
-
-        Route::get("fetch_data", function (Request $request) {
-            if ($request->ajax()) {
-                if (
-                    \Illuminate\Support\Facades\Auth::user()->user_type_id == 1
-                ) {
-                    $purchases = PurchaseCartDetail::with("stock")->get();
-                } else {
-                    $purchases = PurchaseCartDetail::with("stock")
-                        ->where(
-                            "branch_id",
-                            \Illuminate\Support\Facades\Auth::user()->branch_id
-                        )
-                        ->get();
-                }
-
-                return json_encode($purchases);
-            }
-        });
-
-        Route::get("/thisisme", function () {
-            return AccountControl::with(["accountSubControls"])->get();
-        });
-
-        Route::post("fetch_products", function (Request $request) {
-            $description = Stock::getDescriptionLang();
-            if ($request->ajax()) {
-                $product = Stock::where("id", $request->stock_id)->first();
-                $purchases = PurchaseCartDetail::where(
-                    "stock_id",
-                    $request->stock_id
-                )->get();
-                if ($purchases->count() > 0) {
-                    return "";
-                } else {
-                    $purchaseCart = new PurchaseCartDetail();
-                    $purchaseCart->branch_id = Auth::user()->branch_id;
-                    $purchaseCart->unit_id = $product->unit_id;
-                    $purchaseCart->category_id = $product->category_id;
-                    $purchaseCart->stock_id = $product->id;
-                    $purchaseCart->$description = $product->$description;
-                    $purchaseCart->purchase_qty = 0;
-                    $purchaseCart->purchase_unit_price =
-                        $product->current_purchase_unit_price;
-                    $purchaseCart->sale_unit_price =
-                        $product->current_sale_unit_price;
-                    $purchaseCart->user_id = Auth::user()->id;
-                    $purchaseCart->company_id = Auth::user()->company_id;
-                    $purchaseCart->save();
-                    return $product;
-                }
-            }
-        });
-        Route::post("post_products_on_qty_change", function (Request $request) {
-            if ($request->ajax()) {
-                $purchaseCart = PurchaseCartDetail::find($request->id);
-                $purchaseCart->purchase_qty = $request->purchase_qty;
-                $purchaseCart->save();
-                return $purchaseCart;
-            }
-        });
+        Route::post("fetch_products_to_saleCart", [
+            SaleController::class,
+            "fetchproductsToSaleCart",
+        ]);
+        Route::post("post_products_on_qty_change_to_saleCart", [
+            SaleController::class,
+            "postProductOnQtyChangeToSaleCart",
+        ]);
         ####################################  select option  Methodes ####################################
 
         Route::post("/get_selected_account_head", [
             Admin\AccountSubControlController::class,
             "getSelectedAccountControl",
         ])->name("getSelectedAccountControl");
+
+        Route::post("/delete_account_if_has_account", [
+            Admin\AccountControlController::class,
+            "delete_account_if_has_account",
+        ]);
+
         Route::post("/get_selected_account_control", [
             Admin\AccountSubControlController::class,
             "getSelectedAccountSubControl",
@@ -353,6 +352,7 @@ Route::group(
             \App\Http\Controllers\PurchaseInvoiceController::class,
             "addSupplierInvoiceFunction",
         ])->name("purchases.addSupplierInvoice");
+
         Route::post("/addCustomerInvoice", [
             \App\Http\Controllers\SaleController::class,
             "addCustomerInvoiceFunction",
@@ -369,18 +369,21 @@ Route::group(
             \App\Http\Controllers\SaleController::class,
             "getCustomerItembyId",
         ])->name("getSelectedSupplier");
+
         Route::post("/getSumTotalItem", [
             \App\Http\Controllers\PurchaseInvoiceController::class,
             "getSumTotalItem",
         ])->name("getSumTotalItem");
+
         Route::post("/getSumTotalSaleItem", [
             \App\Http\Controllers\SaleController::class,
             "getSumTotalItem",
         ]);
+
         Route::post("/companies/approve_user", [
             CompanyController::class,
             "approveUser",
-        ]);
+        ])->middleware("isSuperAdmin");
         ####################################  resources  ####################################
 
         Route::resources([
@@ -399,7 +402,7 @@ Route::group(
             "stocks" => Admin\StockController::class,
             "purchases" =>
                 \App\Http\Controllers\PurchaseInvoiceController::class,
-            // "sales" => \App\Http\Controllers\SaleController::class,
+            "sales" => \App\Http\Controllers\SaleController::class,
             "accountHeads" => Admin\AccountHeadController::class,
             "accountActivities" =>
                 \App\Http\Controllers\AccountActivityController::class,
@@ -408,5 +411,43 @@ Route::group(
             "accountControls" => Admin\AccountControlController::class,
             "accountSubControls" => Admin\AccountSubControlController::class,
         ]);
+    }
+);
+
+Route::group(
+    [
+        "prefix" => LaravelLocalization::setLocale(),
+        "middleware" => [
+            "localeSessionRedirect",
+            "localizationRedirect",
+            "localeViewPath",
+        ],
+    ],
+    function () {
+        Route::prefix("/front")
+            ->namespace("Front")
+            ->group(function () {
+                Route::get("/", [
+                    \App\Http\Controllers\Front\FrontController::class,
+                    "front",
+                ]);
+                Route::match(["get", "post"], "/products", [
+                    \App\Http\Controllers\Front\FrontController::class,
+                    "get_all_products",
+                ]);
+                //       Route::match(['get','post'],'/get_category_id', [\App\Http\Controllers\Front\FrontController::class, 'countd']);
+                Route::match(["get", "post"], "/{url?}", [
+                    \App\Http\Controllers\Front\CategoryController::class,
+                    "categoryDetail",
+                ]);
+                Route::get("/products", function () {
+                    $categories = Category::all();
+                    $products = Stock::get();
+                    return view("layouts.front_layout.products")->with(
+                        compact(["categories", "products"])
+                    );
+                });
+                //    Route::post('/sort_products', [\App\Http\Controllers\Front\FrontController::class, 'get_sorting']);
+            });
     }
 );

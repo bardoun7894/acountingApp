@@ -64,6 +64,7 @@ function getAccountSubControlBasedInAccountControl() {
         },
         "get_selected_account_control"
     ).then((data) => {
+        console.log(data);
         $("#appendAccountSubControlLevel").html(data);
     });
 }

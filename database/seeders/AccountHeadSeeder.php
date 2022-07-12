@@ -16,7 +16,6 @@ class AccountHeadSeeder extends Seeder
     {
         $data = [
             [
-                "id" => 1,
                 "user_id" => $user_id,
                 "company_id" => $company_id,
                 "branch_id" => $branch_id,
@@ -27,7 +26,6 @@ class AccountHeadSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 2,
                 "user_id" => $user_id,
                 "company_id" => $company_id,
                 "branch_id" => $branch_id,
@@ -39,7 +37,6 @@ class AccountHeadSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 3,
                 "user_id" => $user_id,
                 "company_id" => $company_id,
                 "branch_id" => $branch_id,
@@ -51,7 +48,6 @@ class AccountHeadSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 4,
                 "user_id" => $user_id,
 
                 "company_id" => $company_id,

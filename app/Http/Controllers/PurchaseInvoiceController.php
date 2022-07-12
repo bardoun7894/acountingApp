@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AccountSetting;
 use App\Models\Branch;
 use App\Models\Category;
+use App\Models\Company;
 use App\Models\Currency;
 use App\Models\FinanceYear;
 use App\Models\PaymentType;
@@ -19,7 +20,6 @@ use App\Models\SupplierPayment;
 use App\Models\Transaction;
 use App\Models\Translation;
 use App\Models\User;
-use App\Models\UserType;
 use App\Rules\FinanceYearRule;
 use App\Rules\PayAmountRule;
 use App\Rules\PurchaseCartRule;
@@ -49,7 +49,7 @@ class PurchaseInvoiceController extends Controller
     private $payment_type_name;
     private $sell_type_name;
     private $address;
-    private $s_name;
+    private $currency_name;
     private $full_name;
     private $purchasePaymentAr = "تم الدفع ";
     private $entries;
@@ -59,7 +59,7 @@ class PurchaseInvoiceController extends Controller
         $this->product_name = Stock::getProductNameLang();
         $this->entries = new Entries();
         $this->full_name = User::getFullnameLang();
-        $this->s_name = Currency::getSNameLang();
+        $this->currency_name = Currency::getCurrencyName();
         $this->sell_type_name = SellType::getSellTypeNameLang();
         $this->payment_type_name = PaymentType::getPaymentTypeNameLang();
         $this->title = SupplierInvoice::getTitleLang();
@@ -92,29 +92,25 @@ class PurchaseInvoiceController extends Controller
         )->get();
         $payment_types = PaymentType::where("status", 1)->get();
         $currency = Currency::where("status", 1)->first();
-        $s_name = $this->s_name;
+        $currency_name = $this->currency_name;
         $sell_types = SellType::where("status", 1)->get();
         $stores = Store::where([
             "branch_id" => Auth::user()->branch_id,
             "company_id" => Auth::user()->company_id,
             "status" => 1,
         ])->get();
-        if (\Illuminate\Support\Facades\Auth::user()->user_type_id == 1) {
-            $purchases = PurchaseCartDetail::with("stock")->get();
-        } else {
-            $purchases = PurchaseCartDetail::with("stock")
-                ->where([
-                    "branch_id" => Auth::user()->branch_id,
-                    "company_id" => Auth::user()->company_id,
-                ])
-                ->get();
-        }
 
+        $purchases = PurchaseCartDetail::with("stock")
+            ->where([
+                "branch_id" => Auth::user()->branch_id,
+                "company_id" => Auth::user()->company_id,
+            ])
+            ->get();
         return view("admin.includes.purchases.purchases")->with(
             compact([
                 "suppliers",
                 "currency",
-                "s_name",
+                "currency_name",
                 "units",
                 "payment_types",
                 "sell_types",
@@ -156,41 +152,20 @@ class PurchaseInvoiceController extends Controller
      */
     public function create()
     {
-        $userType = UserType::where("id", Auth::user()->user_type_id)->first();
-        if (isset($userType) && $userType->user_type_en === "admin") {
-            $branches = Branch::with("categories")->get();
-        } else {
-            $branches = Branch::with("categories")
-                ->where(
-                    "id",
-                    \Illuminate\Support\Facades\Auth::user()->branch_id
-                )
-                ->get();
-        }
-
-        $category_name = $this->category_name;
-        $branch_name = $this->branch_name;
+        // $branch_name = $this->branch_name;
         $product_name = $this->product_name;
         $unit_name = $this->unit_name;
         $description = $this->description;
         $getProducts = Stock::all();
         $units = Unit::where("status", 1)->get();
-        $supplier_name = $this->supplier_name;
-        $suppliers = Supplier::all();
 
         return view("admin.includes.purchases.create")->with(
             compact([
-                "suppliers",
                 "getProducts",
-                "branches",
-                "branch_name",
                 "units",
                 "product_name",
-                "supplier_name",
                 "unit_name",
-                "category_name",
                 "description",
-                "userType",
             ])
         );
     }
@@ -307,10 +282,10 @@ class PurchaseInvoiceController extends Controller
 
         //account_activity= 8 =>purchase Payment Pending
         //account_head =2 liabilities
-        //  $account_control_id=4 Current Liabilities
-        // $account_sub_control_id= 18 ; Notes Payable
+        //  $account_control_id=4 Current Liabilities 21
+        // $account_sub_control_id= 18 ; Notes Payable 212
 
-        $purchaseAccount = $this->entries->getAccountSetting(8, 2, 4, 18, 8);
+        $purchaseAccount = $this->entries->getAccountSetting(2, 21, 212, 8);
         $this->entries->setEntries(
             // set debit entry
             $financial_year->id,
@@ -334,13 +309,13 @@ class PurchaseInvoiceController extends Controller
         //purchase Payment PAID
         //account_activity=9 =>purchase Payment PAID // DEBIT ENTRY TRANSACTION
 
-        //account_head =1 Assets
-        // $account_control_id=1 Current Assets
-        // $account_sub_control_id=2; Cash and Cash Equivalent "Cash On Bank", "Cash in Hand"
+        //account_head = 1 Assets
+        // $account_control_id = 1 Current Assets
+        // $account_sub_control_id=2; Cash and Cash Equivalent "Cash On Bank" 111, "Cash in Hand" 112
 
         // if atm payment cash on bank
         //else cash in hand
-        $purchaseAccount = $this->entries->getAccountSetting(9, 1, 1, 2, 9);
+        $purchaseAccount = $this->entries->getAccountSetting(1, 11, 112, 9);
 
         $this->entries->setEntries(
             // set credit entry
@@ -464,11 +439,26 @@ class PurchaseInvoiceController extends Controller
                 "=",
                 "supplier_payments.supplier_invoice_id"
             )
+            ->join(
+                "suppliers",
+                "supplier_invoices.supplier_id",
+                "=",
+                "suppliers.id"
+            )
+            ->join(
+                "branches",
+                "supplier_invoices.branch_id",
+                "=",
+                "branches.id"
+            )
             ->select(
                 "supplier_invoices.id as id",
-                "supplier_invoices.branch_id",
+                "branches.branch_name_en as branch_name_en",
+                "branches.branch_name_ar as branch_name_ar",
+                "suppliers.supplier_name_en as supplier_name_en",
+                "suppliers.supplier_name_ar as supplier_name_ar",
+                "suppliers.phone as phone",
                 "supplier_invoices.invoice_date",
-                "supplier_invoices.supplier_id",
                 "supplier_invoices.invoice_no",
                 "supplier_invoices.total_amount",
                 DB::raw("sum(supplier_payments.payment_amount) as payment"),
@@ -482,6 +472,10 @@ class PurchaseInvoiceController extends Controller
                 ">",
                 "supplier_payments.payment"
             )
+            ->where([
+                "supplier_invoices.branch_id" => Auth::user()->branch_id,
+                "supplier_invoices.company_id" => Auth::user()->company_id,
+            ])
             ->get();
 
         return view(
@@ -521,9 +515,18 @@ class PurchaseInvoiceController extends Controller
                 "=",
                 "supplier_payments.supplier_invoice_id"
             )
+            ->join(
+                "suppliers",
+                "supplier_invoices.supplier_id",
+                "=",
+                "suppliers.id"
+            )
             ->select(
                 "supplier_invoices.id",
                 "supplier_invoices.branch_id",
+                "suppliers.supplier_name_en as supplier_name_en",
+                "suppliers.supplier_name_ar as supplier_name_ar",
+                "suppliers.phone as phone",
                 "supplier_invoices.invoice_date",
                 "supplier_invoices.supplier_id",
                 "supplier_invoices.invoice_no",
@@ -541,6 +544,7 @@ class PurchaseInvoiceController extends Controller
             ->where([
                 "supplier_invoices.id" => $supplier_invoice_id,
                 "supplier_invoices.company_id" => Auth::user()->company_id,
+                "supplier_invoices.branch_id" => Auth::user()->branch_id,
             ])
             ->get();
         return $purchasePaymentHistories;
@@ -567,13 +571,16 @@ class PurchaseInvoiceController extends Controller
             "discount" => "required",
             "tax" => "required",
         ]);
+
         $supplier = Supplier::find($request->supplier_id);
+
         $invoice_date = date("Y-m-d H:i");
         //get total allow tax
         $purchasesStocks = PurchaseCartDetail::where([
             "company_id" => Auth::user()->company_id,
             "branch_id" => Auth::user()->branch_id,
         ])->get();
+
         //get total allow tax
         $totalallowtax = DB::table("stocks")
             ->join(
@@ -592,8 +599,8 @@ class PurchaseInvoiceController extends Controller
                 "sum( purchase_cart_details.purchase_qty * purchase_cart_details.purchase_unit_price ) as sum"
             )
             ->first()->sum;
-        return $totalallowtax;
 
+        // return $totalallowtax;
         ##############################  supplier invoice  ################################################
 
         $supplier_invoice = new SupplierInvoice();
@@ -611,9 +618,9 @@ class PurchaseInvoiceController extends Controller
         $paymentId = $request->payment_type_id;
         $supplier_invoice->sub_total_amount = $request->sub_total_amount;
         $supplier_invoice->total_amount = $request->total_amount;
-        // return $totalallowtax;
+
         $supplier_invoice->total_tax_allowed =
-            $totalallowtax == "" ? $totalallowtax : 0;
+            $totalallowtax != "" ? $totalallowtax : 0;
 
         $supplier_invoice->save();
         ##############################  stock effect  ################################################
@@ -645,10 +652,10 @@ class PurchaseInvoiceController extends Controller
         //account_activity=3 => purchase product
 
         //account_head =4   Expenses
-        // $account_control_id=8   Cost Of Good Sold
+        // $account_control_id=8   Cost Of Good Sold 41
         // $account_sub_control_id=29  411 Purchases
 
-        $purchaseAccount = $this->entries->getAccountSetting(6, 4, 8, 29, 3);
+        $purchaseAccount = $this->entries->getAccountSetting(4, 41, 411, 3);
         $this->entries->setEntries(
             $financial_year->id,
             $purchaseAccount->account_head_id,
@@ -672,11 +679,11 @@ class PurchaseInvoiceController extends Controller
 
         //account_activity= 8  => purchase Payment Pending
 
-        //account_head =2   liabilities
-        // $account_control_id=4  Current Liabilities
-        // $account_sub_control_id=18 Notes Payable
+        //account_head =2   liabilities 2
+        // $account_control_id=4  Current Liabilities 21
+        // $account_sub_control_id=18 Notes Payable  212
 
-        $purchaseAccount = $this->entries->getAccountSetting(8, 2, 4, 18, 8);
+        $purchaseAccount = $this->entries->getAccountSetting(2, 21, 212, 8);
 
         $this->entries->setEntries(
             $financial_year->id,
@@ -725,13 +732,7 @@ class PurchaseInvoiceController extends Controller
             // $account_control_id=4  Current Liabilities
             // $account_sub_control_id=18 Notes Payable
 
-            $purchaseAccount = $this->entries->getAccountSetting(
-                8,
-                2,
-                4,
-                18,
-                8
-            );
+            $purchaseAccount = $this->entries->getAccountSetting(2, 21, 212, 8);
             $this->entries->setEntries(
                 $financial_year->id,
                 $purchaseAccount->account_head_id,
@@ -759,10 +760,9 @@ class PurchaseInvoiceController extends Controller
                 // $account_sub_control_id=2   Cash on bank
 
                 $purchaseAccount = $this->entries->getAccountSetting(
-                    9,
                     1,
-                    1,
-                    2,
+                    11,
+                    112,
                     9
                 );
             } else {
@@ -771,10 +771,9 @@ class PurchaseInvoiceController extends Controller
                 // $account_sub_control_id=1  cash on hands
 
                 $purchaseAccount = $this->entries->getAccountSetting(
-                    9,
                     1,
-                    1,
-                    1,
+                    11,
+                    111,
                     9
                 );
             }
@@ -830,17 +829,26 @@ class PurchaseInvoiceController extends Controller
     {
         $supplier_name = $this->supplier_name;
         $product_name = Stock::getProductNameLang();
+
         $address = $this->address;
         $supplier_invoice = SupplierInvoice::find($supplierInvoiceId);
+        $company = Company::with("branches")
+            ->where("id", Auth::user()->company_id)
+            ->first();
+
+        $currency = Currency::where("status", 1)->first();
+        $currency_name = $this->currency_name;
+
         $supplier_invoice_details = SupplierInvoiceDetail::with("stock")
             ->where([
                 "supplier_invoice_id" => $supplierInvoiceId,
             ])
             ->get();
-        $supplier = Supplier::where(
-            "id",
-            $supplier_invoice->supplier_id
-        )->first();
+        $supplier = Supplier::where([
+            "id" => $supplier_invoice->supplier_id,
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->first();
         return view("admin.includes.purchases.purchase_invoice")->with(
             compact([
                 "supplier_name",
@@ -849,6 +857,9 @@ class PurchaseInvoiceController extends Controller
                 "supplier",
                 "supplier_invoice",
                 "supplier_invoice_details",
+                "currency",
+                "company",
+                "currency_name",
             ])
         );
     }
@@ -861,44 +872,27 @@ class PurchaseInvoiceController extends Controller
      */
     public function edit($id)
     {
-        $userType = UserType::where("id", Auth::user()->user_type_id)->first();
-        if (isset($userType) && $userType->user_type_en === "admin") {
-            $branches = Branch::with("categories")
-                ->where("company_id", Auth::user()->company_id)
-                ->get();
-        } else {
-            $branches = Branch::with("categories")
-                ->where([
-                    "id" => Auth::user()->branch_id,
-                    "company_id" => Auth::user()->company_id,
-                ])
-                ->get();
-        }
-
         $purchase = PurchaseCartDetail::find($id);
 
-        $category_name = $this->category_name;
         $branch_name = $this->branch_name;
 
         $product_name = $this->product_name;
         $unit_name = $this->unit_name;
         $description = $this->description;
-        $categories = Category::all();
-        $getProducts = Stock::all();
+        // $categories = Category::all();
+        $getProducts = Stock::where([
+            "store_id" => Auth::user()->store_id,
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
 
         $units = Unit::where("status", 1)->get();
-
         return view("admin.includes.purchases.update")->with(
             compact([
                 "getProducts",
-                "userType",
                 "purchase",
-                "branches",
                 "units",
                 "unit_name",
-                "branch_name",
-                "categories",
-                "category_name",
                 "product_name",
                 "description",
             ])
@@ -926,8 +920,6 @@ class PurchaseInvoiceController extends Controller
         $product_name = $this->product_name;
         $description = $this->description;
         $validated = $request->validate([
-            "branch_id" => "required",
-            "category_id" => "required",
             "stock_id" => "required",
             "unit_id" => "required",
             //          $product_name=>'required',
@@ -938,9 +930,9 @@ class PurchaseInvoiceController extends Controller
             "expiry_date" => "required",
         ]);
         $purchaseCart = PurchaseCartDetail::find($id);
-        $purchaseCart->branch_id = $request->branch_id;
+        $purchaseCart->branch_id = Auth::user()->branch_id;
         $purchaseCart->unit_id = $request->unit_id;
-        $purchaseCart->category_id = $request->category_id;
+        $purchaseCart->category_id = Auth::user()->category_id;
         $purchaseCart->stock_id = $request->stock_id;
         $purchaseCart->$description = $request->$description;
         //      $purchaseCart->$product_name =$request->$product_name;
@@ -978,7 +970,11 @@ class PurchaseInvoiceController extends Controller
             }
 
             $getCategories = Category::with("subCategories")
-                ->where(["branch_id" => $data["branch_id"], "parent_id" => 0])
+                ->where([
+                    "branch_id" => $data["branch_id"],
+                    "company_id" => Auth::user()->company_id,
+                    "parent_id" => 0,
+                ])
                 ->get();
             return view(
                 "admin.includes.purchases.append_purchase_category_level",
@@ -995,11 +991,15 @@ class PurchaseInvoiceController extends Controller
                 $productData = Stock::find($data["input_stock_id"]);
                 $getProducts = Stock::where([
                     "category_id" => $data["input_category_id"],
+                    "company_id" => Auth::user()->company_id,
+                    "branch_id" => Auth::user()->branch_id,
                 ])->get();
             } else {
                 $productData = "";
                 $getProducts = Stock::where([
                     "category_id" => $data["category_id"],
+                    "company_id" => Auth::user()->company_id,
+                    "branch_id" => Auth::user()->branch_id,
                 ])->get();
             }
 
@@ -1033,9 +1033,14 @@ class PurchaseInvoiceController extends Controller
     {
         if ($request->ajax()) {
             //get total of item (quantity * purchase);
-            $purchases = PurchaseCartDetail::selectRaw(
-                "if(count(id)>0,sum(purchase_qty * purchase_unit_price),0) as sub_total"
-            )->first();
+            $purchases = PurchaseCartDetail::where([
+                "company_id" => Auth::user()->company_id,
+                "branch_id" => Auth::user()->branch_id,
+            ])
+                ->selectRaw(
+                    "if(count(id)>0,sum(purchase_qty * purchase_unit_price),0) as sub_total"
+                )
+                ->first();
             return $purchases;
         }
     }
@@ -1043,7 +1048,10 @@ class PurchaseInvoiceController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->all();
-            $stores = Store::where("branch_id", Auth::user()->branch_id)->get();
+            $stores = Store::where([
+                "branch_id" => Auth::user()->branch_id,
+                "company_id" => Auth::user()->company_id,
+            ])->get();
             $store_name = $this->store_name;
             return view("admin.includes.stores.select_store")->with(
                 compact(["stores", "store_name"])
@@ -1054,10 +1062,10 @@ class PurchaseInvoiceController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->all();
-            $suppliers = Supplier::where(
-                "branch_id",
-                $data["branch_id"]
-            )->get();
+            $suppliers = Supplier::where([
+                "branch_id" => $data["branch_id"],
+                "company_id" => Auth::user()->company_id,
+            ])->get();
             $supplier_name = $this->supplier_name;
             return view("admin.includes.suppliers.select_supplier")->with(
                 compact(["suppliers", "supplier_name"])
@@ -1072,6 +1080,47 @@ class PurchaseInvoiceController extends Controller
 
         $session = Session::flash("message", __("messages.data_removed"));
         return redirect("purchases")->with(compact("session"));
+    }
+
+    public function fetchProductsToPurchaseCart(Request $request)
+    {
+        $description = Stock::getDescriptionLang();
+        if ($request->ajax()) {
+            $product = Stock::where("id", $request->stock_id)->first();
+            $purchases = PurchaseCartDetail::where([
+                "stock_id" => $request->stock_id,
+                "branch_id" => Auth::user()->branch_id,
+                "company_id" => Auth::user()->company_id,
+            ])->get();
+            if ($purchases->count() > 0) {
+                return "";
+            } else {
+                $purchaseCart = new PurchaseCartDetail();
+                $purchaseCart->branch_id = Auth::user()->branch_id;
+                $purchaseCart->unit_id = $product->unit_id;
+                $purchaseCart->category_id = $product->category_id;
+                $purchaseCart->stock_id = $product->id;
+                $purchaseCart->$description = $product->$description;
+                $purchaseCart->purchase_qty = 0;
+                $purchaseCart->purchase_unit_price =
+                    $product->current_purchase_unit_price;
+                $purchaseCart->sale_unit_price =
+                    $product->current_sale_unit_price;
+                $purchaseCart->user_id = Auth::user()->id;
+                $purchaseCart->company_id = Auth::user()->company_id;
+                $purchaseCart->save();
+                return $product;
+            }
+        }
+    }
+    public function postProductOnQtyChangeToProductCart(Request $request)
+    {
+        if ($request->ajax()) {
+            $purchaseCart = PurchaseCartDetail::find($request->id);
+            $purchaseCart->purchase_qty = $request->purchase_qty;
+            $purchaseCart->save();
+            return $purchaseCart;
+        }
     }
 }
 
@@ -1108,10 +1157,9 @@ class Entries
     }
 
     public static function getAccountSetting(
-        $id,
-        $account_head_id,
-        $account_control_id,
-        $account_sub_control_id,
+        $account_head_code,
+        $account_control_code,
+        $account_sub_control_code,
         $account_activity_id
     ) {
         $entry = AccountSetting::where(
@@ -1120,12 +1168,12 @@ class Entries
         )->first();
         if (!isset($entry)) {
             $entry = new AccountSetting(); // create new account setting
-            $entry->id = $id;
-            $entry->account_head_id = $account_head_id;
-            $entry->account_control_id = $account_control_id;
-            $entry->account_sub_control_id = $account_sub_control_id;
+            $entry->account_head_id = $account_head_code;
+            $entry->account_control_id = $account_control_code;
+            $entry->account_sub_control_id = $account_sub_control_code;
             $entry->account_activity_id = $account_activity_id;
             $entry->branch_id = Auth::user()->branch_id;
+            $entry->company_id = Auth::user()->company_id;
             $entry->save();
         }
         return $entry;

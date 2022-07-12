@@ -30,8 +30,8 @@ function fetchData() {
             var html = "";
             var i = 1;
             $.each(data, function (key, value) {
-                console.log(value);
                 var total_p = value.purchase_unit_price * value.purchase_qty;
+                console.log(total_p);
                 html += `<tr id="td-${value.stock.id}"> 
                                 <td  >${
                                     lang == "en"
@@ -73,7 +73,7 @@ $(document).on("keyup", "#purchase_qty", function () {
     var id = $(this).attr("current_id");
     getSelectorBasedInOther(
         { purchase_qty: quantity, id: id },
-        "post_products_on_qty_change"
+        "post_products_on_qty_change_to_purchaseCart"
     ).then((data) => {
         if (data !== "") {
             fetchData();
@@ -149,29 +149,28 @@ function getCategoryBasedInBranch() {
 
 function getProductP() {
     var stock_id = $("#stock_id").val();
-    getSelectorBasedInOther({ stock_id: stock_id }, "fetch_products").then(
-        (data) => {
-            if (data !== "") {
-                // addRow(data);
-                fetchData();
+    getSelectorBasedInOther(
+        { stock_id: stock_id },
+        "fetch_products_to_purchase_cart"
+    ).then((data) => {
+        if (data !== "") {
+            // addRow(data);
+            fetchData();
+        } else {
+            var elem = document.getElementById("td-" + stock_id);
+            elem.style.borderStyle = "solid";
+            elem.style.borderColor = "red";
+            setTimeout(() => {
+                elem.style.borderStyle = "none";
+            }, 500);
+            // elem.style.border = "1px solid red";
+            if (lang == "en") {
+                alert("this Product is already added to Cart");
             } else {
-                var elem = document.getElementById("td-" + stock_id);
-                elem.style.borderStyle = "solid";
-                elem.style.borderColor = "red";
-                setTimeout(() => {
-                    elem.style.borderStyle = "none";
-                }, 500);
-
-                // elem.style.border = "1px solid red";
-
-                if (lang == "en") {
-                    alert("this Product is already added to Cart");
-                } else {
-                    alert("هذا المنتج تم إضافته بالفعل");
-                }
+                alert("هذا المنتج تم إضافته بالفعل");
             }
         }
-    );
+    });
     //     .then(() => {
     //         getSupplierItem();
     //     });

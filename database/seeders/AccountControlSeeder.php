@@ -18,7 +18,6 @@ class AccountControlSeeder extends Seeder
             //            account_head 1
 
             [
-                "id" => 1,
                 "account_code" => "11",
                 "account_control_name_en" => "Current Assets",
                 "account_control_name_ar" => "الأصول المتداولة",
@@ -30,7 +29,6 @@ class AccountControlSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 2,
                 "account_code" => "12",
                 "account_control_name_en" => "Fixed Assets",
                 "account_control_name_ar" => "الأصول الثابتة",
@@ -42,7 +40,6 @@ class AccountControlSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 3,
                 "account_code" => "13",
                 "account_control_name_en" => "intangible Assets",
                 "account_control_name_ar" => "الأصول الغير ملموسة",
@@ -56,7 +53,6 @@ class AccountControlSeeder extends Seeder
 
             //liabilities
             [
-                "id" => 4,
                 "account_code" => "21",
                 "account_control_name_en" => "Current Liabilities",
                 "account_control_name_ar" => "الالتزامات المتداولة",
@@ -68,7 +64,6 @@ class AccountControlSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 5,
                 "account_code" => "22",
                 "account_control_name_en" => "Fixed Liabilities",
                 "account_control_name_ar" => "الالتزامات الثابتة",
@@ -83,7 +78,6 @@ class AccountControlSeeder extends Seeder
             //            ايرادات المبيعات Sales Revenues 31
             //ايرادات أخرى Other Sales 32
             [
-                "id" => 6,
                 "account_code" => "31",
                 "account_control_name_en" => "Sales Revenues",
                 "account_control_name_ar" => "ايرادات المبيعات",
@@ -96,7 +90,6 @@ class AccountControlSeeder extends Seeder
             ],
 
             [
-                "id" => 7,
                 "account_code" => "32",
                 "account_control_name_en" => "Other Revenues",
                 "account_control_name_ar" => "ايرادات أخرى",
@@ -123,7 +116,6 @@ class AccountControlSeeder extends Seeder
             //	كهرباء Electricity 433
             //	الصيانة Maintenance 434
             [
-                "id" => 8,
                 "account_code" => "41",
                 "account_control_name_en" => "Cost Of Good Sold",
                 "account_control_name_ar" => "صافي المبيعات",
@@ -135,7 +127,6 @@ class AccountControlSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 9,
                 "account_code" => "42",
                 "account_control_name_en" => "sale and marketing expenses",
                 "account_control_name_ar" => "مصاريف البيع والتسويق",
@@ -147,7 +138,6 @@ class AccountControlSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "id" => 10,
                 "account_code" => "43",
                 "account_control_name_en" => "administrative expenses",
                 "account_control_name_ar" => "مصاريف ادارية وعمومية",

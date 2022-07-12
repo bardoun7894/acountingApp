@@ -17,7 +17,11 @@ class UserTypeSeeder extends Seeder
         $data = [
             ["id" => 1, "user_type_en" => "admin", "user_type_ar" => "أدمن"],
             ["id" => 2, "user_type_en" => "user", "user_type_ar" => "مستخدم"],
-            ["id" => 3, "user_type_en" => "owner", "user_type_ar" => "المالك"],
+            [
+                "id" => 3,
+                "user_type_en" => "super_admin",
+                "user_type_ar" => "المالك",
+            ],
         ];
 
         UserType::insert($data);

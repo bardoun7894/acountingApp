@@ -235,4 +235,18 @@ class SupplierController extends Controller
             compact(["suppliers", "supplier_name", "address", "description"])
         );
     }
+    public function getSupplierSelect2(Request $request)
+    {
+        $search = $request->search;
+        $suppliers = Supplier::where([
+            "branch_id" => Auth::user()->branch_id,
+        ])
+            ->where(
+                Supplier::getSupplierNameLang(),
+                "like",
+                "%" . $search . "%"
+            )
+            ->get();
+        return $suppliers;
+    }
 }

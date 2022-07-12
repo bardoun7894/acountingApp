@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class Currency extends Model
 {
     use HasFactory;
 
-    public static function getSNameLang()
+    public static function getCurrencyName()
     {
-        return "s_name_".Translation::getLang();
+        return "currency_name_" . App::getLocale();
     }
 }

@@ -53,26 +53,27 @@
                                     <th class="border-top-0">{{ __('messages.delete') }}</th>
                                 </tr>
                             </thead>
+                            <tbody id="branches-dynamicRow">
+                                @foreach ($branches as $branch)
+                                    <tr>
+                                        <td class="text-truncate"> {{ $branch->id }}</td>
+                                        {{-- <td class="text-truncate">  @if ($branch->user_type_id == 1) admin @else Branch  @endif       </td> --}}
+                                        <td class="text-truncate"> {{ $branch->$branch_name }}</td>
+                                        {{-- <td class="text-truncate"> {{$branch->full_name_ar}}</td> --}}
 
-                            @foreach ($branches as $branch)
-                                <tbody id="branches-dynamicRow">
-                                    <td class="text-truncate"> {{ $branch->id }}</td>
-                                    {{-- <td class="text-truncate">  @if ($branch->user_type_id == 1) admin @else Branch  @endif       </td> --}}
-                                    <td class="text-truncate"> {{ $branch->$branch_name }}</td>
-                                    {{-- <td class="text-truncate"> {{$branch->full_name_ar}}</td> --}}
+                                        <td class="text-truncate"> <a
+                                                href="{{ url('branches/' . $branch->id . '/edit') }}"><i
+                                                    class="la la-edit" style="color: green;font-size: 25px"></i></a>
+                                        </td>
 
-                                    <td class="text-truncate"> <a
-                                            href="{{ url('branches/' . $branch->id . '/edit') }}"><i
-                                                class="la la-edit" style="color: green;font-size: 25px"></i></a> </td>
-
-                                    <td>
-                                        <a class="confirmDelete" record="Branch" recordId="{{ $branch->id }}"> <i
-                                                class="la la-trash" style="color: red;font-size: 25px"></i>
-                                        </a>
-                                    </td>
-                                </tbody>
-                            @endforeach
-
+                                        <td>
+                                            <a class="confirmDelete" record="Branch" recordId="{{ $branch->id }}"> <i
+                                                    class="la la-trash" style="color: red;font-size: 25px"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
 
 
                         </table>

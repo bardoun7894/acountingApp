@@ -18,21 +18,22 @@
             <tr>
 
                 <td class="text-truncate">
-                    {{ \App\Models\Supplier::find($purchasePaymentPending->supplier_id)->$supplier_name }} </td>
+                    {{ $purchasePaymentPending->$supplier_name }} </td>
                 <td class="text-truncate">
-                    {{ \App\Models\Supplier::find($purchasePaymentPending->supplier_id)->phone }} </td>
+                    {{ $purchasePaymentPending->phone }} </td>
 
                 <td class="text-truncate"> {{ $purchasePaymentPending->invoice_no }} </td>
                 <td class="text-truncate"> {{ $purchasePaymentPending->invoice_date }} </td>
                 <td class="text-truncate">
-                    {{ \App\Models\Branch::find($purchasePaymentPending->branch_id)->$branch_name }} </td>
+                    {{ $purchasePaymentPending->$branch_name }} </td>
                 <td class="text-truncate"> {{ $purchasePaymentPending->total_amount }} </td>
                 <td class="text-truncate"> {{ $purchasePaymentPending->payment }} </td>
                 <td class="text-truncate"> {{ $purchasePaymentPending->remaining_payment }} </td>
                 <td>
                     <div class=" btn-group">
                         @if ($purchasePaymentPending->total_amount - 1 > $purchasePaymentPending->payment)
-                            <a href="{{ url('paid_amount/' . $purchasePaymentPending->id) }}" class="btn-info p-1">
+                            <a href="{{ url('paid_supplier_amount/' . $purchasePaymentPending->id) }}"
+                                class="btn-info p-1">
                                 {{ __('messages.pay_amount') }} <i class="la la-money"></i></a>
                         @endif
                         @if ($purchasePaymentPending->payment > 0)

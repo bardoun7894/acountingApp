@@ -53,9 +53,9 @@
                                 </tr>
                             </thead>
                             <tbody id="accountSubControls-dynamicRow">
-                                @foreach ($accountSubControls as $accountSubControl)
+                                @foreach ($accountSubControls as $key => $accountSubControl)
                                     <tr>
-                                        <td class="text-truncate"> {{ $accountSubControl->id }}</td>
+                                        <td class="text-truncate"> {{ $key + 1 }}</td>
                                         <td class="text-truncate">
                                             {{ $accountSubControl->accountHead->$account_head_name }}</td>
                                         <td class="text-truncate">

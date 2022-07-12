@@ -47,7 +47,10 @@ class AccountSettingController extends Controller
             "accountControl",
             "accountSubControl",
             "accountActivity"
-        )->get();
+        )
+            ->where("company_id", Auth::user()->company_id)
+            ->get();
+
         return view("admin.includes.accountSettings.accountSettings")->with(
             compact([
                 "accountSettings",
@@ -74,9 +77,18 @@ class AccountSettingController extends Controller
         $account_activity_name = $this->account_activity_name;
         //      $accountSettings=AccountSetting::with(['accountControl','accountHead','user'])->get();
 
-        $accountHeads = AccountHead::all();
-        $accountControls = AccountControl::all();
-        $accountSubControls = AccountSubControl::all();
+        $accountHeads = AccountHead::where([
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
+        $accountControls = AccountControl::where([
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
+        $accountSubControls = AccountSubControl::where([
+            "company_id" => Auth::user()->company_id,
+            "branch_id" => Auth::user()->branch_id,
+        ])->get();
         $accountActivities = AccountActivity::all();
 
         return view("admin.includes.accountSettings.create")->with(

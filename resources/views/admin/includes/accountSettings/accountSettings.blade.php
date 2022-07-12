@@ -4,7 +4,7 @@
         <div id="recent-transactions">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">{{ __('messages.accountSettings') }}</h4>
+                    <h4 class="card-title">{{ __('messages.account_settings') }}</h4>
                     <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                     <div class="heading-elements">
                         <ul class="list-inline mb-0">
@@ -54,10 +54,11 @@
                                 </tr>
                             </thead>
                             <tbody id="accountSettings-dynamicRow">
-                                @foreach ($accountSettings as $accountSetting)
+                                @foreach ($accountSettings as $key => $accountSetting)
                                     <tr>
-                                        <td class="text-truncate"> {{ $accountSetting->id }}</td>
-                                        <td class="text-truncate"> {{ $accountSetting->accountHead->$account_head_name }}
+                                        <td class="text-truncate"> {{ $key + 1 }}</td>
+                                        <td class="text-truncate">
+                                            {{ $accountSetting->accountHead->$account_head_name }}
                                         </td>
                                         <td class="text-truncate">
                                             {{ $accountSetting->accountControl->$account_control_name }}</td>

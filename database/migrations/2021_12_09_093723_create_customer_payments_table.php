@@ -18,9 +18,12 @@ class CreateCustomerPaymentsTable extends Migration
             $table->bigInteger("customer_id")->unsigned();
             $table->bigInteger("customer_invoice_id")->unsigned();
             $table->bigInteger("user_id")->unsigned();
+            $table->unsignedBigInteger("payment_id");
             $table->integer("invoice_number");
+            $table->date("invoice_date");
             $table->float("paid_amount");
             $table->float("total_amount");
+            $table->float("payment_amount");
             $table->float("remaining_balance");
             $table->unsignedBigInteger("company_id")->nullable();
             $table->unsignedBigInteger("branch_id")->nullable();

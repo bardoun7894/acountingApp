@@ -29,11 +29,16 @@ return [
     "isActive" => "مفعل",
     "startDate" => "تاريخ البدء",
     "endDate" => "تاريخ الانتهاء",
-
     "add_user" => "أضف مستخدم جديد",
     "create_user" => "أضف مستخدم جديد",
     "edit_user" => "تعديل المستخدم",
     "update_user" => "تعديل المستخدم",
+    "sign_up_for_a_new_account" => "تسجيل حساب جديد",
+    "fill_the_form_below_to_register" => "املأ النموذج أدناه للتسجيل",
+    "fill_all_form_field_to_go_to_next_step" =>
+        "املأ كل حقل للذهاب الى الخطوة التالية",
+    "login" => "تسجيل الدخول",
+
     "categories" => "الاصناف",
     "add_category" => "أضف صنف جديد",
     "update_category" => "تعديل الصنف ",
@@ -82,7 +87,15 @@ return [
     "unit_name" => "اسم الوحدة",
     "units" => "وحدات",
     "add_unit" => "اضف وحدة",
+    "unit_price" => "سعر الوحدة",
 
+    "account_information" => "معلومات الحساب",
+    "image_preview" => "معاينة الصورة",
+    "image_upload" => "رفع الصورة",
+    "image_upload_note" => "يجب رفع الصورة بحجم اقل من 2 ميغابايت",
+    "image" => "الصورة",
+    "image_name" => "اسم الصورة",
+    "choose_image" => "اختر  صورة",
     ####################### Session messages ################################
     ############## added messages #########  ###
     "category_added" => "تمت اضافة الاصناف بنجاح",
@@ -91,6 +104,10 @@ return [
     "product_added" => "تمت اضافة المنتج بنجاح",
     "accountHead_added" => "تمت اضافة رأس الحساب بنجاح",
     "accountControl_added" => "تمت اضافة التحكم بالحساب بنجاح",
+    "account_settings" => "اعدادات الحساب",
+
+    "add_account_setting" => "اضف اعدادات الحساب",
+
     ##############  updated messages #########  ###
     "category_updated" => "تم تعديل الصنف بنجاح",
     "branch_updated" => "تم تعديل الفروع بنجاح",
@@ -105,6 +122,8 @@ return [
     "product_deleted" => "تم حذف المنتج",
     "accountHead_deleted" => "تم حذف رأس الحساب",
     "accountControl_deleted" => "تم حذف التحكم بالحساب ",
+
+    "product_name" => "اسم المنتج",
     ####################### Store ################################
     "add_store" => "أضف متجر",
     "store_name" => "اسم المتجر",
@@ -114,6 +133,10 @@ return [
     "data_added" => "تم الاضافة بنجاح",
     "data_removed" => "تم حذف البيانات",
     "data_updated" => "تم التعديل بنجاح",
+    "account_head_has_account_control" =>
+        "لا يمكن حذف رأس الحساب لأنه يحتوي على تحكم بالحساب",
+    "account_control_has_account_sub_control" =>
+        "لا يمكن حذف التحكم بالحساب لأنه يحتوي على تحكم بالحساب الفرعي",
 
     ####################### Payment Type ################################
     "payment_type_name" => "اسم نوع الحساب",
@@ -184,9 +207,9 @@ return [
     ####################### products ################################
 
     "product_name" => "اسم المنتج",
-
     "quantity" => "الكمية",
     "price" => "السعر",
+    "item_cost" => "تكلفة المنتج",
     "product_image" => "صورة المنتج",
     "product_code" => "كود المنتج",
     "product_type" => "نوع المنتج",
@@ -197,13 +220,19 @@ return [
     "due" => "مستحق",
     "partial_payment" => "دفع جزئي",
     "remaining_payment" => "المدفوع المتبقي",
-
+    "this_product_has_expiry_date" => "هذا المنتج لديه تاريخ انتهاء الصلاحية",
+    "expiry_date" => "تاريخ انتهاء الصلاحية",
+    "has_tax" => "لها ضريبة",
     ####################### purchases ################################
     "sub_total" => "الاجمالي",
     "tax" => "الضريبة",
     "discount" => "الخصم",
     "order_total" => "المبلغ الكلي",
     "total_amount" => "المبلغ الكلي",
+    "total_due" => "المبلغ المستحق",
+    "total_paid" => "المبلغ المدفوع",
+    "total" => "المجموع",
+
     "enter_payment_details" => "ادخل تفاصيل الدفع",
     "remaining_amount" => "المبلغ المتبقي",
     "payment_amount" => "مبلغ الدفع",
@@ -242,6 +271,7 @@ return [
     "update" => "تعديل",
     "delete" => "حذف",
     "status" => "الحالة",
-
+    "start_date" => "بداية التاريخ",
+    "end_date" => "نهاية التاريخ",
     "settings" => "الاعدادات",
 ];

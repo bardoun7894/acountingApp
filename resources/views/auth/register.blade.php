@@ -24,8 +24,10 @@ $address = 'address_' . $lang;
         <div class="row justify-content-center mt-0">
             <div class="col-11 col-sm-9 col-md-7 col-lg-6 text-center p-0 mt-3 mb-2">
                 <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
-                    <h2><strong>Sign Up Your User Account</strong></h2>
-                    <p>Fill all form field to go to next step</p>
+                    <h2><strong>{{ __('messages.sign_up_for_a_new_account') }}</strong></h2>
+
+                    <p>{{ __('messages.fill_all_form_field_to_go_to_next_step') }}</p>
+
                     <div class="row">
                         <div class="col-md-12 mx-0">
                             <form id="msform" method="POST" action="{{ route('register') }}">
@@ -34,25 +36,26 @@ $address = 'address_' . $lang;
                                 <ul id="progressbar">
                                     <li class="active"
                                         style="@if ($lang == 'en') float: left;  @else   float: right; @endif"
-                                        id="account"><strong>{{ 'messages.account' }}</strong></li>
+                                        id="account"><strong>{{ __('messages.account') }}</strong></li>
 
                                     <li id="personal"
                                         style="@if ($lang == 'en') float: left;  @else   float: right; @endif">
-                                        <strong>{{ 'messages.personal' }}</strong>
+                                        <strong>{{ __('messages.personal') }}</strong>
                                     </li>
                                     <li id="personal"
                                         style="@if ($lang == 'en') float: left;  @else   float: right; @endif">
-                                        <strong>{{ 'messages.company' }} </strong>
+                                        <strong>{{ __('messages.company') }} </strong>
                                     </li>
                                     <li id="confirm"
                                         style="@if ($lang == 'en') float: left;  @else   float: right; @endif">
-                                        <strong>{{ 'messages.finish' }}</strong>
+                                        <strong>{{ __('messages.finish') }}</strong>
 
                                     </li>
                                 </ul>
                                 <!-- fieldsets -->
                                 <fieldset>
-                                    <legend>Account Information</legend>
+                                    <legend>{{ __('messages.account_information') }}</legend>
+
                                     <div class="form-card">
                                         {{-- <h2 class="fs-title">Account Information</h2> --}}
                                         <div class="form-group position-relative ">
@@ -212,6 +215,17 @@ $address = 'address_' . $lang;
                                                 </span>
                                             @enderror
                                         </div>
+                                        <div class="form-group position-relative">
+                                            <input id="branch_address" type="text"
+                                                class="form-control @error('branch_address') is-invalid @enderror"
+                                                name="branch_address" placeholder="{{ __('messages.address') }}"
+                                                required autofocus>
+                                            @error('branch_address')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
                                         {{-- <div class="form-group position-relative">
 
                                             <input id="company_logo" type="file" class="form-control "
@@ -232,8 +246,9 @@ $address = 'address_' . $lang;
                             </form>
                             <div class="card-body">
                                 <a href="login" class="btn btn-outline-danger btn-block"><i
-                                        class="ft-unlock"></i>{{ 'messages.login' }}
-                                </a>
+                                        class="ft-unlock"></i>{{ __('messages.login') }}</a>
+
+
                             </div>
                         </div>
                     </div>

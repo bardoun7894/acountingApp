@@ -50,11 +50,15 @@
                                     <th class="border-top-0">{{ __('messages.delete') }}</th>
                                 </tr>
                             </thead>
-                            @foreach ($categories as $category)
+
+
+
+
+                            @foreach ($categories as $key => $category)
                                 <tbody id="categories-dynamicRow">
 
                                     <tr>
-                                        <td class="text-truncate"> {{ $category->id }}</td>
+                                        <td> {{ $key + 1 }}</td>
                                         {{-- <td class="text-truncate">  @if ($category->user_type_id == 1) admin @else Category  @endif       </td> --}}
                                         <td class="text-truncate"> {{ $category->$category_name }}</td>
 

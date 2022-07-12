@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AccountActivity;
 use App\Models\AccountControl;
 use App\Models\AccountHead;
 use App\Models\Currency;
@@ -23,10 +24,10 @@ class DatabaseSeeder extends Seeder
 
         // $this->call(AccountHeadSeeder::class);
         // $this->call(UnitSeeder::class);
-        // $this->call(AccountControlSeeder::class);
+        $this->call(NavLinkSeeder::class);
         // $this->call(AccountSubControlSeeder::class);
         // $this->call(PaymentTypeSeeder::class);
-        $this->call(SellTypeSeeder::class);
+        // $this->call(SellTypeSeeder::class);
         // $this->call(FinanceSeeder::class);
         //     $this->call(UserTableSeeder::class );
     }

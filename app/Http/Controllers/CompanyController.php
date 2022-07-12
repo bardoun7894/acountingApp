@@ -32,15 +32,16 @@ class CompanyController extends Controller
     {
         $this->company_name = Company::getCompanyNameLang();
         $this->employee_name = Employee::getEmployeeNameAttribute();
+        $this->middleware("isSuperAdmin");
     }
     public function index()
     {
-        $companies = Company::with("employees")
+        $companies = Company::with(["employees"])
             ->where("id", "!=", auth()->user()->company_id)
             ->get();
-
         $company_name = $this->company_name;
         $employee_name = $this->employee_name;
+
         return view("admin.includes.companies.companies")->with(
             compact(["companies", "company_name", "employee_name"])
         );
@@ -79,7 +80,7 @@ class CompanyController extends Controller
         $financeYearSeeder->run($user_id);
         //seed account heads
         $accountHeadSeeder = new AccountHeadSeeder();
-        $accountHeadSeeder->run($user_id);
+        $accountHeadSeeder->run($user_id, $company_id, $branch_id);
         //seed account control
         $accountControlSeeder = new AccountControlSeeder();
         $accountControlSeeder->run($user_id, $branch_id, $company_id);

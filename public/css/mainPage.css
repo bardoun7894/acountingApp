@@ -1,5 +1,25 @@
-table{
+table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
 }
+.custom-file-image {
+    border: gray;
+    border-style: dotted;
+    background-color: #eee;
+    position: relative;
+    z-index: 1;
+}
+.custom_choose_file_btn {
+    color: #d3d7d3;
+    border-style: dotted;
+    padding: 10px 100px;
+}
+#product_image {
+    display: none;
+}
+
+/* .custom-file-image input[type="file"] {
+    width: 50%;
+    height: 20%;
+} */

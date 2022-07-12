@@ -15,15 +15,20 @@ class AccountSubControl extends Model
     }
     public function accountHead()
     {
-        return $this->belongsTo(AccountHead::class);
+        return $this->belongsTo(
+            AccountHead::class,
+            "account_head_id",
+            "account_code"
+        );
     }
 
     public function accountControl()
     {
         return $this->belongsTo(
             AccountControl::class,
-            "account_code",
-            "account_control_id"
+
+            "account_control_id",
+            "account_code"
         );
     }
 

@@ -119,6 +119,7 @@ class RegisterController extends Controller
         //create new branch
         $branch = new \App\Models\Branch();
         $branch->$branch_name = $data[$branch_name];
+        $branch->$address = $data["branch_address"];
         $branch->company_id = $company->id;
         $branch->save();
         //create user
@@ -182,6 +183,33 @@ class RegisterController extends Controller
             //seed currency
             $currencySeeder = new CurrencySeeder();
             $currencySeeder->run();
+        } else {
+            $user->isActive = 0;
+            $user->save();
+            //seed financial year
+            $financeYearSeeder = new FinanceSeeder();
+            $financeYearSeeder->run($user->id);
+            //seed account heads
+            $accountHeadSeeder = new AccountHeadSeeder();
+            $accountHeadSeeder->run($user->id, $company->id, $branch->id);
+            //seed account control
+            $accountControlSeeder = new AccountControlSeeder();
+            $accountControlSeeder->run($user->id, $branch->id, $company->id);
+
+            //seed account sub control
+            $accountSubControlSeeder = new AccountSubControlSeeder();
+            $accountSubControlSeeder->run($user->id, $branch->id, $company->id);
+
+            //seed account settings
+            $accountSettingsSeeder = new AccountSettingSeeder();
+            $accountSettingsSeeder->run($branch->id, $company->id);
+
+            // //seed account activities
+            // $accountActivitySeeder = new AccountActivitySeeder();
+            // $accountActivitySeeder->run();
+            //seed units
+            $unitSeeder = new UnitSeeder();
+            $unitSeeder->run();
         }
 
         return $user;
