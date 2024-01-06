@@ -12,11 +12,10 @@ class Sale extends Model
     public function stock()
     {
        return $this->belongsTo(Stock::class);
-    } 
-
+    }
     public function customer()
     {
        return $this->belongsTo(Customer::class);
     }
-   
+
 }

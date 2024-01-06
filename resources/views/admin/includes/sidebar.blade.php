@@ -38,8 +38,10 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                 <ul class="menu-content">
                     <li><a class="menu-item" href="{{ url('allSales') }}"><i></i> <span
                                 data-i18n="purchases">{{ __('messages.all_sales') }}</span></a>
-                    <li><a class="menu-item" href="{{ url('sales') }}"><i></i> <span
+
+                                <li><a class="menu-item" href="{{ url('sales') }}"><i></i> <span
                                 data-i18n="sales">{{ __('messages.sale_order') }}</span></a>
+
                     <li><a class="menu-item" href="{{ url('salePaymentPending') }}"><i></i> <span
                                 data-i18n="pending_payments">{{ __('messages.pending_payments') }}</span></a>
 

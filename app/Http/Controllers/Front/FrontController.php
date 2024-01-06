@@ -15,8 +15,10 @@ class FrontController extends Controller
 {
     public function front()
     {
+
         // info('Name entered is in fact Tim'); // This does get printed
         $links = NavLink::all();
+
         $products = Stock::with(["category"])
             ->where([
                 "company_id" => 1,

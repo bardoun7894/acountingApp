@@ -10,9 +10,10 @@ export default function getSelectorBasedInOther(data, urlAjaxPath) {
             type: "POST",
             url: url,
             data: data,
-            headers: {
+            headers:
+                {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            },
+                },
             success: function (data) {
                 // $(idSelector).html(data)
                 resolve(data);

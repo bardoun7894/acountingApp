@@ -108,7 +108,7 @@ function supplierbasedBranchSelect() {
         language: {
             noResults: function () {
                 return $(
-                    "<a href='/stocks/create'> no result found please Add a supplier <i class='la la-plus'></i></a>"
+                    "<a href='/suppliers/create'> no result found please Add a supplier <i class='la la-plus'></i></a>"
                 );
             },
         },
@@ -145,7 +145,7 @@ function customerbasedBranchSelect() {
         language: {
             noResults: function () {
                 return $(
-                    "<a href='/stocks/create'> no result found please Add a customer <i class='la la-plus'></i></a>"
+                    "<a href='/customers/create'> no result found please Add a customer <i class='la la-plus'></i></a>"
                 );
             },
         },

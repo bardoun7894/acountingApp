@@ -57,7 +57,6 @@
                         @endswitch
                     @endif
                     <div id="allSale_table" class="card-content d-flex p-2 ">
-
                         @include('admin.includes.sales.all_sales.all_sales_table')
                     </div>
                 </div>

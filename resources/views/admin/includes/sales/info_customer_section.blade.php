@@ -6,7 +6,6 @@
 
             <div class="row m-1">
                 <div id="appendStoreLevel" class="col-md-4">
-
                     @include('admin.includes.stores.select_store')
                 </div>
 
@@ -34,14 +33,8 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
 
         </ul>
-
     </div>
-
-
 </div>

@@ -213,7 +213,6 @@ class PurchaseInvoiceController extends Controller
             compact(["session", "product_name", "description"])
         );
     }
-
     public function addDataToPurchaseCart(Request $request)
     {
         if ($request->ajax()) {
@@ -280,7 +279,7 @@ class PurchaseInvoiceController extends Controller
 
         //purchase Payment Pending
 
-        //account_activity= 8 =>purchase Payment Pending
+        //account_activity= 8 => purchase Payment Pending
         //account_head =2 liabilities
         //  $account_control_id=4 Current Liabilities 21
         // $account_sub_control_id= 18 ; Notes Payable 212

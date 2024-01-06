@@ -27,15 +27,9 @@ class HomeController extends Controller
     public function redirect(){
 
         $lang =Translation::getLang();
-       $local_full_name=User::getFullName($lang);
+       $local_full_name= User::getFullName($lang);
       return view('admin.index')->with(compact(['local_full_name','lang']));
     }
-
-
-//    public function showUsers(){
-//        $users = User::all();
-//        return view('admin.ltr.includes.users')->with(compact('users'));
-//    }
 
     public function index()
     {

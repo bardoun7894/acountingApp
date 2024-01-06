@@ -7,18 +7,19 @@ use Illuminate\Database\Seeder;
 
 class AccountHeadSeeder extends Seeder
 {
+
+
+
+
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run($user_id, $company_id, $branch_id)
+    public function run()
     {
         $data = [
             [
-                "user_id" => $user_id,
-                "company_id" => $company_id,
-                "branch_id" => $branch_id,
                 "account_head_name_en" => "assets",
                 "account_head_name_ar" => "الأصول",
                 "account_code" => "1",
@@ -26,9 +27,6 @@ class AccountHeadSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "user_id" => $user_id,
-                "company_id" => $company_id,
-                "branch_id" => $branch_id,
 
                 "account_head_name_en" => "liabilities",
                 "account_head_name_ar" => "الخصوم(المطلوبات)",
@@ -37,9 +35,6 @@ class AccountHeadSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "user_id" => $user_id,
-                "company_id" => $company_id,
-                "branch_id" => $branch_id,
 
                 "account_head_name_en" => "Revenue",
                 "account_head_name_ar" => "الايرادات",
@@ -48,11 +43,6 @@ class AccountHeadSeeder extends Seeder
                 "updated_at" => now(),
             ],
             [
-                "user_id" => $user_id,
-
-                "company_id" => $company_id,
-                "branch_id" => $branch_id,
-
                 "account_head_name_en" => "Expenses",
                 "account_head_name_ar" => "المصروفات",
                 "account_code" => "4",

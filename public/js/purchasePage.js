@@ -32,7 +32,7 @@ function fetchData() {
             $.each(data, function (key, value) {
                 var total_p = value.purchase_unit_price * value.purchase_qty;
                 console.log(total_p);
-                html += `<tr id="td-${value.stock.id}"> 
+                html += `<tr id="td-${value.stock.id}">
                                 <td  >${
                                     lang == "en"
                                         ? value.stock.product_name_en
@@ -46,8 +46,8 @@ function fetchData() {
                     value.id
                 }"  value="${value.purchase_qty}"></td>
                                 <td >${value.purchase_unit_price}</td>
-                                <td>${value.sale_unit_price}</td> 
-                                <td>${total_p}</td> 
+                                <td>${value.sale_unit_price}</td>
+                                <td>${total_p}</td>
                                 <td>
                                     <a href="${editUrl}/${
                     value.id
@@ -56,7 +56,7 @@ function fetchData() {
                                 <td>
                                 <a class="confirmDelete" record="Purchase" recordId="${
                                     value.id
-                                }"> 
+                                }">
                                 <em class="la la-trash" style="color: red;font-size: 25px"></em>
                                     </a>
                                 </td>
@@ -68,12 +68,12 @@ function fetchData() {
     });
 }
 
-$(document).on("keyup", "#purchase_qty", function () {
+$(document).on("change", "#purchase_qty", function () {
     var quantity = $(this).val();
     var id = $(this).attr("current_id");
     getSelectorBasedInOther(
         { purchase_qty: quantity, id: id },
-        "post_products_on_qty_change_to_purchaseCart"
+      "post_products_on_qty_change_to_purchaseCart"
     ).then((data) => {
         if (data !== "") {
             fetchData();
@@ -149,6 +149,7 @@ function getCategoryBasedInBranch() {
 
 function getProductP() {
     var stock_id = $("#stock_id").val();
+    console.log(stock_id);
     getSelectorBasedInOther(
         { stock_id: stock_id },
         "fetch_products_to_purchase_cart"

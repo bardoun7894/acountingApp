@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -72,12 +71,17 @@ protected $fillable=[
         return $this->hasMany(SupplierInvoice::class);
     }
 static public function getFullnameLang(){
-    $full_name ="full_name_".Translation::getLang();
-    return $full_name;
+   return "full_name_".Translation::getLang();
+
 }
-    static public function getFullName($lang){
-        $full_name ="full_name_".$lang;
-        $fullname=Auth::user()->$full_name;
-        return $fullname;
-    }
+ static public function getAddressLang(){
+    return "address_".Translation::getLang();
+
+}
+
+ static public function getFullName(){
+        $full_name_lang = self::getFullnameLang();
+        return Auth::user()->$full_name_lang;
+
+}
 }

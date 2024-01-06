@@ -7,24 +7,22 @@ use Illuminate\Database\Seeder;
 
 class AccountControlSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run($user_id, $branch_id, $company_id)
+    public function run()
     {
         $data = [
-            //            account_head 1
+            //  account_head 1
 
             [
                 "account_code" => "11",
                 "account_control_name_en" => "Current Assets",
                 "account_control_name_ar" => "الأصول المتداولة",
                 "account_head_id" => "1",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -33,9 +31,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "Fixed Assets",
                 "account_control_name_ar" => "الأصول الثابتة",
                 "account_head_id" => "1",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -44,9 +39,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "intangible Assets",
                 "account_control_name_ar" => "الأصول الغير ملموسة",
                 "account_head_id" => "1",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -57,9 +49,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "Current Liabilities",
                 "account_control_name_ar" => "الالتزامات المتداولة",
                 "account_head_id" => "2",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -68,9 +57,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "Fixed Liabilities",
                 "account_control_name_ar" => "الالتزامات الثابتة",
                 "account_head_id" => "2",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -82,9 +68,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "Sales Revenues",
                 "account_control_name_ar" => "ايرادات المبيعات",
                 "account_head_id" => "3",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -94,9 +77,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "Other Revenues",
                 "account_control_name_ar" => "ايرادات أخرى",
                 "account_head_id" => "3",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -120,9 +100,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "Cost Of Good Sold",
                 "account_control_name_ar" => "صافي المبيعات",
                 "account_head_id" => "4",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -131,9 +108,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "sale and marketing expenses",
                 "account_control_name_ar" => "مصاريف البيع والتسويق",
                 "account_head_id" => "4",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],
@@ -142,9 +116,6 @@ class AccountControlSeeder extends Seeder
                 "account_control_name_en" => "administrative expenses",
                 "account_control_name_ar" => "مصاريف ادارية وعمومية",
                 "account_head_id" => "4",
-                "user_id" => $user_id,
-                "branch_id" => $branch_id,
-                "company_id" => $company_id,
                 "created_at" => now(),
                 "updated_at" => now(),
             ],

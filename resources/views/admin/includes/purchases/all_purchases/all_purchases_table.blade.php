@@ -41,7 +41,6 @@
                     @elseif($paidAmount == 0)
                         <div class="ac-status badge badge-danger badge-pill badge-sm">
                             {{ __('messages.due') }}
-
                         </div>
                     @elseif($paidAmount < $supplierInvoice->total_amount)
                         <div class="ac-status badge badge-danger badge-pill badge-sm">

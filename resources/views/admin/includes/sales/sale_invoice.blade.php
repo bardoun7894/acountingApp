@@ -87,7 +87,6 @@
                                     <thead>
                                         <tr>
                                             <th class="border-right-2"> </th>
-
                                             <th class="text-right">#</th>
                                             <th class="text-right">{{ __('messages.product_name ') }}</th>
                                             <th class="text-right">{{ __('messages.quantity') }}</th>

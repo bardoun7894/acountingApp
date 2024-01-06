@@ -11,7 +11,7 @@
                 </div>
 
 
-                <div id=" appendSupplierLevel" class="col-md-4">
+                <div id="appendSupplierLevel" class="col-md-4">
                     @include('admin.includes.suppliers.select_supplier')
                 </div>
 

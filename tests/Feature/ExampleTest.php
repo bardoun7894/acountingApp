@@ -1,8 +1,7 @@
 <?php
 
 namespace Tests\Feature;
-
-use Illuminate\Foundation\Testing\RefreshDatabase;
+ 
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -12,10 +11,26 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
-    {
-        $response = $this->get('/');
+    // public function test_example()
+    // {
 
-        $response->assertStatus(200);
-    }
+    //    return $this->testCustomerInvoiceRemainingAmount();
+
+    // }
+    public function testCustomerInvoiceRemainingAmount()
+{
+    // Arrange: create a customer invoice or use a seeded one
+    $id = 8; // replace with a valid invoice ID
+
+    // Act: make a GET request to the route (adjust the route as per your application)
+    $response = $this->get("/paid_customer_amount/{id}");
+
+    // Assert: Check the response status and content
+    // $response->assertStatus(200);
+    $response->assertJson([
+        'remaining_amount' => ""
+    ]);
+}
+
+
 }

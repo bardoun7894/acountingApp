@@ -15,13 +15,10 @@ class CreateAccountControlsTable extends Migration
     {
         Schema::create("account_controls", function (Blueprint $table) {
             $table->id();
-            $table->string("account_code")->nullable();
+            $table->string("account_code")->unique();
             $table->string("account_control_name_en")->nullable();
             $table->string("account_control_name_ar")->nullable();
-            $table->integer("account_head_id");
-            $table->integer("user_id")->unsigned();
-            $table->integer("company_id")->unsigned();
-            $table->integer("branch_id")->unsigned();
+            $table->foreignId("account_head_id")->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

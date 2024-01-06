@@ -5,16 +5,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PurchaseInvoiceController;
+use App\Http\Controllers\SaleCartController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StoreController;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\NavLink;
 use App\Models\PurchaseCartDetail;
 use App\Models\Sale;
 use App\Models\Stock;
@@ -33,8 +36,9 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 |
 */
 
-Route::get("/", function () {
-    return view("welcome");
+Route::get("/nav", function () {
+    $navLinks = \App\Models\NavLink::all();
+    return $navLinks;
 });
 
 Route::group(
@@ -69,18 +73,20 @@ Route::group(
             Admin\SupplierController::class,
             "getSupplierInvoice",
         ])->name("getSupplierInvoice");
+
         Route::get("/getUserInvoice", [
             Admin\UserController::class,
             "getUserInvoice",
         ])->name("getUserInvoice");
+
         Route::get("/getCustomerInvoice", [
             Admin\CustomerController::class,
             "getCustomerInvoice",
         ])->name("getCustomerInvoice");
 
         Route::get("/addDataToPurchaseCart", [
-            Admin\PurchaseCartController::class,
-            "addDataToPurchaseCart",
+            // PurchaseCartController::class
+            PurchaseInvoiceController::class, "addDataToPurchaseCart",
         ])->name("addDataToPurchaseCart");
 
         ####################################  delete Methods ####################################
@@ -153,10 +159,10 @@ Route::group(
             \App\Http\Controllers\PurchaseInvoiceController::class,
             "deletePurchase",
         ])->name("delete-Purchase");
-        Route::get("/delete-Sale/{id}", [
-            \App\Http\Controllers\SaleController::class,
-            "deleteSale",
-        ])->name("delete-Sale");
+        Route::get("/delete-SaleCart/{id}", [
+            \App\Http\Controllers\SaleCartController::class,
+            "deleteSaleCart",
+        ])->name("delete-SaleCart");
 
         Route::get("/allPurchases", [
             \App\Http\Controllers\PurchaseInvoiceController::class,
@@ -168,11 +174,11 @@ Route::group(
         ]);
 
         Route::get("/purchasePaymentPending", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
+            \App\Http\Controllers\SalePaymentController::class,
             "purchasePaymentPending",
         ]);
         Route::get("/salePaymentPending", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\SalePaymentController::class,
             "salePaymentPending",
         ]);
         Route::get("/purchase_payment_history/{id}", [
@@ -180,12 +186,12 @@ Route::group(
             "purchasePaymentHistoryView",
         ]);
         Route::get("/sale_payment_history/{id}", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\SalePaymentController::class,
             "salePaymentHistoryView",
         ]);
 
         Route::post("/get_history_payments_by_date", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\SalePaymentController::class,
             "salePaymentHistoryViewByDate",
         ]);
 
@@ -194,7 +200,7 @@ Route::group(
             "purchaseSupplierInvoice",
         ]);
         Route::get("/sale_invoice/{id}", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\CustomerInvoiceController::class,
             "saleCustomerInvoice",
         ]);
         Route::get("/paid_supplier_amount/{id}", [
@@ -202,7 +208,7 @@ Route::group(
             "paid_amount",
         ]);
         Route::get("/paid_customer_amount/{id}", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\SalePaymentController::class,
             "paid_amount",
         ]);
         Route::post("/pay_purchase_amount/{id}", [
@@ -256,7 +262,7 @@ Route::group(
 
         ####################################  Sale Cart   ####################################
         Route::post("/pay_sale_amount/{id}", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\SalePaymentController::class,
             "pay_sale_amount",
         ]);
         Route::get("/allSales", [SaleController::class, "allSales"]);
@@ -289,14 +295,20 @@ Route::group(
                 )
                 ->get();
         });
-        Route::get("fetch_sale_data", [SaleController::class, "fetchSaleData"]);
+        Route::get("fetch_sale_data",[SaleCartController::class
+        ,  "fetchSaleData"]);
 
         Route::post("fetch_products_to_saleCart", [
-            SaleController::class,
+            SaleCartController::class,
             "fetchproductsToSaleCart",
         ]);
-        Route::post("post_products_on_qty_change_to_saleCart", [
-            SaleController::class,
+
+        Route::get('/get_sale_cart_data', function () {
+           return Sale::with('Customer')->get();
+        });
+        Route::post( "post_products_on_qty_change_to_saleCart" ,
+        [
+             SaleCartController::class,
             "postProductOnQtyChangeToSaleCart",
         ]);
         ####################################  select option  Methodes ####################################
@@ -354,7 +366,7 @@ Route::group(
         ])->name("purchases.addSupplierInvoice");
 
         Route::post("/addCustomerInvoice", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\CustomerInvoiceController::class,
             "addCustomerInvoiceFunction",
         ])->name("sales.addCustomerInvoice");
         Route::post("/getProductItembyId", [
@@ -376,7 +388,7 @@ Route::group(
         ])->name("getSumTotalItem");
 
         Route::post("/getSumTotalSaleItem", [
-            \App\Http\Controllers\SaleController::class,
+            \App\Http\Controllers\SaleCartController::class,
             "getSumTotalItem",
         ]);
 
@@ -437,7 +449,7 @@ Route::group(
                 ]);
                 //       Route::match(['get','post'],'/get_category_id', [\App\Http\Controllers\Front\FrontController::class, 'countd']);
                 Route::match(["get", "post"], "/{url?}", [
-                    \App\Http\Controllers\Front\CategoryController::class,
+                    CategoryController::class,
                     "categoryDetail",
                 ]);
                 Route::get("/products", function () {

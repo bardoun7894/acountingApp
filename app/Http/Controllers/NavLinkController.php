@@ -78,6 +78,7 @@ class NavLinkController extends Controller
      * @param  \App\Models\NavLink  $navLink
      * @return \Illuminate\Http\Response
      */
+
     public function destroy(NavLink $navLink)
     {
         //

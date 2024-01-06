@@ -1,4 +1,4 @@
-<table id="dtd" class="table table-striped table-bordered table-sm ">
+ <table id="dtd" class="table table-striped table-bordered table-sm ">
     <thead>
         <tr>
             <th class="border-top-0">{{ __('messages.product_name') }}</th>
@@ -11,7 +11,7 @@
         </tr>
     </thead>
     <tbody id="purchases-dynamicRow">
-        @foreach ($purchases as $purchase)
+        @foreach ($purchases as $purchase )
             <tr>
                 <td class="text-truncate"> {{ $purchase->stock->$product_name }}</td>
                 {{-- <td class="text-truncate"> {{$purchase->user->full_name_en}}</td> --}}
@@ -21,8 +21,6 @@
                 <td class="text-truncate"> {{ $purchase->purchase_unit_price * $purchase->purchase_qty }}</td>
                 {{-- <td class="text-truncate"> {{$purchase->$description}}</td> --}}
                 {{-- <td class="text-truncate">no</td> --}}
-
-
             </tr>
         @endforeach
     </tbody>

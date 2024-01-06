@@ -15,11 +15,9 @@
 
     <tbody>
         @foreach ($customerInvoices as $customerInvoice)
-            @foreach ($customerInvoice->customer_payments as $payment)
-                <h1 hidden>
-                    {{ $paidAmount = $payment->where('customer_invoice_id', $customerInvoice->id)->sum('payment_amount') }}
-                </h1>
-            @endforeach
+                @php
+                $paidAmount = $customerInvoice->customer_payments->sum('payment_amount');
+               @endphp
             <tr>
                 <td class="text-truncate">{{ $customerInvoice->invoice_number }}</td>
                 <td class="text-truncate">{{ $customerInvoice->invoice_date }}</td>

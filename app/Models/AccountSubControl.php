@@ -9,10 +9,7 @@ class AccountSubControl extends Model
 {
     use HasFactory;
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+
     public function accountHead()
     {
         return $this->belongsTo(
@@ -39,11 +36,11 @@ class AccountSubControl extends Model
 
     public function customers()
     {
-        $this->hasMany(Customer::class);
+      return  $this->hasMany(Customer::class);
     }
 
     public function suppliers()
     {
-        $this->hasMany(Supplier::class);
+      return  $this->hasMany(Supplier::class);
     }
 }

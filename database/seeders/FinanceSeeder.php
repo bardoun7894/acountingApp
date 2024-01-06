@@ -3,30 +3,39 @@
 namespace Database\Seeders;
 
 use App\Models\FinanceYear;
-use DateTime;
 use Illuminate\Database\Seeder;
+use DateTime;
 
 class FinanceSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run($user_id)
+    protected $user_id;
+
+    public function __construct($user_id = 1) {
+        $this->user_id = $user_id;
+    }
+
+    public function run()
     {
-        $d = new DateTime(); //get current date time
+        $currentYear = date("Y");
+        $previousYear = $currentYear - 1;
+        $startDate = DateTime::createFromFormat('Y-m-d', "$previousYear-04-01");
+        $endDate = DateTime::createFromFormat('Y-m-d', "$currentYear-03-31");
+
         $data = [
             [
-                "user_id" => $user_id,
-                "financial_year" => Date("Y") - 1 . "-" . Date("Y"), //get current date time
-                "isActive" => 1, //is active
-                "startDate" => $d->format("Y/m/d"), //start date
-                "endDate" => $d->format("Y/m/d"), //end date
-                "created_at" => $d->format("Y/m/d H:i:s"), //created at
-                "updated_at" => $d->format("Y/m/d H:i:s"), //updated at
+                "user_id" => $this->user_id,
+                "financial_year" => "$previousYear-$currentYear",
+                "isActive" => 1,
+                "startDate" => $startDate->format("Y-m-d"),
+                "endDate" => $endDate->format("Y-m-d"),
+                "created_at" => now(),
+                "updated_at" => now(),
             ],
         ];
-        FinanceYear::insert($data);
+
+        FinanceYear::updateOrCreate(
+            ['user_id' => $this->user_id, 'financial_year' => "$previousYear-$currentYear"],
+            $data[0]
+        );
     }
 }

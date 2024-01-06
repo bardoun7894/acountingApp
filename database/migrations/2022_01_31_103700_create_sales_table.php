@@ -22,6 +22,7 @@ class CreateSalesTable extends Migration
             $table->unsignedInteger("company_id")->nullable();
             $table->unsignedInteger("category_id");
             $table->unsignedInteger("user_id");
+            $table->unsignedInteger("customer_id");
             $table->unsignedInteger("unit_id");
             $table->string("description_ar")->nullable();
             $table->string("description_en")->nullable();

@@ -1,5 +1,8 @@
  <?php
+ use App\Models\NavLink;
  $language = app()->getLocale();
+
+ $links = NavLink::all();
  ?>
 
 

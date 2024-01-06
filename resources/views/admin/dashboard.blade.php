@@ -3,6 +3,7 @@ use App\Models\User;
 $lang=\App\Models\Translation::getLang();
 $full_name ="full_name_".$lang;
 $local_full_name= User::getFullName($lang);
+
 ?>
 <!DOCTYPE html>
 <!-- BEGIN: Head-->

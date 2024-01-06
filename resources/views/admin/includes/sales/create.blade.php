@@ -50,7 +50,7 @@
                     <form class="form" method="POST" action="{{url('sales')}}">
                         @csrf
                         <div class="form-actions top clearfix">
-                             Add New Sale
+                            Add New Sale
                         </div>
                         @include('admin.includes.branches.select_branch')
 
