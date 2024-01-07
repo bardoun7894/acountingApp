@@ -132,8 +132,7 @@ class SaleController extends Controller
         $customerInvoices = CustomerInvoice::with([
             "customer",
             "customer_payments",
-        ])
-            ->where([
+        ])   ->where([
                 // "store_id" => Auth::user()->store_id,
                 "branch_id" => Auth::user()->branch_id,
                 "company_id" => Auth::user()->company_id,

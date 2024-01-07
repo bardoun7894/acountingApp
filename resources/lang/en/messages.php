@@ -243,6 +243,7 @@ return [
     "purchase_payment" => "Purchase Payment",
     "remaining_payments" => "Remaining Payments",
     "previous_remaining_amount" => "Previous Remaining Amount",
+    "history_payments" => "History Payments",
     "current_remaining_amount" => "Current Remaining Amount",
     "add_purchase" => "Add New Purchase",
     "continue_to_checkout" => "Continue to checkout",

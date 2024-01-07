@@ -14,8 +14,7 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-
+                </div> 
                 @if (session()->has('message'))
                     @switch(session()->get('message'))
                         @case(__('messages.data_removed'))
@@ -23,7 +22,6 @@
                                 {{ session()->get('message') }}
                             </div>
                         @break
-
                         @case(__('messages.data_updated'))
                             <div class="alert alert-success">
                                 {{ session()->get('message') }}

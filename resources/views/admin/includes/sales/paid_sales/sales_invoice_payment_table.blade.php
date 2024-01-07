@@ -12,6 +12,7 @@
     </thead>
     <tbody>
         @foreach ($customerInvoices as $customerInvoice)
+        
             <tr>
                 <td class="text-truncate"> {{ $customerInvoice->invoice_number }} </td>
                 <td class="text-truncate"> {{ $customerInvoice->invoice_date }} </td>
@@ -34,14 +35,11 @@
                     @endif
 
                 </td>
-
-
-
                 {{-- <td class="text-truncate"> {{$sale->$description}}</td> --}}
                 {{-- <td class="text-truncate">no</td> --}}
                 <td class="text-truncate"> <a href="{{ url('sale_invoice/' . $customerInvoice->id) }}"> <i
-                            class="la la-search info"></i></a> </td>
-
+                            class="la la-search info"></i></a>
+                         </td>
             </tr>
         @endforeach
 

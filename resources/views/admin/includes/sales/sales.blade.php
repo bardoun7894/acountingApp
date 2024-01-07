@@ -9,7 +9,7 @@
             <li class="breadcrumb-item"><a href="{{ url('/redirect') }}">{{ __('messages.home') }}</a></li>
             <li class="breadcrumb-item active"><a>{{ __('messages.sales') }}</a></li>
 
-        </x-breadcrumb>
+            </x-breadcrumb>
 
             </div>
             {{-- setting of page --}}

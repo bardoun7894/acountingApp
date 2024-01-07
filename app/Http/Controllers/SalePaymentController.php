@@ -386,9 +386,7 @@ private function buildSalePaymentHistoryQuery($customerInvoiceId, $startDate, $e
             $session = Session::flash(
                 "message",
                 __(
-                    "invoice payment : " .
-                        $sale_invoice->invoice_no .
-                        " has paid successfully"
+                    "invoice payment : " .    $sale_invoice->invoice_no .  " has paid successfully"
                 )
             );
             return redirect("salePaymentPending")->with("session");

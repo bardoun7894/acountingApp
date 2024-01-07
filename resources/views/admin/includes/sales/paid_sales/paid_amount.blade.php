@@ -19,15 +19,7 @@
 
         </div>
         <div class="content-body">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+           <x-alert type="danger" :errors="$errors" />
 
             <div class="card">
                 <div class="card-body">
@@ -43,8 +35,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="total_amount">{{ __('messages.payment_amount') }}</label>
-                                <input type="text" id="payment_amount" name="payment_amount" class="form-control"
-                                    required>
+                                <input type="text" id="payment_amount" name="payment_amount" class="form-control" required>
                             </div>
                             <div class="col-md-4">
                                 <label for="total_amount">{{ __('messages.current_remaining_amount') }}</label>
