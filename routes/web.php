@@ -40,6 +40,9 @@ Route::get("/nav", function () {
     $navLinks = \App\Models\NavLink::all();
     return $navLinks;
 });
+// Route::get('/query' , function(){
+//     return DB::table('transactions')->get();
+//     });
 
 Route::group(
     [

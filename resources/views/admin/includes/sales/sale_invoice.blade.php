@@ -64,8 +64,8 @@
                             </div>
                             <div class="col-sm-6 col-12 text-center text-sm-left">
                                 <ul class="px-0 list-unstyled">
-                                    <li class="text-bold-800">M.{{ $customer->$customer_name }}</li>
-                                    <li>{{ $customer->$address }}</li>
+                                    <li class="text-bold-800">M.{{$customer->$customerNameLang }}</li>
+                                    <li>{{ $customer->$addressLang }}</li>
                                     <li>{{ $customer->email }}</li>
                                     <li>{{ $customer->phone }}</li>
                                 </ul>
@@ -104,7 +104,7 @@
 
                                                 <td class="text-truncate"> {{ $customer_invoice_detail->id }}</td>
                                                 <td class="text-truncate">
-                                                    {{ $customer_invoice_detail->stock->$product_name }} </td>
+                                                    {{ $customer_invoice_detail->stock->$productNameLang }} </td>
                                                 <td class="text-truncate"> {{ $customer_invoice_detail->sale_quantity }}
                                                 </td>
                                                 <td class="text-truncate">

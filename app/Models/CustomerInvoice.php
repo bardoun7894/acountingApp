@@ -13,7 +13,7 @@ class CustomerInvoice extends Model
     {
         return "title_".Translation::getLang();
     }
- 
+
     public function customer()
     {
        return $this->belongsTo(Customer::class);
@@ -21,5 +21,10 @@ class CustomerInvoice extends Model
     public function customer_payments()
     {
        return $this->hasMany(CustomerPayment::class);
+    }
+    //customer invoice details
+    public function customerInvoiceDetails()
+    {
+       return $this->hasMany(CustomerInvoiceDetail::class);
     }
 }

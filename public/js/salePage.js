@@ -50,7 +50,6 @@ function getCustomerItem() {
 
 function fetchSaleData(customer_id) {
 
-    console.log("fetchSaleData $customer_id" + customer_id);
     //ajax call for get data
     $.ajax({
         url: "fetch_sale_data",
@@ -62,7 +61,6 @@ function fetchSaleData(customer_id) {
             var html = "";
             var i = 1;
             $.each(data, function (key, value) {
-
             var total_p = value.sale_unit_price * value.sale_qty ;
             console.log(total_p);
             html +=  `<tr id="td-sale-${value.stock.id}">
@@ -96,8 +94,10 @@ function fetchSaleData(customer_id) {
                             </tr>`;
                 i++;
             });
+
             console.log(html);
             $("#sales-dynamicRow").html(html);
+            totalPayment(customer_id);
         },
     });
 }
@@ -110,7 +110,6 @@ $(document).on("change", "#sale_qty", function () {
     ).then((data) => {
         if (data !== "") {
             fetchSaleData(customer_id);
-
         }
     });
 });
@@ -127,8 +126,8 @@ function getSaleCategoryBasedInbranch() {
     }
     $(document).ready(function () {
         if (editUrl === "/sales") {
+            var customer_id = $("#customer_id").val();
             document.getElementById("customer_id").style.display = 'none';
-
             getStoreBasedInBranch();
             // getCustomerBasedInBranch();
             getCustomerItem();
@@ -137,9 +136,7 @@ function getSaleCategoryBasedInbranch() {
                 // getCustomerBasedInBranch();
             });
             $(document).on("change", "#stock_id", function () {
-
                 var customer_id = $("#customer_id").val();
-
                 if(customer_id != null){
                     getProductP(customer_id);
                 }else{
@@ -160,18 +157,19 @@ function getSaleCategoryBasedInbranch() {
                 getTotalOrder();
             });
 
-            totalPayment();
+            totalPayment(customer_id);
         }
     });
 }
 function getProductP(customer_id) {
-    var stock_id = $("#stock_id").val();
-    getSelectorBasedInOther(   {  stock_id: stock_id,  customer_id:customer_id   },"fetch_products_to_saleCart"
+    const stock_id = $("#stock_id").val();
+    getSelectorBasedInOther(   { stock_id: stock_id,  customer_id:customer_id   },"fetch_products_to_saleCart"
     ).then((data) => {
         if (data !== "") {
             fetchSaleData(customer_id);
+
         } else {
-            var elem = document.getElementById("td-sale-" + stock_id);
+            const  elem = document.getElementById("td-sale-" + stock_id);
             elem.style.borderStyle = "solid";
             elem.style.borderColor = "red";
             setTimeout(() => {
@@ -224,7 +222,6 @@ function getCategoryBasedInBranch() {
 
 function getProductItem() {
     var stock_id = $("#stockId").val();
-
     getSelectorBasedInOther(
         {   stock_id: stock_id, },
         "getProductItembyId"
@@ -260,8 +257,11 @@ function getTotalOrder() {
         sub_total + (tax * sub_total) / 100 - (discount * sub_total) / 100;
 }
 
-function totalPayment() {
-    getSelectorBasedInOther({}, "getSumTotalSaleItem")
+function totalPayment(customer_id) {
+    // const customer_id = $("#customer_id").val();
+    getSelectorBasedInOther({
+        customer_id: customer_id
+    }, "getSumTotalSaleItem")
         .then((data) => {
             document.getElementById("sub_total").value = data.sub_total;
         })

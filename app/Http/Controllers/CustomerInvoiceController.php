@@ -10,6 +10,7 @@ use App\Models\FinanceYear;
 use App\Models\Sale;
 use App\Models\SaleCart;
 use App\Models\Stock;
+use App\Models\User;
 use App\Rules\FinanceYearRule;
 use App\Services\SalesEntries;
 use Auth;
@@ -66,13 +67,12 @@ class CustomerInvoiceController extends Controller
             "branch_id" => Auth::user()->branch_id,
         ])->get();
         //get total allow tax
-        $totalallowtax = $this->getAllowTaxAmount($request->tax);
+        $totalallowtax = $this->getTotalAllowTax($request->tax);
 
         ##############################  customer invoice  ################################################
 
-        $customer_invoice =    $this->createCustomerInvoice($request,$invoice_date,$totalallowtax);
+        $customer_invoice = $this->createCustomerInvoice($request,$invoice_date,$totalallowtax);
         ##############################  stock effect  ################################################
-
         foreach ($salesStocks as $saleStock) {
             //make customer detail
             $this->updateStockAndInvoiceDetail($saleStock, $customer_invoice) ;
@@ -232,7 +232,7 @@ class CustomerInvoiceController extends Controller
         }
         ##############################  delete table sale data  ################################################
 
-        Sale::query()->truncate();
+        SaleCart::query()->truncate();
         ##############################  return sale invoice  ################################################
 
         return $this->saleCustomerInvoice($customer_invoice->id);
@@ -259,45 +259,80 @@ class CustomerInvoiceController extends Controller
 
         return $customer_invoice;
     }
+    // public function saleCustomerInvoice($customerInvoiceId)
+    // {
+    //     $customer_name = $this->customer_name;
+    //     $product_name = Stock::getProductNameLang();
+    //     $address = $this->address;
+    //     $customer_invoice = CustomerInvoice::find($customerInvoiceId);
+    //     $customer_invoice_details = CustomerInvoiceDetail::with("stock")
+    //         ->where([
+    //               "customer_invoice_id" => $customerInvoiceId,
+    //         ])->get();
+    //     $customer = Customer::where([
+    //         "id" => $customer_invoice->customer_id,
+    //         "company_id" => Auth::user()->company_id,
+    //         "branch_id" => Auth::user()->branch_id,
+    //     ])->first();
+    //     return view("admin.includes.sales.sale_invoice")->with(
+    //         compact([
+    //             "customer_name",
+    //             "product_name",
+    //             "address",
+    //             "customer",
+    //             "customer_invoice",
+    //             "customer_invoice_details",
+    //         ])
+    //     );
+    // }
+
     public function saleCustomerInvoice($customerInvoiceId)
     {
-        $customer_name = $this->customer_name;
-        $product_name = Stock::getProductNameLang();
-        $address = $this->address;
-        $customer_invoice = CustomerInvoice::find($customerInvoiceId);
-        $customer_invoice_details = CustomerInvoiceDetail::with("stock")
-            ->where([
-                  "customer_invoice_id" => $customerInvoiceId,
-            ])->get();
-        $customer = Customer::where([
-            "id" => $customer_invoice->customer_id,
-            "company_id" => Auth::user()->company_id,
-            "branch_id" => Auth::user()->branch_id,
-        ])->first();
-        return view("admin.includes.sales.sale_invoice")->with(
-            compact([
-                "customer_name",
-                "product_name",
-                "address",
-                "customer",
-                "customer_invoice",
-                "customer_invoice_details",
-            ])
-        );
+        // Get the customer invoice and related details
+        $customerInvoice = CustomerInvoice::with('customer', 'customerInvoiceDetails.stock')
+                                           ->where([
+                                            'id'=> $customerInvoiceId,
+
+                                           ])
+                                           ->first();
+
+        if (!$customerInvoice) {
+            abort(404);
+            // Handle the case where the invoice doesn't exist
+            // You can redirect or throw an exception based on your application's needs
+        }
+
+        // Extracting information for ease of access
+        $customer = $customerInvoice->customer;
+        $customerInvoiceDetails = $customerInvoice->customerInvoiceDetails;
+
+        // Checking user's access to this customer data
+        $this->authorizeCustomerAccess($customer);
+
+        // Preparing data to be sent to the view
+        $data = [
+            'customer' => $customer,
+            'customerNameLang' => Customer::getCustomerNameLang(),
+            'addressLang' =>  User::getAddressLang(),
+            'productNameLang'=> Stock::getProductNameLang(),
+            'customer_invoice' => $customerInvoice,
+            'customer_invoice_details' => $customerInvoiceDetails,
+        ];
+
+        // return $data;
+        return view('admin.includes.sales.sale_invoice', $data);
     }
 
-    public function getTotalAllowTax() {
-        return DB::table("stocks")
-                ->join("sales", "stocks.id", "=", "sales.stock_id")
-                ->where("allowtax", 1)
-                ->where([
-                    "sales.company_id" => Auth::user()->company_id,
-                    "sales.branch_id" => Auth::user()->branch_id,
-                    "store_id" => Auth::user()->store_id,
-                ])
-                ->selectRaw("sum( sales.sale_qty * sales.sale_unit_price ) as sum")
-                ->first()->sum;
-      }
+    private function authorizeCustomerAccess($customer)
+    {
+        $user = Auth::user();
+        if ($customer->company_id !== $user->company_id || $customer->branch_id !== $user->branch_id) {
+            // Handle unauthorized access
+            // Redirect or throw an exception
+        }
+    }
+
+
       private function updateStockAndInvoiceDetail($saleStock, $customer_invoice)
       {
           $customer_invoice_detail = new CustomerInvoiceDetail();
@@ -315,21 +350,12 @@ class CustomerInvoiceController extends Controller
           $stockProduct->current_sale_unit_price = $saleStock->sale_unit_price;
           $stockProduct->save();
       }
-     /**
-             * Create customer payment function.
-             *
-             * @param int $customer_id
-             * @param int $customer_invoice_id
-             * @param int $branch_id
-             * @param string $invoice_no
-             * @param string $invoice_date
-             * @param float $total_amount
-             * @param float $payment_amount
-             * @param int $user_id
-             * @param float $remaining_balance
-             * @return void
-             */
-            private function createCustomerPaymentFunction(
+
+
+
+
+
+    private function createCustomerPaymentFunction(
                 int $customer_id,
                 int $customer_invoice_id,
                 int $branch_id,
@@ -355,4 +381,25 @@ class CustomerInvoiceController extends Controller
                 $invoice_customer_payment->save();
             }
 
-}
+
+ private function getTotalAllowTax() {
+        return DB::table("stocks")
+                ->join("sales", "stocks.id", "=", "sales.stock_id")
+                ->where("allowtax", 1)
+                ->where([
+                    "sales.company_id" => Auth::user()->company_id,
+                    "sales.branch_id" => Auth::user()->branch_id,
+                    "store_id" => Auth::user()->store_id,
+                ])
+                ->selectRaw("sum( sales.sale_qty * sales.sale_unit_price ) as sum")
+                ->first()->sum;
+      }
+
+
+
+
+        }
+
+
+
+

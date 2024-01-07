@@ -17,6 +17,7 @@ class SaleCartController extends Controller
         if ($request->ajax()) {
             //get total of item (quantity * sale);
             $sales = SaleCart::where([
+                "customer_id" => $request->customer_id,
                 "company_id" => Auth::user()->company_id,
                 "branch_id" => Auth::user()->branch_id,
             ])
