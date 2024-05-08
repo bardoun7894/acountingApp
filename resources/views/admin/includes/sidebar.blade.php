@@ -29,8 +29,12 @@ $current_user = \Illuminate\Support\Facades\Auth::user();
                                 data-i18n="purchases">{{ __('messages.purchase_order') }}</span></a>
                     <li><a class="menu-item" href="{{ url('purchasePaymentPending') }}"><i></i> <span
                                 data-i18n="pending_payments">{{ __('messages.pending_payments') }}</span></a>
+{{-- purchase return  --}}
+<li><a class="menu-item" href="{{ url('purchaseReturn') }}"><i></i> <span
+                                data-i18n="purchase_return">{{ __('messages.purchase_return') }}</span></a>
 
-                </ul>
+
+                            </ul>
             </li>
 
             <li class=" nav-item"><a href="#"><i class="la la-shopping-cart"></i><span class="menu-title"

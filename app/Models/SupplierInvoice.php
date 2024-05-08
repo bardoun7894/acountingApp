@@ -19,4 +19,19 @@ class SupplierInvoice extends Model
     public function supplier_payments(){
         return $this->hasMany(SupplierPayment::class);
     }
+    public function supplierReturnInvoice(){
+        return $this->hasMany(SupplierReturnInvoice::class);
+    }
+    public function supplierReturnInvoiceDetails(){
+        return $this->hasMany(SupplierReturnInvoiceDetail::class);
+    }
+public function supplierInvoiceDetails(){
+    return $this->hasMany(SupplierInvoiceDetail::class);
+    }
+public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+
+
 }

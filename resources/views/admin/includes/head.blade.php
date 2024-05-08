@@ -64,7 +64,7 @@
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="{{ url('admin/assets/css/style.css') }}">
+    {{-- <link rel="stylesheet" type="text/css" href="{{ url('admin/assets/css/style.css') }}"> --}}
     <link rel="stylesheet" type="text/css" href="{{ url('css/mainPage.css') }}">
     <!-- END: Custom CSS-->
 

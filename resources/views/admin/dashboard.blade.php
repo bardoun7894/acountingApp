@@ -14,6 +14,7 @@ $local_full_name= User::getFullName($lang);
 @endif
 <!-- END: Head-->
 <!-- BEGIN: Body-->
+@stack('scripts')
 <body class="vertical-layout vertical-menu-modern 2-columns   fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
 
 <!-- BEGIN: Header-->

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PurchaseInvoiceController;
+use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\SaleCartController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StoreController;
@@ -251,6 +252,13 @@ Route::group(
                 return json_encode($purchases);
             }
         });
+
+
+        // findInvoiceReturn
+        Route::post("find-invoice", [
+            PurchaseReturnController::class,
+            "findInvoiceReturn"
+        ]);
         ####################################  PurchaseCartDetail Cart   ####################################
 
         Route::post("fetch_products_to_purchase_cart", [
@@ -425,6 +433,8 @@ Route::group(
                 \App\Http\Controllers\AccountSettingController::class,
             "accountControls" => Admin\AccountControlController::class,
             "accountSubControls" => Admin\AccountSubControlController::class,
+            //purchases return
+            "purchaseReturns" => \App\Http\Controllers\PurchaseReturnController::class,
         ]);
     }
 );
