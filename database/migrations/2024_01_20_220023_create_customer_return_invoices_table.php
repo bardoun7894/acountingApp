@@ -15,14 +15,14 @@ class CreateCustomerReturnInvoicesTable extends Migration
     {
         Schema::create('customer_return_invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_invoice_id');
-            $table->string('invoiceno');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('customer_id')->constrained('customers');
+            $table->bigInteger('customer_invoice_id');
+            $table->string('invoiceno')->nullable();
+            $table->bigInteger('user_id') ;
+            $table->bigInteger('customer_id') ;
             //company_id
-            $table->foreignId('company_id')->constrained('companies');
+            $table->bigInteger('company_id') ;
             //branch_id
-            $table->foreignId('branch_id')->constrained('branches');
+            $table->bigInteger('branch_id') ;
             $table->date('invoice_date');
             // description
             $table->text('description');

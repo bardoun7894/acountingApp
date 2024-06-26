@@ -81,15 +81,50 @@ class SaleCartController extends Controller
             return json_encode($sales);
         }
     }
+   
     public function postProductOnQtyChangeToSaleCart(Request $request)
     {
         if ($request->ajax()) {
             $saleCart = SaleCart::find($request->id);
-            $saleCart->sale_qty = $request->sale_qty;
-            $saleCart->save();
-            return $saleCart;
+            $product = Stock::find($saleCart->stock_id);
+    
+            if ($request->sale_qty > $product->quantity) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Quantity not available',
+                ]);
+            } else {
+                $saleCart->sale_qty = $request->sale_qty;
+                $saleCart->save();
+                return response()->json([
+                    'status' => 'success',
+                    'saleCart' => $saleCart,
+                    'message' => '',
+                ]);
+            }
         }
     }
+    
+
+    // public function postProductOnQtyChangeToSaleCart(Request $request)
+    // {
+    //     if ($request->ajax()) {
+    //         $saleCart = SaleCart::find($request->id);
+    //         $product = Stock::find($saleCart->stock_id);
+    //         if ($request->sale_qty > $request->quantity) {
+    //             $saleCart->sale_qty = $request->quantity;
+    //             $saleCart->save();
+    //             return $saleCart;
+    //         } else {
+    //             $saleCart->sale_qty = $request->sale_qty;
+    //             $saleCart->save();
+                
+    //         }  
+    //         // $saleCart->sale_qty = $request->sale_qty;
+    //         // $saleCart->save();
+    //         return $saleCart;
+    //     }
+    // }
 
     /**
      * Display a listing of the resource.

@@ -23,7 +23,7 @@ export default class PurchasePage {
 function fetchData() {
     //ajax call for get data
     $.ajax({
-        url: "fetch_data",
+        url: "fetch_data_purchase",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -268,20 +268,4 @@ function getPurchaseProductBasedInCategory() {
             getProductItem();
         });
 
-    // //getPurchaseProductBasedInCategory
-    //  var category_id = $("#purchase_category_id").val()
-    //
-    // var input_category_id = $("#input_category_id").val();
-    // var input_stock_id = $("#input_stock_id").val();
-    // getSelectorBasedInOther({
-    //     'category_id': category_id,
-    //     'input_category_id': input_category_id,
-    //     'input_stock_id': input_stock_id,
-    //     'tableid': tableid,
-    //     'tableName': tableName
-    // }, 'get_selected_purchase_product', '#appendPurchaseProductLevel');
-    // // // if(editUrl.includes('create')){
-    // //     var stock_id = $("#stockId").val();
-    // //     getProductItem(stock_id)
-    // // }
 }

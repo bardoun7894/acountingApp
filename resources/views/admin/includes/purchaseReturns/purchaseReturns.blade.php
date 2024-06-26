@@ -3,7 +3,9 @@
 @section('content')
 
 <div class="content-wrapper">
+
     <!-- Content Header (Page header) -->
+
     <div class="content-header row">
         <!-- Content Header Left -->
         <div class="content-header-left col-md-6 col-12 mb-2">
@@ -55,15 +57,11 @@
                 </div>
                 <div class="col-md-6 d-inline-flex">
                     {{-- //center the button --}}
-                    <button type="button" class="btn btn-success align-self-center" id="findInvoiceBtn">{{ __('messages.find') }}</button>
+                    <button type="button" class="btn btn-success align-self-center" id="findInvoiceBtn"> {{ __('messages.find') }} </button>
                 </div>
             </div>
-
-
-
-                        <div id="appendPurchaseReturnLevel">
-
-                        </div>
+               <div id="appendPurchaseReturnLevel">
+            </div>
     </div>
 </div>
 

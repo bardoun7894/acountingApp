@@ -46,6 +46,23 @@ class UserController extends Controller
 
         //
     }
+    // changeStatusUser ajax
+    public function changeStatusUser(Request $request){
+        if($request->ajax()){
+            $user = User::find($request->id);
+            if($user->isActive == 1){
+                $user->isActive = 0;
+             }else{
+                $user->isActive = 1;
+              } 
+            $user->save();
+        }
+       
+        return response()->json(['status' =>200, 'isActive' =>  $user->isActive]);
+
+    }
+
+
 
     /**
      * Show the form for creating a new resource.

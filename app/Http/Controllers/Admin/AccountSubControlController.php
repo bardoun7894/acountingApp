@@ -42,11 +42,7 @@ class AccountSubControlController extends Controller
         $account_control_name = $this->account_control_name;
         $account_sub_control_name = $this->account_sub_control_name;
         //      $accountHeads= AccountHead::with('accountSubControls')->get();
-        $accountSubControls = AccountSubControl::where([
-            "company_id" => Auth::user()->company_id,
-            "branch_id" => Auth::user()->branch_id,
-        ])
-            ->with("accountHead", "accountControl", "user")
+        $accountSubControls = AccountSubControl::with("accountHead", "accountControl")
             ->get();
         return view(
             "admin.includes.accountSubControls.accountSubControls"

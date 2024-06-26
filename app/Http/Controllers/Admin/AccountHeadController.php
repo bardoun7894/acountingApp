@@ -32,12 +32,7 @@ class AccountHeadController extends Controller
     {
         $account_head_name = $this->account_head_name;
         $user_type = $this->user_type;
-        $accountHeads = AccountHead::with("user")
-            ->where([
-                "company_id" => Auth::user()->company_id,
-                "branch_id" => Auth::user()->branch_id,
-            ])
-            ->get();
+        $accountHeads = AccountHead::get();
 
         return view("admin.includes.accountHeads.accountHeads")->with(
             compact(["accountHeads", "account_head_name", "user_type"])

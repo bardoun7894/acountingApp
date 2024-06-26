@@ -66,6 +66,9 @@ protected $fillable=[
     {
       return $this->hasMany(Stock::class);
     }
+    public function company(){
+        return $this->belongsTo(Company::class, 'company_id');
+    }
 
     public function supplierInvoices(){
         return $this->hasMany(SupplierInvoice::class);
@@ -83,5 +86,9 @@ static public function getFullnameLang(){
         $full_name_lang = self::getFullnameLang();
         return Auth::user()->$full_name_lang;
 
+}
+// customerInvoice
+public function customerInvoices(){
+    return $this->hasMany(CustomerInvoice::class);
 }
 }

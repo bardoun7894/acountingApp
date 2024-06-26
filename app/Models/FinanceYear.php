@@ -9,5 +9,11 @@ class FinanceYear extends Model
 {
     use HasFactory;
 
-
+  protected $fillable = [
+        'name',
+        'user_id',
+        'start_date',
+        'end_date',
+        'is_active',
+    ];
 }

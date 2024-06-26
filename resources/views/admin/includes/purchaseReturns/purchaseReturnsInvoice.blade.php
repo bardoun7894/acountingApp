@@ -3,9 +3,8 @@
   <form method="POST" id="purchaseReturnForm"
   @csrf
 
-<div class="card">
-        <p>  {{$supplierReturnInvoiceDetails}}</p>
-
+<div  class="card" > 
+       
   <div class="container mt-5">
     <div class="invoice-header">
         <h2>Invoice</h2>
@@ -38,14 +37,14 @@
                     <td  id="purchase_quantity{{ $item->id }}" >{{ $item->purchase_quantity }}</td>
                     <td>
                         <input type="number"
-                        idReturnDetails="idReturnDetails{{$supplierInvoice->supplierReturnInvoiceDetails[$key]->id}}"
-                            name="return_quantities{{ $item->id }}"
-                            id="returnQty" class="form-control"
-                            min="0" max="{{ $item->quantity }}"
-                            value="{{$supplierInvoice->supplierReturnInvoiceDetails[$key]->purchase_return_quantity}}" required >
+ idReturnDetails="idReturnDetails{{$supplierInvoice->supplierReturnInvoiceDetails[$key]->id}}"
+                               name="return_quantities{{ $item->id }}"
+                               id="returnPurchasesQty" class="form-control"
+                               min="0" max="{{ $item->quantity }}"
+                               value="{{$supplierInvoice->supplierReturnInvoiceDetails[$key]->purchase_return_quantity}}" required >
                             <span class="error" id="error-message{{ $item->id }}" style="color: red"></span>
                     </td>
-                    <td class="total-amount-returned" id="total_amount_returned{{ $item->id }}">{{$supplierInvoice->supplierReturnInvoiceDetails[$key]->total_price}}</td>
+                    <td class="total-amount-purchases-returned" id="total_amount_purchases_returned{{ $item->id }}">{{$supplierInvoice->supplierReturnInvoiceDetails[$key]->total_price}}</td>
 
                 </tr>
                 @endforeach
@@ -58,15 +57,15 @@
             <tbody>
                 <tr>
                     <td class="text-right"><strong>Subtotal:</strong></td>
-                    <td class="text-right" id="subtotal"> {{$supplierInvoice->sub_total_amount}}</td>
+                    <td class="text-right" id="subtotal"> {{$subtotal}}</td>
                 </tr>
                 <tr>
                     <td class="text-right"><strong>Subtotal Returned:</strong></td>
-                    <td class="text-right" id="sub_total_returned">0</td>
+                    <td class="text-right" id="sub_total_returned">{{$subtotalReturned}} </td>
                 </tr>
                 <tr>
                     <td class="text-right"><strong>Tax (10%):</strong></td>
-                    <td class="text-right" id="tax">{{$supplierInvoice->tax}}</td>
+                    <td class="text-right" id="tax">{{$supplierInvoice->tax}} </td>
                 </tr>
                 <tr>
                     <td class="text-right"><strong>Discount:</strong></td>

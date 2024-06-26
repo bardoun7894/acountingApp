@@ -14,19 +14,17 @@ class CreateCustomerReturnInvoiceDetailsTable extends Migration
     public function up()
     {
         Schema::create('customer_return_invoice_details', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('customer_return_invoice_id');
-            $table->foreignId('user_id')->constrained('users');
-//customer invoice details
-            $table->foreignId('customer_invoice_id')->constrained('customer_invoices');
-            $table->foreignId('product_id')->constrained('products');
-            $table->foreignId('customer_id')->constrained('customers');
-            $table->foreignId('company_id')->constrained('companies');
-            $table->foreignId('branch_id')->constrained('branches');
-           //sale return quantity
-            $table->float('sale_return_quantity');
-            //sale return unit price
-            $table->float('sale_return_unit_price');
+            $table->id(); 
+            $table->unsignedBigInteger('customer_return_invoice_id');
+            $table->unsignedBigInteger('customer_invoice_detail_id');
+            $table->unsignedBigInteger('customer_invoice_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('stock_id');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('branch_id');
+            $table->integer('sale_return_quantity');
+            $table->decimal('sale_return_unit_price', 8, 2);
             $table->timestamps();
         });
     }

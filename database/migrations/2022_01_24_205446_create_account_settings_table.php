@@ -21,6 +21,7 @@ class CreateAccountSettingsTable extends Migration
             $table->unsignedBigInteger("account_activity_id");
             $table->unsignedBigInteger("company_id");
             $table->unsignedBigInteger("branch_id");
+            // $table->unsignedBigInteger("user_id");
             $table->timestamps();
         });
     }

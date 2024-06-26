@@ -75,3 +75,9 @@ $full_name='full_name_'.\App\Models\Translation::getLang();
         </div>
     </div>
 @endsection
+{{-- section script  js  --}} 
+@section('scriptUser') 
+{{-- asset admin/users.js --}}
+<script src="{{ asset('js/admin/users.js') }}" type="module" ></script> 
+
+@endsection

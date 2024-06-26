@@ -69,12 +69,12 @@ function fetchSaleData(customer_id) {
                                         ? value.stock.product_name_en
                                         : value.stock.product_name_ar
                                 }</td>
-                                <td ><input type="number" ${
-                                    value.sale_qty == 0
+                                <td ><input  type="number" ${
+                                    value.sale_qty == 0 
                                         ? "style='border: 1px solid #FF0000;'"
                                         : ""
-                                } id="sale_qty" current_id="${
-                    value.id
+                                } class="form-control" placeholder="Enter quantity" id="sale_qty"  current_id="${
+                           value.id
                 }"  value="${value.sale_qty}"></td>
                                 <td>${value.sale_unit_price}</td>
                                 <td>${total_p}</td>
@@ -102,18 +102,53 @@ function fetchSaleData(customer_id) {
     });
 }
 $(document).on("change", "#sale_qty", function () {
-    console.log("sale_qty" + $(this).val());
-    var quantity = $(this).val();
-    var id = $(this).attr("current_id");
-    getSelectorBasedInOther(   { sale_qty: quantity, id: id },
+    var $this = $(this);
+    var quantity = $this.val();
+    var id = $this.attr("current_id");
+
+    getSelectorBasedInOther(
+        { sale_qty: quantity, id: id },
         "post_products_on_qty_change_to_saleCart"
     ).then((data) => {
-        if (data !== "") {
+
+        
+        if (data.message === "") {
             fetchSaleData(customer_id);
+            // Remove error styles if any
+            $this.removeClass("is-invalid");
+            $this.tooltip('dispose'); // Remove tooltip if exists
+        }else{
+            alert(data.message);
+            $this.addClass("is-invalid"); 
+            $this.tooltip({
+                title: data.message,
+                placement: 'top'
+            }).tooltip('show');
         }
     });
 });
 
+// $(document).on("change", "#sale_qty", function () {
+//     console.log("sale_qty" + $(this).val());
+//     var quantity = $(this).val(); 
+//     var id = $(this).attr("current_id"); 
+//     getSelectorBasedInOther(   { sale_qty: quantity, id: id },
+//         "post_products_on_qty_change_to_saleCart"
+//     ).then((data) => {
+//         if (data.message == "") {
+//             fetchSaleData(customer_id);
+//         }else{
+//             // this element style input sale_qty
+//             // const $this = document.getElementById("sale_qty");  
+//             $this.style.borderStyle = "solid";
+//             $this.style.borderColor = "red";
+//             // const elem = document.getElementsByClassName("saleQty"+id);
+//             // alert(elem.value + " is not available");
+//             // elem.style.borderStyle = "solid";
+//             // elem.style.borderColor = "red";  
+//         }
+//     });
+// }); 
 function getSaleCategoryBasedInbranch() {
     if (  editUrl === "/sales/" + tableid + "/edit" ||   editUrl === "/sales/create" ) {
         $(document).ready(function () {

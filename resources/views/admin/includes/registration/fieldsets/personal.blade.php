@@ -44,8 +44,11 @@
                 </span>
             @enderror
         </div>
-        <div class="row">
-            <div class="form-group col-12 mb-2">
+
+         {{-- admin or user hide  --}}
+        {{-- <div class="row"> --}}
+
+            {{-- <div class="form-group col-12 mb-2">
                 <label>{{ __('messages.user_type') }}</label>
                 <div class="input-group">
                     <div class="d-inline-block custom-control custom-radio mr-1">
@@ -61,8 +64,8 @@
                             for="2">{{ __('messages.user') }}</label>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> --}}
+        {{-- </div> --}}
     </div>
     <input type="button" name="previous" class="previous action-button-previous"
         value="Previous" />

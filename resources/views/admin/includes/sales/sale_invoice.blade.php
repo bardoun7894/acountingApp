@@ -1,5 +1,7 @@
 @extends('admin.dashboard')
 @section('content')
+
+ 
     <div class="content-overlay"></div>
     <div class="content-wrapper">
         <div class="content-header row">
@@ -36,8 +38,8 @@
                                         <div class="media-body">
                                             {{-- facture --}}
                                             <ul class="ml-2 px-0 list-unstyled">
-                                                <li class="text-bold-800">Company Name</li>
-                                                <li>4025 Oak Avenue,</li>
+                                                <li class="text-bold-800">{{ $user->company->company_name_en }}</li>
+                                                <li>{{ $user->$addressLang }} /</li>
                                                 <li>Melbourne,</li>
                                                 <li>Florida 32940,</li>
                                                 <li>USA</li>

@@ -9,6 +9,10 @@ class Company extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id'
+    ];
+
     static function getCompanyNameLang()
     {
         return "company_name_" . app()->getLocale();

@@ -1051,9 +1051,10 @@ class PurchaseInvoiceController extends Controller
                 "branch_id" => Auth::user()->branch_id,
                 "company_id" => Auth::user()->company_id,
             ])->get();
+            $user_store =Store::find(Auth::user()->store_id);
             $store_name = $this->store_name;
             return view("admin.includes.stores.select_store")->with(
-                compact(["stores", "store_name"])
+                compact(["stores", "user_store","store_name"])
             );
         }
     }
@@ -1079,6 +1080,21 @@ class PurchaseInvoiceController extends Controller
 
         $session = Session::flash("message", __("messages.data_removed"));
         return redirect("purchases")->with(compact("session"));
+    }
+
+    public function fetch_data_purchase(Request $request){
+        if ($request->ajax()) {
+            if (
+                 Auth::user()->user_type_id == 1
+            ) {
+                $purchases = PurchaseCartDetail::with("stock")->get();
+            } else {
+                $purchases = PurchaseCartDetail::with("stock")
+                ->where("branch_id", Auth::user()->branch_id )->get();
+            }
+
+            return json_encode($purchases);
+        }
     }
 
     public function fetchProductsToPurchaseCart(Request $request)

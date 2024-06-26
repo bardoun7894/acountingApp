@@ -9,20 +9,23 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PurchaseInvoiceController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\SaleCartController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SalePaymentController;
+use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\StoreController;
 use App\Models\Category;
 use App\Models\Customer;
-use App\Models\NavLink;
 use App\Models\PurchaseCartDetail;
 use App\Models\Sale;
 use App\Models\Stock;
 use App\Models\Supplier;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
@@ -36,15 +39,7 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get("/nav", function () {
-    $navLinks = \App\Models\NavLink::all();
-    return $navLinks;
-});
-// Route::get('/query' , function(){
-//     return DB::table('transactions')->get();
-//     });
-
+ 
 Route::group(
     [
         "prefix" => LaravelLocalization::setLocale(),
@@ -159,48 +154,46 @@ Route::group(
             Admin\CustomerController::class,
             "deleteCustomer",
         ])->name("delete-Customer");
-        Route::get("/delete-Purchase/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
-            "deletePurchase",
-        ])->name("delete-Purchase");
+        Route::get("/delete-Purchase/{id}", [  PurchaseInvoiceController::class, "deletePurchase",   ])->name("delete-Purchase");
         Route::get("/delete-SaleCart/{id}", [
-            \App\Http\Controllers\SaleCartController::class,
+             SaleCartController::class,
             "deleteSaleCart",
         ])->name("delete-SaleCart");
 
         Route::get("/allPurchases", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
+            PurchaseInvoiceController::class,
             "allPurchases",
         ]);
         Route::get("/allSales", [
-            \App\Http\Controllers\SaleController::class,
+            SaleController::class,
             "allSales",
         ]);
 
+
         Route::get("/purchasePaymentPending", [
-            \App\Http\Controllers\SalePaymentController::class,
+          PurchaseInvoiceController::class,
             "purchasePaymentPending",
         ]);
         Route::get("/salePaymentPending", [
-            \App\Http\Controllers\SalePaymentController::class,
+          SalePaymentController::class,
             "salePaymentPending",
         ]);
         Route::get("/purchase_payment_history/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
+          PurchaseInvoiceController::class,
             "purchasePaymentHistoryView",
         ]);
         Route::get("/sale_payment_history/{id}", [
-            \App\Http\Controllers\SalePaymentController::class,
+           SalePaymentController::class,
             "salePaymentHistoryView",
         ]);
 
         Route::post("/get_history_payments_by_date", [
-            \App\Http\Controllers\SalePaymentController::class,
+           SalePaymentController::class,
             "salePaymentHistoryViewByDate",
         ]);
 
         Route::get("/purchase_invoice/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
+             PurchaseInvoiceController::class,
             "purchaseSupplierInvoice",
         ]);
         Route::get("/sale_invoice/{id}", [
@@ -208,7 +201,7 @@ Route::group(
             "saleCustomerInvoice",
         ]);
         Route::get("/paid_supplier_amount/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
+             PurchaseInvoiceController::class,
             "paid_amount",
         ]);
         Route::get("/paid_customer_amount/{id}", [
@@ -216,7 +209,7 @@ Route::group(
             "paid_amount",
         ]);
         Route::post("/pay_purchase_amount/{id}", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
+             PurchaseInvoiceController::class,
             "pay_amount",
         ]);
 
@@ -233,31 +226,29 @@ Route::group(
             StockController::class,
             "getProductSelect2",
         ]);
-
-        Route::get("fetch_data", function (Request $request) {
-            if ($request->ajax()) {
-                if (
-                    \Illuminate\Support\Facades\Auth::user()->user_type_id == 1
-                ) {
-                    $purchases = PurchaseCartDetail::with("stock")->get();
-                } else {
-                    $purchases = PurchaseCartDetail::with("stock")
-                        ->where(
-                            "branch_id",
-                            \Illuminate\Support\Facades\Auth::user()->branch_id
-                        )
-                        ->get();
-                }
-
-                return json_encode($purchases);
-            }
-        });
+// fetch data from PurchaseCartDetail
+        Route::get("fetch_data_purchase", [PurchaseInvoiceController::class,"fetch_data_purchase"]);
 
 
-        // findInvoiceReturn
-        Route::post("find-invoice", [
+        // findInvoiceReturn purchases
+        Route::post("find-invoice-purchase", [
             PurchaseReturnController::class,
             "findInvoiceReturn"
+        ]);
+         // findInvoiceReturn sales
+        Route::post("find-invoice-sale", [
+            SaleReturnController::class,
+            "findInvoiceReturn"
+        ]);
+        // returnPurchasesOnQtyChange
+        Route::post("return_purchases_on_qty_change", [
+            PurchaseReturnController::class,
+            "returnPurchasesOnQtyChange"
+        ]);
+        // returnSalesOnQtyChange
+        Route::post("return_sales_on_qty_change", [
+            SaleReturnController::class,
+            "returnSalesOnQtyChange"
         ]);
         ####################################  PurchaseCartDetail Cart   ####################################
 
@@ -273,39 +264,12 @@ Route::group(
 
         ####################################  Sale Cart   ####################################
         Route::post("/pay_sale_amount/{id}", [
-            \App\Http\Controllers\SalePaymentController::class,
+            SalePaymentController::class,
             "pay_sale_amount",
         ]);
         Route::get("/allSales", [SaleController::class, "allSales"]);
+        Route::get("/saleReturns", [SaleController::class, "saleReturns"]);
 
-        Route::get("/test", function () {
-            return DB::table("supplier_invoices")
-                ->join(
-                    "supplier_payments",
-                    "supplier_invoices.id",
-                    "=",
-                    "supplier_payments.supplier_invoice_id"
-                )
-                ->select(
-                    "supplier_invoices.id",
-                    "supplier_invoices.branch_id",
-                    "supplier_invoices.invoice_date",
-                    "supplier_invoices.supplier_id",
-                    "supplier_invoices.invoice_no",
-                    "supplier_invoices.total_amount",
-                    DB::raw(
-                        "supplier_invoices.total_amount - supplier_payments.payment_amount as `remaining payment` "
-                    ),
-                    DB::raw("sum(supplier_payments.payment_amount) as payment ")
-                )
-                ->groupBy("supplier_payments.id")
-                ->where(
-                    "supplier_invoices.total_amount",
-                    ">",
-                    "supplier_payments.payment"
-                )
-                ->get();
-        });
         Route::get("fetch_sale_data",[SaleCartController::class
         ,  "fetchSaleData"]);
 
@@ -327,7 +291,7 @@ Route::group(
         Route::post("/get_selected_account_head", [
             Admin\AccountSubControlController::class,
             "getSelectedAccountControl",
-        ])->name("getSelectedAccountControl");
+        ]);
 
         Route::post("/delete_account_if_has_account", [
             Admin\AccountControlController::class,
@@ -337,22 +301,18 @@ Route::group(
         Route::post("/get_selected_account_control", [
             Admin\AccountSubControlController::class,
             "getSelectedAccountSubControl",
-        ])->name("getSelectedAccountControl");
+        ]);
         Route::post("/get_selected_branch", [
             Admin\CategoryController::class,
             "getSelectedBranch",
         ])->name("getSelectedBranch");
         //purchases
         Route::post("/get_selected_purchase_store_based_branch", [
-            \App\Http\Controllers\PurchaseInvoiceController::class,
+            PurchaseInvoiceController::class,
             "getSelectedBranchStore",
         ])->name("getSelectedBranchStore");
-        // Route::post("/get_selected_purchase_supplier_based_branch", [
-        //     \App\Http\Controllers\PurchaseInvoiceController::class,
-        //     "getSelectedBranchSupplier",
-        // ])->name("getSelectedBranchSupplier");
         Route::post("/get_selected_sale_customer_based_branch", [
-            \App\Http\Controllers\SaleController::class,
+             SaleController::class,
             "getSelectedBranchCustomer",
         ])->name("getSelectedBranchSupplier");
         Route::post("/get_selected_purchase_branch", [
@@ -387,11 +347,15 @@ Route::group(
         Route::post("/getSupplierItembyId", [
             \App\Http\Controllers\PurchaseInvoiceController::class,
             "getSupplierItembyId",
-        ])->name("getSelectedSupplier");
+        ]);
+        Route::post("/changeStatusUser", [
+          UserController::class,
+            "changeStatusUser",
+        ]);
         Route::post("/getCustomerItembyId", [
             \App\Http\Controllers\SaleController::class,
             "getCustomerItembyId",
-        ])->name("getSelectedSupplier");
+        ]);
 
         Route::post("/getSumTotalItem", [
             \App\Http\Controllers\PurchaseInvoiceController::class,
@@ -435,6 +399,8 @@ Route::group(
             "accountSubControls" => Admin\AccountSubControlController::class,
             //purchases return
             "purchaseReturns" => \App\Http\Controllers\PurchaseReturnController::class,
+            //sales return
+            "saleReturns" => \App\Http\Controllers\SaleReturnController::class,
         ]);
     }
 );

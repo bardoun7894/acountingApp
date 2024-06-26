@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Currency;
-use App\Models\FinanceYear;
 use App\Models\PaymentType;
 //   SaleCart
 use App\Models\SaleCart;
@@ -14,19 +13,14 @@ use App\Models\Stock;
 use App\Models\Store;
 use App\Models\Customer;
 use App\Models\CustomerInvoice;
-use App\Models\CustomerInvoiceDetail;
-use App\Models\CustomerPayment;
 use App\Models\Sale;
 use App\Models\Translation;
 use App\Models\User;
 use App\Models\UserType;
-use App\Rules\FinanceYearRule;
 use App\Models\Unit;
 use App\Rules\SaleCartRule;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use SalesEntries;
 
@@ -98,6 +92,7 @@ class SaleController extends Controller
             "company_id" => Auth::user()->company_id,
             "status" => 1,
         ])->get();
+        $user_store = Store::find(Auth::user()->store_id);
         $sales = Sale::with("stock")
             ->where([
                 "branch_id" => Auth::user()->branch_id,
@@ -114,6 +109,7 @@ class SaleController extends Controller
                 "payment_types",
                 "sell_types",
                 "stores",
+                "user_store",
                 "store_name",
                 "unit_name",
                 "customer_name",
@@ -142,6 +138,9 @@ class SaleController extends Controller
             compact(["customerInvoices", "customer_name"])
         );
     }
+    // findInvoice sales
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -444,10 +443,11 @@ class SaleController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->all();
-            $stores = Store::where("branch_id", Auth::user()->branch_id)->get();
+            $stores = Store::where("branch_id",Auth::user()->branch_id)->get();
+            $user_store = Store::find(Auth::user()->store_id);
             $store_name = $this->store_name;
             return view("admin.includes.stores.select_store")->with(
-                compact(["stores", "store_name"])
+                compact(["stores","user_store", "store_name"])
             );
         }
     }

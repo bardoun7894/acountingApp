@@ -259,8 +259,8 @@ $(document).on("ready", function () {
             language: {
                 url:
                     lang === "en"
-                        ? "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json"
-                        : "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json",
+                        ? "/js/datatables/English.json"
+                        : "/js/datatables/Arabic.json",
             },
         });
     }

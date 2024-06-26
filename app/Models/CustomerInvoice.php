@@ -18,6 +18,11 @@ class CustomerInvoice extends Model
     {
        return $this->belongsTo(Customer::class);
     }
+    // user
+    public function user()
+    {
+       return $this->belongsTo(User::class);
+    }
     public function customer_payments()
     {
        return $this->hasMany(CustomerPayment::class);
@@ -26,5 +31,11 @@ class CustomerInvoice extends Model
     public function customerInvoiceDetails()
     {
        return $this->hasMany(CustomerInvoiceDetail::class);
+    }
+    public function customerReturnInvoiceDetails(){
+        return $this->hasMany(CustomerReturnInvoiceDetail::class);
+    }
+    public function customerReturnInvoice(){
+        return $this->hasMany(CustomerReturnInvoice::class);
     }
 }

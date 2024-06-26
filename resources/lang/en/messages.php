@@ -258,6 +258,7 @@ return [
     "purchase_history" => "Purchase History",
     "pay_amount" => "Pay Amount",
     "purchases_invoice_payment" => "Purchases Invoice Payment",
+    "waiting_payment" => "Waiting Payment",
     ####################### options ################################
     "print_invoice" => " Print Invoice",
     "view" => "View",

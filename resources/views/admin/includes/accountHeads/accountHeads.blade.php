@@ -50,7 +50,6 @@
                                 <tr>
                                     <th class="border-top-0">#</th>
                                     <th class="border-top-0">{{ __('messages.account_head_name') }}</th>
-                                    <th class="border-top-0">{{ __('messages.user_type') }}</th>
                                     <th class="border-top-0">{{ __('messages.edit') }}</th>
                                     <th class="border-top-0">{{ __('messages.delete') }}</th>
                                 </tr>
@@ -61,7 +60,6 @@
                                         <td class="text-truncate"> {{ $key + 1 }}</td>
                                         {{-- <td class="text-truncate">  @if ($accountHead->user_type_id == 1) admin @else AccountHead  @endif       </td> --}}
                                         <td class="text-truncate"> {{ $accountHead->$account_head_name }}</td>
-                                        <td class="text-truncate"> {{ $accountHead->user->user_type->$user_type }}
                                         </td>
                                         <td class="text-truncate"> <a
                                                 href="{{ url('accountHeads/' . $accountHead->id . '/edit') }}"><i

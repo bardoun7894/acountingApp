@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountActivity;
+use App\Models\AccountControl;
+use App\Models\AccountHead;
+use App\Models\AccountSubControl;
 use App\Models\Customer;
 use App\Models\CustomerInvoice;
 use App\Models\CustomerInvoiceDetail;
@@ -23,13 +27,14 @@ class CustomerInvoiceController extends Controller
     // title
     private $title;
     private $entries;
-    private  $invoice_number  ;
+    private  $invoice_number;
     private $paymentId;
     private $salePaymentAr = "تم الدفع ";
     //customer_name
     private $customer_name;
     private $address;
-    public function __construct(){
+    public function __construct()
+    {
         $this->entries = new SalesEntries();
         $this->invoice_number = "INP" . date("YmdHis");
         $this->paymentId = 0;
@@ -71,19 +76,19 @@ class CustomerInvoiceController extends Controller
 
         ##############################  customer invoice  ################################################
 
-        $customer_invoice = $this->createCustomerInvoice($request,$invoice_date,$totalallowtax);
+        $customer_invoice = $this->createCustomerInvoice($request, $invoice_date, $totalallowtax);
         ##############################  stock effect  ################################################
         foreach ($salesStocks as $saleStock) {
             //make customer detail
-            $this->updateStockAndInvoiceDetail($saleStock, $customer_invoice) ;
+            $this->updateStockAndInvoiceDetail($saleStock, $customer_invoice);
         }
         ##1############################  debit  entry  ################################################
         //sale Product debit transaction sale Activity
         //account_activity=1 => sale product
         //account_head =3 Revenue
         // $account_control_id=8   Sales Revenues 31
-        // $account_sub_control_id=29  311 Sales
-        $saleAccount = $this->entries->getAccountSetting(3, 31, 311, 1);
+        // $account_sub_control_id=29  311 Sales 
+        $saleAccount = $this->entries->getAccountSetting(AccountHead::REVENUE, AccountControl::SALES_REVENUES, AccountSubControl::SALES,  AccountActivity::SALE);
         $this->entries->setEntries(
             $financial_year->id,
             $saleAccount->account_head_id,
@@ -97,7 +102,7 @@ class CustomerInvoiceController extends Controller
             $request->total_amount,
             " Sale From " . $customer->customer_name_en,
             isset($customer->customer_name_ar)  ? $customer->customer_name_ar . "البيع الى"
-             : $customer->customer_name_en . "البيع الى"
+                : $customer->customer_name_en . "البيع الى"
         );
 
         ##2############################  credit   entry  ################################################
@@ -109,7 +114,8 @@ class CustomerInvoiceController extends Controller
         // $account_control_id=4  Current Liabilities 21
         // $account_sub_control_id=18 Notes Payable  212
 
-        $saleAccount = $this->entries->getAccountSetting(2, 21, 212, 10);
+        // $saleAccount = $this->entries->getAccountSetting(2, 21, 212, 10);
+        $saleAccount = $this->entries->getAccountSetting(AccountHead::LIABILITIES, AccountControl::CURRENT_LIABILITIES, AccountSubControl::NOTES_PAYABLE,  AccountActivity::SALE_PAYMENT_PENDING);
 
         $this->entries->setEntries(
             $financial_year->id,
@@ -122,9 +128,9 @@ class CustomerInvoiceController extends Controller
             Auth::user()->branch_id,
             $request->total_amount,
             0,
-             " Sale Payment Pending " . $customer->customer_name_en,
+            " Sale Payment Pending " . $customer->customer_name_en,
             isset($customer->customer_name_ar)
-                ? $customer->customer_name_ar . "في انتظار الدفع  "
+                ? $customer->customer_name_ar .   "في انتظار الدفع  "
                 : $customer->customer_name_en . "في انتظار الدفع  "
         );
         ############################## is payment PAID ################################################
@@ -134,17 +140,17 @@ class CustomerInvoiceController extends Controller
 
             $this->createCustomerPaymentFunction(
                 $customer_invoice->customer_id,
-            $customer_invoice->id,
-            $customer_invoice->branch_id,
-            $payInvoice_no,
-            $customer_invoice->invoice_date,
-            $customer_invoice->total_amount,
-            //paied amount is all of total amount
-            $customer_invoice->total_amount,
-            Auth::user()->getAuthIdentifier(),
-            //remaining amount is 0
-            0,
-            $this->paymentId
+                $customer_invoice->id,
+                $customer_invoice->branch_id,
+                $payInvoice_no,
+                $customer_invoice->invoice_date,
+                $customer_invoice->total_amount,
+                //paied amount is all of total amount
+                $customer_invoice->total_amount,
+                Auth::user()->getAuthIdentifier(),
+                //remaining amount is 0
+                0,
+                $this->paymentId
             );
             ##3############################  debit  entry  ################################################
             //sale Payment Pending
@@ -152,7 +158,11 @@ class CustomerInvoiceController extends Controller
             //account_head =2   liabilities
             // $account_control_id=4  Current Liabilities
             // $account_sub_control_id=18 Notes Payable
-            $saleAccount = $this->entries->getAccountSetting(2, 21, 212, 10);
+            // $saleAccount = $this->entries->getAccountSetting(2, 21, 212, 10);
+
+
+            $saleAccount = $this->entries->getAccountSetting(AccountHead::LIABILITIES, AccountControl::CURRENT_LIABILITIES, AccountSubControl::NOTES_PAYABLE,  AccountActivity::SALE_PAYMENT_PENDING);
+
             $this->entries->setEntries(
                 $financial_year->id,
                 $saleAccount->account_head_id,
@@ -177,25 +187,21 @@ class CustomerInvoiceController extends Controller
             if ($request->payment_type_id == 2) {
                 //account_head =1   assets
                 // $account_control_id=1   Current Assets
-                // $account_sub_control_id=2   Cash on bank
-
-                $saleAccount = $this->entries->getAccountSetting(
-                    1,
-                    11,
-                    112,
-                    11
-                );
+                // $account_sub_control_id=2   Cash on bank 
+                $saleAccount = $this->entries->getAccountSetting(AccountHead::ASSETS, AccountControl::CURRENT_ASSETS, AccountSubControl::CASH_ON_BANK, AccountActivity::SALE_PAYMENT_SUCCEED);
             } else {
-                 //account_head =1   assets
+                //account_head =1   assets
                 // $account_control_id=1   Current Assets
                 // $account_sub_control_id=1  cash on hands
 
-                $saleAccount = $this->entries->getAccountSetting(
-                    1,
-                    11,
-                    111,
-                    11
-                );
+                $saleAccount = $this->entries->getAccountSetting(AccountHead::ASSETS, AccountControl::CURRENT_ASSETS, AccountSubControl::CASH_ON_HAND, AccountActivity::SALE_PAYMENT_SUCCEED);
+
+                // $saleAccount = $this->entries->getAccountSetting(
+                //     1,
+                //     11,
+                //     111,
+                //     11
+                // );
             }
             $this->entries->setEntries(
                 $financial_year->id,
@@ -217,17 +223,17 @@ class CustomerInvoiceController extends Controller
             //create customer payment with remaining amount
             $this->createCustomerPaymentFunction(
                 $customer_invoice->customer_id,
-            $customer_invoice->id,
-            $customer_invoice->branch_id,
-            $payInvoice_no,
-            $customer_invoice->invoice_date,
-            $customer_invoice->total_amount,
-            //paied amount is 0
-            0,
-            Auth::user()->getAuthIdentifier(),
-            //remaining amount is all of total amount
-            $customer_invoice->total_amount,
-            $this->paymentId
+                $customer_invoice->id,
+                $customer_invoice->branch_id,
+                $payInvoice_no,
+                $customer_invoice->invoice_date,
+                $customer_invoice->total_amount,
+                //paied amount is 0
+                0,
+                Auth::user()->getAuthIdentifier(),
+                //remaining amount is all of total amount
+                $customer_invoice->total_amount,
+                $this->paymentId
             );
         }
         ##############################  delete table sale data  ################################################
@@ -237,11 +243,11 @@ class CustomerInvoiceController extends Controller
 
         return $this->saleCustomerInvoice($customer_invoice->id);
     }
-    private function createCustomerInvoice(Request $request,$invoice_date, $totalallowtax)
+    private function createCustomerInvoice(Request $request, $invoice_date, $totalallowtax)
     {
         $customer_invoice = new CustomerInvoice();
         $customer_invoice->customer_id = $request->customer_id;
-        $customer_invoice->store_id = $request->store_id ;
+        $customer_invoice->store_id = $request->store_id;
         $customer_invoice->branch_id = Auth::user()->branch_id;
         $customer_invoice->company_id = Auth::user()->company_id;
         $customer_invoice->user_id = Auth::user()->getAuthIdentifier();
@@ -258,43 +264,16 @@ class CustomerInvoiceController extends Controller
         $customer_invoice->save();
 
         return $customer_invoice;
-    }
-    // public function saleCustomerInvoice($customerInvoiceId)
-    // {
-    //     $customer_name = $this->customer_name;
-    //     $product_name = Stock::getProductNameLang();
-    //     $address = $this->address;
-    //     $customer_invoice = CustomerInvoice::find($customerInvoiceId);
-    //     $customer_invoice_details = CustomerInvoiceDetail::with("stock")
-    //         ->where([
-    //               "customer_invoice_id" => $customerInvoiceId,
-    //         ])->get();
-    //     $customer = Customer::where([
-    //         "id" => $customer_invoice->customer_id,
-    //         "company_id" => Auth::user()->company_id,
-    //         "branch_id" => Auth::user()->branch_id,
-    //     ])->first();
-    //     return view("admin.includes.sales.sale_invoice")->with(
-    //         compact([
-    //             "customer_name",
-    //             "product_name",
-    //             "address",
-    //             "customer",
-    //             "customer_invoice",
-    //             "customer_invoice_details",
-    //         ])
-    //     );
-    // }
-
+    } 
     public function saleCustomerInvoice($customerInvoiceId)
     {
         // Get the customer invoice and related details
         $customerInvoice = CustomerInvoice::with('customer', 'customerInvoiceDetails.stock')
-                                           ->where([
-                                            'id'=> $customerInvoiceId,
+            ->where([
+                'id' => $customerInvoiceId,
 
-                                           ])
-                                           ->first();
+            ])
+            ->first();
 
         if (!$customerInvoice) {
             abort(404);
@@ -311,14 +290,14 @@ class CustomerInvoiceController extends Controller
 
         // Preparing data to be sent to the view
         $data = [
+            'user' => User::where('id', Auth::user()->id)->with('company')->first(),
             'customer' => $customer,
             'customerNameLang' => Customer::getCustomerNameLang(),
             'addressLang' =>  User::getAddressLang(),
-            'productNameLang'=> Stock::getProductNameLang(),
+            'productNameLang' => Stock::getProductNameLang(),
             'customer_invoice' => $customerInvoice,
             'customer_invoice_details' => $customerInvoiceDetails,
         ];
-
         // return $data;
         return view('admin.includes.sales.sale_invoice', $data);
     }
@@ -333,73 +312,66 @@ class CustomerInvoiceController extends Controller
     }
 
 
-      private function updateStockAndInvoiceDetail($saleStock, $customer_invoice)
-      {
-          $customer_invoice_detail = new CustomerInvoiceDetail();
-          $customer_invoice_detail->customer_invoice_id = $customer_invoice->id;
-          $customer_invoice_detail->stock_id = $saleStock->stock_id;
-          $customer_invoice_detail->sale_quantity = $saleStock->sale_qty;
-          $customer_invoice_detail->sale_unit_price = $saleStock->sale_unit_price;
-          $customer_invoice_detail->save();
+    private function updateStockAndInvoiceDetail($saleStock, $customer_invoice)
+    {
+        $customer_invoice_detail = new CustomerInvoiceDetail();
+        $customer_invoice_detail->customer_invoice_id = $customer_invoice->id;
+        $customer_invoice_detail->stock_id = $saleStock->stock_id;
+        $customer_invoice_detail->sale_quantity = $saleStock->sale_qty;
+        $customer_invoice_detail->sale_unit_price = $saleStock->sale_unit_price;
+        $customer_invoice_detail->save();
 
-          //update stock
-          $stockProduct = Stock::find($saleStock->stock_id);
+        //update stock
+        $stockProduct = Stock::find($saleStock->stock_id);
 
-          $stockProduct->quantity -= $saleStock->sale_qty;
-          $stockProduct->current_sale_unit_price = $saleStock->sale_unit_price;
-          $stockProduct->current_sale_unit_price = $saleStock->sale_unit_price;
-          $stockProduct->save();
-      }
+        $stockProduct->quantity -= $saleStock->sale_qty;
+        $stockProduct->current_sale_unit_price = $saleStock->sale_unit_price;
+        $stockProduct->current_sale_unit_price = $saleStock->sale_unit_price;
+        $stockProduct->save();
+    }
 
 
 
 
 
     private function createCustomerPaymentFunction(
-                int $customer_id,
-                int $customer_invoice_id,
-                int $branch_id,
-                string $invoice_no,
-                string $invoice_date,
-                float $total_amount,
-                float $payment_amount,
-                int $user_id,
-                float $remaining_balance,
-                int $payment_id = 0
-            ) {
-                $invoice_customer_payment = new CustomerPayment();
-                $invoice_customer_payment->customer_id = $customer_id;
-                $invoice_customer_payment->customer_invoice_id = $customer_invoice_id;
-                $invoice_customer_payment->branch_id = $branch_id;
-                $invoice_customer_payment->invoice_number = $invoice_no;
-                $invoice_customer_payment->invoice_date = $invoice_date;
-                $invoice_customer_payment->total_amount = $total_amount;
-                $invoice_customer_payment->payment_amount = $payment_amount;
-                $invoice_customer_payment->remaining_balance = $remaining_balance;
-                $invoice_customer_payment->payment_id =$payment_id;
-                $invoice_customer_payment->user_id = $user_id;
-                $invoice_customer_payment->save();
-            }
+        int $customer_id,
+        int $customer_invoice_id,
+        int $branch_id,
+        string $invoice_no,
+        string $invoice_date,
+        float $total_amount,
+        float $payment_amount,
+        int $user_id,
+        float $remaining_balance,
+        int $payment_id = 0
+    ) {
+        $invoice_customer_payment = new CustomerPayment();
+        $invoice_customer_payment->customer_id = $customer_id;
+        $invoice_customer_payment->customer_invoice_id = $customer_invoice_id;
+        $invoice_customer_payment->branch_id = $branch_id;
+        $invoice_customer_payment->invoice_number = $invoice_no;
+        $invoice_customer_payment->invoice_date = $invoice_date;
+        $invoice_customer_payment->total_amount = $total_amount;
+        $invoice_customer_payment->payment_amount = $payment_amount;
+        $invoice_customer_payment->remaining_balance = $remaining_balance;
+        $invoice_customer_payment->payment_id = $payment_id;
+        $invoice_customer_payment->user_id = $user_id;
+        $invoice_customer_payment->save();
+    }
 
 
- private function getTotalAllowTax() {
+    private function getTotalAllowTax()
+    {
         return DB::table("stocks")
-                ->join("sales", "stocks.id", "=", "sales.stock_id")
-                ->where("allowtax", 1)
-                ->where([
-                    "sales.company_id" => Auth::user()->company_id,
-                    "sales.branch_id" => Auth::user()->branch_id,
-                    "store_id" => Auth::user()->store_id,
-                ])
-                ->selectRaw("sum( sales.sale_qty * sales.sale_unit_price ) as sum")
-                ->first()->sum;
-      }
-
-
-
-
-        }
-
-
-
-
+            ->join("sales", "stocks.id", "=", "sales.stock_id")
+            ->where("allowtax", 1)
+            ->where([
+                "sales.company_id" => Auth::user()->company_id,
+                "sales.branch_id" => Auth::user()->branch_id,
+                "store_id" => Auth::user()->store_id,
+            ])
+            ->selectRaw("sum( sales.sale_qty * sales.sale_unit_price ) as sum")
+            ->first()->sum;
+    }
+}

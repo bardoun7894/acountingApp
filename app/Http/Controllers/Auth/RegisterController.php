@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountControl;
+use App\Models\AccountHead;
+use App\Models\AccountSubControl;
 use App\Models\Branch;
 use App\Models\Company;
 //store
@@ -120,28 +123,28 @@ class RegisterController extends Controller
             $user_type_seeder->run();
         }
         // create new company
-        $company = new \App\Models\Company();
+        $company = new  Company();
         $company->$companyName = $data[$companyName];
-
         $company->save();
 
         //create new branch
-        $branch = new \App\Models\Branch();
+        $branch = new  Branch();
         $branch->$branchName = $data[$branchName];
         $branch->$address = $data["branch_address"];
         $branch->company_id = $company->id;
         $branch->save();
-
         //create new store
-        $store = new \App\Models\Store();
+        $store = new  Store();
         $store->$storeName = $data[$storeName];
         $store->branch_id = $branch->id;
+        $store->company_id = $company->id;
         $store->save();
         //create user
         $user = new User();
         $user->$fullName = $data[$fullName];
         $user->$address = $data[$address];
-        $user->user_type_id = $data["user_type_id"];
+        $user->user_type_id = "2";
+        // $user->user_type_id = "$data["user_type_id"]";
         $user->username = $data["username"];
         $user->email = $data["email"];
         $user->store_id = $store->id;
@@ -158,18 +161,36 @@ class RegisterController extends Controller
         $employee->employee_email = $user->email;
         $employee->address = $user->address;
         $employee->branch_id = $branch->id;
-        // $employee->store_id = $store->id;
+     // $employee->store_id = $store->id;
         $employee->company_id = $company->id;
         $employee->save();
+
+
+         // Link existing accounts to the new user
+    // $existingAccountHeads = AccountHead::all(); // Get all account heads
+    // foreach ($existingAccountHeads as $accountHead) {
+    //     $existingAccountControls = AccountControl::where('account_head_id', $accountHead->id)->get();
+    //     foreach ($existingAccountControls as $accountControl) {
+    //         $existingAccountSubcontrols = AccountSubControl::where('account_control_id', $accountControl->id)->get();
+    //         foreach ($existingAccountSubcontrols as $accountSubcontrol) {
+    //             \DB::table('user_account_relationships')->insert([
+    //                 'user_id' => $user->id,
+    //                 'account_head_id' => $accountHead->id,
+    //                 'account_control_id' => $accountControl->id,
+    //                 'account_subcontrol_id' => $accountSubcontrol->id,
+    //                 'created_at' => now(),
+    //                 'updated_at' => now(),
+    //             ]);
+    //         }
+    //     }
+    // }
 
         DB::beginTransaction();
 
         try {
             $user->isActive = $isFirstUser ? 1 : 0;
             $user->save();
-
-            $this->seedInitialData($user, $company, $branch);
-
+            (new FinanceSeeder($user->id))->run();
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -182,21 +203,4 @@ class RegisterController extends Controller
         return $user;
     }
 
-    private function seedInitialData($user, $company, $branch) {
-        // Seeders logic here
-        (new FinanceSeeder($user->id))->run();
-           //seed account heads
-        (new AccountHeadSeeder($user->id, $company->id, $branch->id))->run();
-           //seed account control
-        ( new AccountControlSeeder($user->id, $branch->id, $company->id)  )->run();
-
-           //seed account sub control
-        (new AccountSubControlSeeder($user->id, $branch->id, $company->id))->run();
-        (new AccountSettingSeeder($branch->id, $company->id))->run();
-
-           // //seed account activities
-        (new AccountActivitySeeder())->run();
-           //seed units
-        (new UnitSeeder())->run();
-    }
 }

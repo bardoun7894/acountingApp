@@ -47,8 +47,7 @@
                                     <th class="border-top-0">{{ __('messages.account_head_name') }}</th>
                                     <th class="border-top-0">{{ __('messages.account_control_name') }}</th>
                                     <th class="border-top-0">{{ __('messages.account_sub_control_name') }}</th>
-                                    <th class="border-top-0">{{ __('messages.user') }}</th>
-                                    <th class="border-top-0">{{ __('messages.edit') }}</th>
+                                     <th class="border-top-0">{{ __('messages.edit') }}</th>
                                     <th class="border-top-0">{{ __('messages.delete') }}</th>
                                 </tr>
                             </thead>
@@ -62,13 +61,7 @@
                                             {{ $accountSubControl->accountControl->$account_control_name }}</td>
                                         <td class="text-truncate"> {{ $accountSubControl->$account_sub_control_name }}
                                         </td>
-                                        <td class="text-truncate">
-                                            @if ($accountSubControl->user->user_type_id == 1)
-                                                admin
-                                            @else
-                                                user
-                                            @endif
-                                        </td>
+
                                         <td class="text-truncate"> <a
                                                 href="{{ url('accountSubControls/' . $accountSubControl->id . '/edit') }}"><i
                                                     class="la la-edit" style="color: green;font-size: 25px"></i></a>

@@ -18,3 +18,4 @@ export default function getStoreBasedInBranch(){
         $('#appendStoreLevel').html(data);
     } )
 }
+

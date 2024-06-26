@@ -1,7 +1,7 @@
 <!-- BEGIN: Vendor JS-->
 <script src="{{ url('admin/app-assets/vendors/js/vendors.min.js') }}"></script>
 <!-- BEGIN Vendor JS-->
-
+@yield('scriptUser')  
 <!-- BEGIN: Page Vendor JS-->
 <script src="{{ url('admin/app-assets/vendors/js/charts/chartist.min.js') }}"></script>
 <script src="{{ url('admin/app-assets/vendors/js/charts/chartist-plugin-tooltip.min.js') }}"></script>

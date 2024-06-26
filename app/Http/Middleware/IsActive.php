@@ -17,9 +17,9 @@ class IsActive
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::user()->isActive) {
-            Auth::logout();
-            return redirect("callAdministrator");
+ if (!Auth::user()->isActive) {
+                Auth::logout();
+                return redirect("callAdministrator");
         }
         return $next($request);
     }
